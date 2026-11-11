@@ -31,3 +31,22 @@
 .ppt-stage:has(.ppt-question):not(:has(.ppt-outcome)) .ppt-question{justify-content:flex-start}
 .ppt-stage:has(.ppt-question):not(:has(.ppt-outcome)) .ppt-count{margin-top:auto}
 @media(max-width:760px){.ppt-stage:has(.ppt-question) .ppt-ribbon{min-height:92px}.ppt-stage:has(.ppt-question) .ppt-prompt{min-height:94px}.ppt-stage:has(.ppt-question) .ppt-hex{min-height:64px}.ppt-stage:has(.ppt-question) .ppt-fast{font-size:13px}.ppt-stage:has(.ppt-question) .ppt-answer{padding:7px 20px}}
+
+/* 2026 aesthetic pass: outline follows the true outside perimeter. */
+.ppt-prompt,.title-hex{clip-path:none!important;background:transparent!important;border:0!important;isolation:isolate;position:relative;overflow:visible!important;line-height:1.25}
+.ppt-prompt::before,.title-hex::before{content:"";position:absolute;inset:0;background:#006d5b;clip-path:polygon(10.6% 2%,89.4% 2%,99.1% 50%,89.4% 98%,10.6% 98%,.9% 50%);z-index:-1}
+.title-hex::before{background:#f2772d}
+.ppt-prompt .question-copy{font-size:clamp(19px,2.2vw,30px);font-weight:500;line-height:1.22;display:block;max-width:78%;text-align:center;overflow-wrap:break-word;hyphens:auto;width:100%;z-index:2}
+.ppt-prompt{padding:8px 4%!important;min-height:125px!important;height:clamp(130px,12vw,155px);max-height:none!important;justify-content:center!important;align-items:center!important}
+.travel-outline{inset:0!important;z-index:4;clip-path:none;filter:drop-shadow(0 0 4px #fff8);pointer-events:none}
+.ppt-hex .travel-outline,.ppt-answer .travel-outline{display:none!important}
+.ppt-hex.revealed{background:#ef742c!important}
+.title-hex{clip-path:none!important;white-space:normal;text-align:center;padding:0 11%}
+.title-hex span{position:relative;z-index:2;font-size:clamp(20px,3.5vw,48px);line-height:1.1}
+.finale-stage{position:relative;isolation:isolate}
+.finale-stage>.ppt-ribbon,.finale-stage>.ppt-final,.finale-stage>.ppt-scores,.finale-stage>.ppt-fast{position:relative;z-index:2}
+.confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+.confetti i{position:absolute;left:var(--x);top:-8%;width:9px;height:17px;background:var(--c);opacity:.95;border-radius:2px;transform:rotate(0deg);animation:confettiBurst var(--speed) ease-in var(--delay) infinite}
+@keyframes confettiBurst{0%{transform:translate3d(0,-30px,0) rotate(0deg);opacity:0}8%{opacity:1}35%{transform:translate3d(75px,18vh,0) rotate(180deg)}100%{transform:translate3d(-60px,105vh,0) rotate(var(--spin));opacity:.15}}
+@media(prefers-reduced-motion:reduce){.confetti i{animation:none;display:none}}
+@media(max-width:760px){.ppt-prompt{min-height:134px!important;height:auto!important;padding:17px 0!important}.ppt-prompt .question-copy{max-width:76%;font-size:18px}.title-hex span{font-size:20px}}
