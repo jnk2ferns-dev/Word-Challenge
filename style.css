@@ -50,3 +50,29 @@
 @keyframes confettiBurst{0%{transform:translate3d(0,-30px,0) rotate(0deg);opacity:0}8%{opacity:1}35%{transform:translate3d(75px,18vh,0) rotate(180deg)}100%{transform:translate3d(-60px,105vh,0) rotate(var(--spin));opacity:.15}}
 @media(prefers-reduced-motion:reduce){.confetti i{animation:none;display:none}}
 @media(max-width:760px){.ppt-prompt{min-height:134px!important;height:auto!important;padding:17px 0!important}.ppt-prompt .question-copy{max-width:76%;font-size:18px}.title-hex span{font-size:20px}}
+
+/* Design fidelity: PowerPoint two-tier orange ribbon and question on first horizontal line. */
+.ppt-stage:has(.ppt-question)::before{top:33%;height:2px;opacity:.85;background:#fff}
+.ppt-stage:has(.ppt-question)::after{display:none!important}
+.ppt-stage:has(.ppt-question){position:relative;aspect-ratio:1100/619;min-height:0;padding:0!important;display:block!important;overflow:hidden}
+.ppt-stage .ppt-question{display:contents}
+.ppt-stage .ppt-ribbon{position:absolute!important;z-index:5;top:2.4%;left:1%;width:98%;height:20.8%;min-height:0!important;background:transparent!important;clip-path:none!important;display:flex!important;flex-direction:column;align-items:center;justify-content:center;padding:0!important;color:#111;font-family:Arial,Helvetica,sans-serif;font-weight:400;text-shadow:none;line-height:1.12}
+.ppt-stage .ppt-ribbon:before{content:"";position:absolute;z-index:-2;inset:0;clip-path:polygon(0 20%,25.3% 12%,25.3% 0,74.7% 0,74.7% 12%,100% 20%,87.4% 50%,100% 93%,62% 84%,62% 100%,38% 100%,38% 84%,0 93%,12.6% 50%);background:#fff}
+.ppt-stage .ppt-ribbon:after{content:"";position:absolute;z-index:-1;inset:2px;clip-path:polygon(0 20%,25.3% 12%,25.3% 0,74.7% 0,74.7% 12%,100% 20%,87.4% 50%,100% 93%,62% 84%,62% 100%,38% 100%,38% 84%,0 93%,12.6% 50%);background:#ee742d}
+.ppt-stage .ppt-ribbon span{z-index:2;display:block;color:#090909!important;text-align:center!important}
+.ppt-stage .ppt-ribbon span:first-child{font-size:clamp(20px,2.7vw,33px)!important}
+.ppt-stage .ppt-ribbon span:last-child{font-size:clamp(16px,2.1vw,26px)!important}
+.ppt-stage .ppt-prompt{position:absolute!important;top:22.5%!important;left:20.45%!important;width:59.1%!important;height:21.2%!important;min-height:0!important;max-height:none!important;padding:7px 4%!important;box-sizing:border-box;z-index:2;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;background:transparent!important}
+.ppt-stage .ppt-prompt::before{clip-path:polygon(10.5% 2%,89.5% 2%,99.5% 50%,89.5% 98%,10.5% 98%,.5% 50%)!important}
+.ppt-stage .ppt-prompt .question-copy{font-family:Arial,Helvetica,sans-serif!important;font-size:24px;font-weight:400;line-height:1.18;max-width:74%;width:100%;margin:auto;text-align:center;overflow-wrap:break-word;word-break:normal}
+.ppt-stage .ppt-words{position:absolute!important;top:48.3%!important;left:2.8%;width:94.4%;height:18.2%;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:3.0%;margin:0!important}
+.ppt-stage .ppt-hex{height:100%;min-height:0!important;max-height:none!important;padding:6px 8px!important;clip-path:polygon(17% 0,83% 0,100% 50%,83% 100%,17% 100%,0 50%)}
+.ppt-stage .ppt-scores{position:absolute!important;bottom:3.8%!important;left:2.5%;width:95%;height:11.3%;display:grid;grid-template-columns:1fr 1fr;gap:6%}
+.ppt-stage .ppt-score{min-height:0!important;height:100%;font-size:clamp(14px,1.9vw,25px)}
+.ppt-stage .ppt-count{position:absolute!important;top:69%;left:5%;width:90%;height:6%;margin:0!important;display:flex;align-items:center}
+.ppt-stage .ppt-answer{position:absolute!important;top:69.7%;left:36%;width:28%;min-width:0!important;height:8%;font-size:clamp(17px,2vw,26px);padding:6px!important;display:flex;align-items:center;justify-content:center}
+.ppt-stage .ppt-outcome{position:absolute!important;top:79%;left:12%;width:76%;height:5%;font-size:clamp(15px,1.8vw,23px)}
+.ppt-stage .ppt-fast{position:absolute!important;top:85%;left:12%;width:76%;height:6%;min-height:0!important;padding:4px!important;margin:0!important;display:flex;justify-content:center;align-items:center;font-size:clamp(12px,1.5vw,18px)}
+.ppt-stage.opening-stage{display:block!important;min-height:0!important}
+.ppt-stage.opening-stage .title-hex{left:20.45%;top:39.6%;width:59.1%;height:21.1%}
+@media(max-width:700px){.ppt-stage:has(.ppt-question){aspect-ratio:1100/750}.ppt-stage .ppt-ribbon span:first-child{font-size:18px!important}.ppt-stage .ppt-ribbon span:last-child{font-size:14px!important}.ppt-stage .ppt-prompt .question-copy{font-size:17px;max-width:73%}.ppt-stage .ppt-hex{font-size:13px}.ppt-stage .ppt-fast{font-size:11px}.ppt-stage .ppt-count{top:68%}}
