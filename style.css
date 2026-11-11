@@ -76,3 +76,24 @@
 .ppt-stage.opening-stage{display:block!important;min-height:0!important}
 .ppt-stage.opening-stage .title-hex{left:20.45%;top:39.6%;width:59.1%;height:21.1%}
 @media(max-width:700px){.ppt-stage:has(.ppt-question){aspect-ratio:1100/750}.ppt-stage .ppt-ribbon span:first-child{font-size:18px!important}.ppt-stage .ppt-ribbon span:last-child{font-size:14px!important}.ppt-stage .ppt-prompt .question-copy{font-size:17px;max-width:73%}.ppt-stage .ppt-hex{font-size:13px}.ppt-stage .ppt-fast{font-size:11px}.ppt-stage .ppt-count{top:68%}}
+
+/* Final title/banner and question alignment for the 8-question visual test. */
+.ppt-stage.opening-stage::before,.ppt-stage.opening-stage::after{display:none!important}
+.ppt-stage.opening-stage .title-hex{left:20.45%!important;top:39.6%!important;width:59.1%!important;height:21.1%!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.ppt-stage.opening-stage .title-hex span{font-family:Arial,Helvetica,sans-serif;font-weight:400;font-size:clamp(22px,4.35vw,57px);white-space:nowrap;z-index:5}
+.ppt-stage:has(.ppt-question) .ppt-ribbon{border:none!important;box-shadow:none!important;filter:none!important}
+.ppt-stage .ppt-ribbon span.ppt-ribbon-line:first-child{font-size:clamp(19px,2.65vw,34px)!important}
+.ppt-stage .ppt-ribbon span.ppt-ribbon-line:last-child{font-size:clamp(15px,2.05vw,27px)!important}
+.ppt-stage .ppt-prompt .question-copy{font-size:clamp(17px,1.8vw,23px)!important;line-height:1.2!important;max-width:73%!important;width:73%!important;overflow-wrap:break-word!important;word-break:normal!important;hyphens:none!important}
+.ppt-stage .ppt-prompt{left:20.45%!important;top:22.5%!important;width:59.1%!important;height:21.2%!important;padding:8px 0!important}
+.ppt-stage:has(.ppt-question)::before{top:33.1%!important;background:#e5e5e5!important;height:2px!important}
+.ppt-stage:has(.ppt-question)::after{display:none!important}
+.ppt-stage .ppt-hex{clip-path:polygon(16% 0,84% 0,100% 50%,84% 100%,16% 100%,0 50%);border:0!important}
+.ppt-stage.definition-slide .ppt-prompt{top:32%!important;height:22%!important;min-height:0!important}
+.ppt-stage.definition-slide::before{top:43%!important}
+.ppt-stage.definition-slide .ppt-count{top:62%!important}
+.ppt-stage.definition-slide .ppt-answer{top:63%!important}
+.ppt-stage.definition-slide .ppt-outcome{top:76%!important}
+.ppt-stage.definition-slide .ppt-fast{top:84%!important}
+.ppt-stage.definition-slide .ppt-prompt .question-copy{font-size:clamp(16px,1.62vw,22px)!important;line-height:1.15!important}
+@media(max-width:700px){.ppt-stage .ppt-prompt .question-copy{font-size:16px!important}.ppt-stage.definition-slide .ppt-prompt .question-copy{font-size:15px!important}.ppt-stage.opening-stage .title-hex span{font-size:clamp(14px,4vw,25px)}}
