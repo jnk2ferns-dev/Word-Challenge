@@ -3,13 +3,18 @@
     "id": 1,
     "round": 1,
     "type": "text",
-    "prompt": "Find the common word for: BODY, MUD, LIFE",
+    "prompt": "What is the word that completes all three words below?",
     "words": [
       "BODY",
-      "MUD",
-      "LIFE"
+      "LIFE",
+      "MUD"
     ],
-    "answer": "LIFEGUARD",
+    "answer": "GUARD",
+    "completed": [
+      "BODYGUARD",
+      "LIFEGUARD",
+      "MUDGUARD"
+    ],
     "seconds": 30,
     "choices": []
   },
@@ -17,13 +22,18 @@
     "id": 2,
     "round": 1,
     "type": "text",
-    "prompt": "Find the common word for: MEANING, HOPE, MIND",
+    "prompt": "What is the word that completes all three words below?",
     "words": [
       "MEANING",
       "HOPE",
       "MIND"
     ],
     "answer": "LESS",
+    "completed": [
+      "MEANINGLESS",
+      "HOPELESS",
+      "MINDLESS"
+    ],
     "seconds": 30,
     "choices": []
   },
@@ -31,13 +41,18 @@
     "id": 3,
     "round": 1,
     "type": "text",
-    "prompt": "Find the common word for: SHORT, PAPER, HAIR",
+    "prompt": "What is the word that completes all three words below?",
     "words": [
       "SHORT",
       "PAPER",
       "HAIR"
     ],
     "answer": "CUT",
+    "completed": [
+      "SHORTCUT",
+      "PAPERCUT",
+      "HAIRCUT"
+    ],
     "seconds": 30,
     "choices": []
   },
@@ -45,13 +60,18 @@
     "id": 4,
     "round": 1,
     "type": "text",
-    "prompt": "Find the common word for: GRID, PAD, DEAD",
+    "prompt": "What is the word that completes all three words below?",
     "words": [
       "GRID",
       "PAD",
       "DEAD"
     ],
     "answer": "LOCK",
+    "completed": [
+      "GRIDLOCK",
+      "PADLOCK",
+      "DEADLOCK"
+    ],
     "seconds": 30,
     "choices": []
   },
@@ -59,13 +79,18 @@
     "id": 5,
     "round": 1,
     "type": "text",
-    "prompt": "Find the common word for: NET, HOME, FRAME",
+    "prompt": "What is the word that completes all three words below?",
     "words": [
       "NET",
       "HOME",
       "FRAME"
     ],
     "answer": "WORK",
+    "completed": [
+      "NETWORK",
+      "HOMEWORK",
+      "FRAMEWORK"
+    ],
     "seconds": 30,
     "choices": []
   },
@@ -73,13 +98,18 @@
     "id": 6,
     "round": 1,
     "type": "text",
-    "prompt": "Find the common word for: CUP, CHEESE, PAN",
+    "prompt": "What is the word that completes all three words below?",
     "words": [
       "CUP",
       "CHEESE",
       "PAN"
     ],
     "answer": "CAKE",
+    "completed": [
+      "CUPCAKE",
+      "CHEESECAKE",
+      "PANCAKE"
+    ],
     "seconds": 30,
     "choices": []
   },
@@ -87,13 +117,18 @@
     "id": 7,
     "round": 1,
     "type": "text",
-    "prompt": "Find the common word for: WATER, DOWN, FREE",
+    "prompt": "What is the word that completes all three words below?",
     "words": [
       "WATER",
       "DOWN",
       "FREE"
     ],
     "answer": "FALL",
+    "completed": [
+      "WATERFALL",
+      "DOWNFALL",
+      "FREEFALL"
+    ],
     "seconds": 30,
     "choices": []
   },
@@ -101,13 +136,18 @@
     "id": 8,
     "round": 1,
     "type": "text",
-    "prompt": "Find the common word for: BOOK, WATER, TRADE",
+    "prompt": "What is the word that completes all three words below?",
     "words": [
       "BOOK",
       "WATER",
       "TRADE"
     ],
     "answer": "MARK",
+    "completed": [
+      "BOOKMARK",
+      "WATERMARK",
+      "TRADEMARK"
+    ],
     "seconds": 30,
     "choices": []
   },
@@ -115,13 +155,18 @@
     "id": 9,
     "round": 1,
     "type": "text",
-    "prompt": "Find the common word for: FOOT, BASE, BASKET",
+    "prompt": "What is the word that completes all three words below?",
     "words": [
       "FOOT",
       "BASE",
       "BASKET"
     ],
     "answer": "BALL",
+    "completed": [
+      "FOOTBALL",
+      "BASEBALL",
+      "BASKETBALL"
+    ],
     "seconds": 30,
     "choices": []
   },
@@ -129,13 +174,18 @@
     "id": 10,
     "round": 2,
     "type": "text",
-    "prompt": "Find the common word for: FLOWER, LIGHT, RISE",
+    "prompt": "What is the word that comes before all three words below?",
     "words": [
       "FLOWER",
       "LIGHT",
       "RISE"
     ],
-    "answer": "SUNRISE",
+    "answer": "SUN",
+    "completed": [
+      "SUNFLOWER",
+      "SUNLIGHT",
+      "SUNRISE"
+    ],
     "seconds": 30,
     "choices": []
   },
@@ -143,13 +193,18 @@
     "id": 11,
     "round": 2,
     "type": "text",
-    "prompt": "Find the common word for: DUST, LIGHT, FISH",
+    "prompt": "What is the word that comes before all three words below?",
     "words": [
       "DUST",
       "LIGHT",
       "FISH"
     ],
     "answer": "STAR",
+    "completed": [
+      "STARDUST",
+      "STARLIGHT",
+      "STARFISH"
+    ],
     "seconds": 30,
     "choices": []
   },
@@ -157,13 +212,18 @@
     "id": 12,
     "round": 2,
     "type": "text",
-    "prompt": "Find the common word for: ACT, VIEW, CHANGE",
+    "prompt": "What is the word that comes before all three words below?",
     "words": [
       "ACT",
       "VIEW",
       "CHANGE"
     ],
     "answer": "INTER",
+    "completed": [
+      "INTERACT",
+      "INTERVIEW",
+      "INTERCHANGE"
+    ],
     "seconds": 30,
     "choices": []
   },
@@ -171,13 +231,18 @@
     "id": 13,
     "round": 2,
     "type": "text",
-    "prompt": "Find the common word for: FLY, WORKS, PLACE",
+    "prompt": "What is the word that comes before all three words below?",
     "words": [
       "FLY",
       "WORKS",
       "PLACE"
     ],
     "answer": "FIRE",
+    "completed": [
+      "FIREFLY",
+      "FIREWORKS",
+      "FIREPLACE"
+    ],
     "seconds": 30,
     "choices": []
   },
@@ -185,13 +250,18 @@
     "id": 14,
     "round": 2,
     "type": "text",
-    "prompt": "Find the common word for: BAG, SHAKE, BOOK",
+    "prompt": "What is the word that comes before all three words below?",
     "words": [
       "BAG",
       "SHAKE",
       "BOOK"
     ],
     "answer": "HAND",
+    "completed": [
+      "HANDBAG",
+      "HANDSHAKE",
+      "HANDBOOK"
+    ],
     "seconds": 30,
     "choices": []
   },
@@ -199,13 +269,18 @@
     "id": 15,
     "round": 2,
     "type": "text",
-    "prompt": "Find the common word for: BOW, DROP, COAT",
+    "prompt": "What is the word that comes before all three words below?",
     "words": [
       "BOW",
       "DROP",
       "COAT"
     ],
     "answer": "RAIN",
+    "completed": [
+      "RAINBOW",
+      "RAINDROP",
+      "RAINCOAT"
+    ],
     "seconds": 30,
     "choices": []
   },
@@ -213,13 +288,18 @@
     "id": 16,
     "round": 2,
     "type": "text",
-    "prompt": "Find the common word for: BEARER, CAKE, BOARD",
+    "prompt": "What is the word that comes before all three words below?",
     "words": [
       "BEARER",
       "CAKE",
       "BOARD"
     ],
     "answer": "CUP",
+    "completed": [
+      "CUPBEARER",
+      "CUPCAKE",
+      "CUPBOARD"
+    ],
     "seconds": 30,
     "choices": []
   },
@@ -227,13 +307,18 @@
     "id": 17,
     "round": 2,
     "type": "text",
-    "prompt": "Find the common word for: BALL, STORM, MAN",
+    "prompt": "What is the word that comes before all three words below?",
     "words": [
       "BALL",
       "STORM",
       "MAN"
     ],
     "answer": "SNOW",
+    "completed": [
+      "SNOWBALL",
+      "SNOWSTORM",
+      "SNOWMAN"
+    ],
     "seconds": 30,
     "choices": []
   },
@@ -241,13 +326,18 @@
     "id": 18,
     "round": 2,
     "type": "text",
-    "prompt": "Find the common word for: MADE, TOWN, SICK",
+    "prompt": "What is the word that comes before all three words below?",
     "words": [
       "MADE",
       "TOWN",
       "SICK"
     ],
     "answer": "HOME",
+    "completed": [
+      "HOMEMADE",
+      "HOMETOWN",
+      "HOMESICK"
+    ],
     "seconds": 30,
     "choices": []
   },
@@ -255,9 +345,10 @@
     "id": 19,
     "round": 3,
     "type": "text",
-    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "prompt": "What do we call a nation with its own land, people and government?",
     "words": [],
     "answer": "COUNTRY",
+    "completed": [],
     "seconds": 30,
     "choices": []
   },
@@ -265,9 +356,10 @@
     "id": 20,
     "round": 3,
     "type": "text",
-    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "prompt": "What do we call an artistic literature that often uses language, sound and rhyme to stir the reader’s or listener’s imagination?",
     "words": [],
     "answer": "POETRY",
+    "completed": [],
     "seconds": 30,
     "choices": []
   },
@@ -275,9 +367,10 @@
     "id": 21,
     "round": 3,
     "type": "text",
-    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "prompt": "What do we call at place where birds are domesticated for their meat or eggs?",
     "words": [],
     "answer": "POULTRY",
+    "completed": [],
     "seconds": 30,
     "choices": []
   },
@@ -285,9 +378,10 @@
     "id": 22,
     "round": 3,
     "type": "text",
-    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "prompt": "What do we call a cupboard or small room used  to store food?",
     "words": [],
     "answer": "PANTRY",
+    "completed": [],
     "seconds": 30,
     "choices": []
   },
@@ -295,9 +389,10 @@
     "id": 23,
     "round": 3,
     "type": "text",
-    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "prompt": "What do we call a category of similar businesses that make products or provide services?",
     "words": [],
     "answer": "INDUSTRY",
+    "completed": [],
     "seconds": 30,
     "choices": []
   },
@@ -305,9 +400,10 @@
     "id": 24,
     "round": 3,
     "type": "text",
-    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "prompt": "What is the study of substances and how they react?",
     "words": [],
     "answer": "CHEMISTRY",
+    "completed": [],
     "seconds": 30,
     "choices": []
   },
@@ -315,9 +411,10 @@
     "id": 25,
     "round": 3,
     "type": "text",
-    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "prompt": "What is the study of shapes, sizes and measurements?",
     "words": [],
     "answer": "GEOMETRY",
+    "completed": [],
     "seconds": 30,
     "choices": []
   },
@@ -325,9 +422,10 @@
     "id": 26,
     "round": 3,
     "type": "text",
-    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "prompt": "What is the profession of caring for teeth and gums?",
     "words": [],
     "answer": "DENTISTRY",
+    "completed": [],
     "seconds": 30,
     "choices": []
   },
@@ -335,9 +433,10 @@
     "id": 27,
     "round": 3,
     "type": "text",
-    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "prompt": "What do you call a government department responsible for managing a particular area of public services?",
     "words": [],
     "answer": "MINISTRY",
+    "completed": [],
     "seconds": 30,
     "choices": []
   },
@@ -345,9 +444,10 @@
     "id": 28,
     "round": 4,
     "type": "text",
-    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "prompt": "What is the name of a sea animal and also means to close something securely?",
     "words": [],
     "answer": "SEAL",
+    "completed": [],
     "seconds": 30,
     "choices": []
   },
@@ -355,9 +455,10 @@
     "id": 29,
     "round": 4,
     "type": "text",
-    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "prompt": "What do you call a measuring tool and is also a title for someone who governs a place?",
     "words": [],
     "answer": "RULER",
+    "completed": [],
     "seconds": 30,
     "choices": []
   },
@@ -365,9 +466,10 @@
     "id": 30,
     "round": 4,
     "type": "text",
-    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "prompt": "What is the word for feeling well or in good health and also a term used for money paid as a penalty for breaking  a rule or law?",
     "words": [],
     "answer": "FINE",
+    "completed": [],
     "seconds": 30,
     "choices": []
   },
@@ -375,9 +477,10 @@
     "id": 31,
     "round": 4,
     "type": "text",
-    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "prompt": "What is the term for proper, satisfactory or excellent manner and also called a place where one draws water from?",
     "words": [],
     "answer": "WELL",
+    "completed": [],
     "seconds": 30,
     "choices": []
   },
@@ -385,9 +488,10 @@
     "id": 32,
     "round": 4,
     "type": "text",
-    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "prompt": "What is a small piece of paper attached to a letter and also a term used to put your foot down heavily on the ground?",
     "words": [],
     "answer": "STAMP",
+    "completed": [],
     "seconds": 30,
     "choices": []
   },
@@ -395,9 +499,10 @@
     "id": 33,
     "round": 4,
     "type": "text",
-    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "prompt": "What is the term used for treating everyone equally and also a term used for an event such as an exhibition ?",
     "words": [],
     "answer": "FAIR",
+    "completed": [],
     "seconds": 30,
     "choices": []
   },
@@ -405,9 +510,10 @@
     "id": 34,
     "round": 4,
     "type": "text",
-    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "prompt": "What do you call a group of people with shared interests and is also called a heavy stick used for hitting?",
     "words": [],
     "answer": "CLUB",
+    "completed": [],
     "seconds": 30,
     "choices": []
   },
@@ -415,9 +521,10 @@
     "id": 35,
     "round": 4,
     "type": "text",
-    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "prompt": "What do you call an area where sports are played and also a term for how high or low a sound is?",
     "words": [],
     "answer": "PITCH",
+    "completed": [],
     "seconds": 30,
     "choices": []
   },
@@ -425,9 +532,10 @@
     "id": 36,
     "round": 4,
     "type": "text",
-    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "prompt": "What is the name of a tree found in warm climates and also the inner part of your hand?",
     "words": [],
     "answer": "PALM",
+    "completed": [],
     "seconds": 30,
     "choices": []
   }
