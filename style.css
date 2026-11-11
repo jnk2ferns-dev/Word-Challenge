@@ -14,3 +14,20 @@
 .soundbutton{position:fixed;right:12px;top:80px;z-index:100;background:#f2772d;color:#111;max-width:270px;box-shadow:0 2px 15px #0009}
 .soundbutton.sound-on{opacity:.92}
 @media(max-width:760px){.opening-stage{min-height:0!important}.join-pin{font-size:13px}}
+
+/* Match the original 16:9 quiz slide geometry more closely. */
+.opening-stage::before,.opening-stage::after{display:none}
+.ppt-stage:has(.ppt-question){padding:1.5% 2.4% 2.5%}
+.ppt-stage:has(.ppt-question) .ppt-question{gap:clamp(7px,1vw,15px)}
+.ppt-stage:has(.ppt-question) .ppt-ribbon{height:18%;min-height:82px;flex-shrink:0;background:#ee742d;clip-path:polygon(0% 18%,25% 10%,25% 0%,75% 0%,75% 10%,100% 18%,87% 51%,100% 90%,63% 83%,63% 100%,37% 100%,37% 83%,0% 90%,13% 51%);font-size:clamp(16px,2.1vw,30px)}
+.ppt-stage:has(.ppt-question) .ppt-prompt{background:#006b58;min-height:100px;max-height:145px;flex-shrink:0}
+.ppt-stage:has(.ppt-question) .ppt-words{flex-shrink:0;margin:3px 0 5px;gap:2.8%}
+.ppt-stage:has(.ppt-question) .ppt-hex{min-height:95px;max-height:117px;background:#006e5b}
+.ppt-stage:has(.ppt-question) .ppt-hex.revealed{background:#ef742c;color:#000}
+.ppt-stage:has(.ppt-question) .ppt-answer{background:#ef742c;color:#0b0b0b;border-radius:10px;padding:9px 40px}
+.ppt-stage:has(.ppt-question) .ppt-outcome{font-size:clamp(16px,1.9vw,27px);line-height:1.1}
+.ppt-stage:has(.ppt-question) .ppt-fast{font-size:clamp(14px,1.55vw,22px);min-height:37px;padding:6px 10px;margin:0 5%;width:90%}
+.ppt-stage:has(.ppt-question) .ppt-scores{margin-top:auto}
+.ppt-stage:has(.ppt-question):not(:has(.ppt-outcome)) .ppt-question{justify-content:flex-start}
+.ppt-stage:has(.ppt-question):not(:has(.ppt-outcome)) .ppt-count{margin-top:auto}
+@media(max-width:760px){.ppt-stage:has(.ppt-question) .ppt-ribbon{min-height:92px}.ppt-stage:has(.ppt-question) .ppt-prompt{min-height:94px}.ppt-stage:has(.ppt-question) .ppt-hex{min-height:64px}.ppt-stage:has(.ppt-question) .ppt-fast{font-size:13px}.ppt-stage:has(.ppt-question) .ppt-answer{padding:7px 20px}}
