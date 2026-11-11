@@ -3,7 +3,9 @@ const http=require('http'),fs=require('fs'),path=require('path'),crypto=require(
 const PORT=Number(process.env.PORT||3000);
 const HOST_KEY=process.env.HOST_KEY;
 if(!HOST_KEY||HOST_KEY.length<20){console.error('HOST_KEY must be set to a secure 20+ character secret');process.exit(1)}
-const questions=JSON.parse(fs.readFileSync(path.join(__dirname,'questions.json'),'utf8'));
+const allQuestions=JSON.parse(fs.readFileSync(path.join(__dirname,'questions.json'),'utf8'));
+// Test edition: retain all 36 original questions in source, play two from each section.
+const questions=allQuestions.filter((q,i)=>allQuestions.filter(x=>x.round===q.round&&x.id<=q.id).length<=2);
 const state={pin:String(crypto.randomInt(100000,1000000)),phase:'lobby',index:0,started:0,endsAt:null,duration:30,players:{},responses:{},scores:{A:0,B:0},results:null};
 const clients=new Set();
 function normal(s){return String(s??'').trim().replace(/\s+/g,' ').toLowerCase()}
@@ -18,7 +20,7 @@ if(b.op==='answer'){const p=state.players[b.id];if(!p||p.token!==b.token||!p.tea
 if(b.hostKey!==HOST_KEY)return send(res,403,{error:'Incorrect host key'});
 if(b.op==='team'){if(state.phase!=='lobby')return send(res,409,{error:'Assign teams before the game'});if(!state.players[b.id]||!['A','B'].includes(b.team))return send(res,400,{error:'Invalid team'});state.players[b.id].team=b.team}
 else if(b.op==='duration'){if(!['lobby','section','results'].includes(state.phase))return send(res,409,{error:'Change timer before starting a question'});const v=Number(b.seconds);if(!Number.isInteger(v)||v<5||v>300)return send(res,400,{error:'Choose 5–300 seconds'});state.duration=v}
-else if(b.op==='start'||b.op==='next'){if((b.op==='start'&&state.phase!=='lobby')||(b.op==='next'&&!['results','section'].includes(state.phase)))return send(res,409,{error:'Not ready'});if(b.op==='start'&&(!Object.keys(state.players).length||Object.values(state.players).some(p=>!p.team)))return send(res,409,{error:'Register players and assign every player to a team'});if(b.op==='start'){state.phase='section';state.endsAt=null;state.responses={};state.results=null}else{if(state.phase==='results')state.index++;if(state.index>=questions.length){state.phase='finished';state.index=questions.length-1;state.results=null}else if(state.index%9===0&&state.phase==='results'){state.phase='section';state.results=null;state.endsAt=null}else{state.phase='question';state.responses={};state.results=null;state.started=Date.now();state.endsAt=state.started+state.duration*1000}}}
+else if(b.op==='start'||b.op==='next'){if((b.op==='start'&&state.phase!=='lobby')||(b.op==='next'&&!['results','section'].includes(state.phase)))return send(res,409,{error:'Not ready'});if(b.op==='start'&&(!Object.keys(state.players).length||Object.values(state.players).some(p=>!p.team)))return send(res,409,{error:'Register players and assign every player to a team'});if(b.op==='start'){state.phase='section';state.endsAt=null;state.responses={};state.results=null}else{if(state.phase==='results')state.index++;if(state.index>=questions.length){state.phase='finished';state.index=questions.length-1;state.results=null}else if(state.index>0&&questions[state.index].round!==questions[state.index-1].round&&state.phase==='results'){state.phase='section';state.results=null;state.endsAt=null}else{state.phase='question';state.responses={};state.results=null;state.started=Date.now();state.endsAt=state.started+state.duration*1000}}}
 else if(b.op==='reveal'){finish();return send(res,200,{ok:true})}
 else if(b.op==='reset'){state.phase='lobby';state.index=0;state.endsAt=null;state.responses={};state.scores={A:0,B:0};state.results=null;state.pin=String(crypto.randomInt(100000,1000000));state.players={}}
 else return send(res,400,{error:'Unknown action'});push();return send(res,200,{ok:true})}
