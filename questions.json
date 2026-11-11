@@ -1,0 +1,434 @@
+[
+  {
+    "id": 1,
+    "round": 1,
+    "type": "text",
+    "prompt": "Find the common word for: BODY, MUD, LIFE",
+    "words": [
+      "BODY",
+      "MUD",
+      "LIFE"
+    ],
+    "answer": "LIFEGUARD",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 2,
+    "round": 1,
+    "type": "text",
+    "prompt": "Find the common word for: MEANING, HOPE, MIND",
+    "words": [
+      "MEANING",
+      "HOPE",
+      "MIND"
+    ],
+    "answer": "LESS",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 3,
+    "round": 1,
+    "type": "text",
+    "prompt": "Find the common word for: SHORT, PAPER, HAIR",
+    "words": [
+      "SHORT",
+      "PAPER",
+      "HAIR"
+    ],
+    "answer": "CUT",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 4,
+    "round": 1,
+    "type": "text",
+    "prompt": "Find the common word for: GRID, PAD, DEAD",
+    "words": [
+      "GRID",
+      "PAD",
+      "DEAD"
+    ],
+    "answer": "LOCK",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 5,
+    "round": 1,
+    "type": "text",
+    "prompt": "Find the common word for: NET, HOME, FRAME",
+    "words": [
+      "NET",
+      "HOME",
+      "FRAME"
+    ],
+    "answer": "WORK",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 6,
+    "round": 1,
+    "type": "text",
+    "prompt": "Find the common word for: CUP, CHEESE, PAN",
+    "words": [
+      "CUP",
+      "CHEESE",
+      "PAN"
+    ],
+    "answer": "CAKE",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 7,
+    "round": 1,
+    "type": "text",
+    "prompt": "Find the common word for: WATER, DOWN, FREE",
+    "words": [
+      "WATER",
+      "DOWN",
+      "FREE"
+    ],
+    "answer": "FALL",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 8,
+    "round": 1,
+    "type": "text",
+    "prompt": "Find the common word for: BOOK, WATER, TRADE",
+    "words": [
+      "BOOK",
+      "WATER",
+      "TRADE"
+    ],
+    "answer": "MARK",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 9,
+    "round": 1,
+    "type": "text",
+    "prompt": "Find the common word for: FOOT, BASE, BASKET",
+    "words": [
+      "FOOT",
+      "BASE",
+      "BASKET"
+    ],
+    "answer": "BALL",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 10,
+    "round": 2,
+    "type": "text",
+    "prompt": "Find the common word for: FLOWER, LIGHT, RISE",
+    "words": [
+      "FLOWER",
+      "LIGHT",
+      "RISE"
+    ],
+    "answer": "SUNRISE",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 11,
+    "round": 2,
+    "type": "text",
+    "prompt": "Find the common word for: DUST, LIGHT, FISH",
+    "words": [
+      "DUST",
+      "LIGHT",
+      "FISH"
+    ],
+    "answer": "STAR",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 12,
+    "round": 2,
+    "type": "text",
+    "prompt": "Find the common word for: ACT, VIEW, CHANGE",
+    "words": [
+      "ACT",
+      "VIEW",
+      "CHANGE"
+    ],
+    "answer": "INTER",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 13,
+    "round": 2,
+    "type": "text",
+    "prompt": "Find the common word for: FLY, WORKS, PLACE",
+    "words": [
+      "FLY",
+      "WORKS",
+      "PLACE"
+    ],
+    "answer": "FIRE",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 14,
+    "round": 2,
+    "type": "text",
+    "prompt": "Find the common word for: BAG, SHAKE, BOOK",
+    "words": [
+      "BAG",
+      "SHAKE",
+      "BOOK"
+    ],
+    "answer": "HAND",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 15,
+    "round": 2,
+    "type": "text",
+    "prompt": "Find the common word for: BOW, DROP, COAT",
+    "words": [
+      "BOW",
+      "DROP",
+      "COAT"
+    ],
+    "answer": "RAIN",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 16,
+    "round": 2,
+    "type": "text",
+    "prompt": "Find the common word for: BEARER, CAKE, BOARD",
+    "words": [
+      "BEARER",
+      "CAKE",
+      "BOARD"
+    ],
+    "answer": "CUP",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 17,
+    "round": 2,
+    "type": "text",
+    "prompt": "Find the common word for: BALL, STORM, MAN",
+    "words": [
+      "BALL",
+      "STORM",
+      "MAN"
+    ],
+    "answer": "SNOW",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 18,
+    "round": 2,
+    "type": "text",
+    "prompt": "Find the common word for: MADE, TOWN, SICK",
+    "words": [
+      "MADE",
+      "TOWN",
+      "SICK"
+    ],
+    "answer": "HOME",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 19,
+    "round": 3,
+    "type": "text",
+    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "words": [],
+    "answer": "COUNTRY",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 20,
+    "round": 3,
+    "type": "text",
+    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "words": [],
+    "answer": "POETRY",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 21,
+    "round": 3,
+    "type": "text",
+    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "words": [],
+    "answer": "POULTRY",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 22,
+    "round": 3,
+    "type": "text",
+    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "words": [],
+    "answer": "PANTRY",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 23,
+    "round": 3,
+    "type": "text",
+    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "words": [],
+    "answer": "INDUSTRY",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 24,
+    "round": 3,
+    "type": "text",
+    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "words": [],
+    "answer": "CHEMISTRY",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 25,
+    "round": 3,
+    "type": "text",
+    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "words": [],
+    "answer": "GEOMETRY",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 26,
+    "round": 3,
+    "type": "text",
+    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "words": [],
+    "answer": "DENTISTRY",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 27,
+    "round": 3,
+    "type": "text",
+    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "words": [],
+    "answer": "MINISTRY",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 28,
+    "round": 4,
+    "type": "text",
+    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "words": [],
+    "answer": "SEAL",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 29,
+    "round": 4,
+    "type": "text",
+    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "words": [],
+    "answer": "RULER",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 30,
+    "round": 4,
+    "type": "text",
+    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "words": [],
+    "answer": "FINE",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 31,
+    "round": 4,
+    "type": "text",
+    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "words": [],
+    "answer": "WELL",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 32,
+    "round": 4,
+    "type": "text",
+    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "words": [],
+    "answer": "STAMP",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 33,
+    "round": 4,
+    "type": "text",
+    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "words": [],
+    "answer": "FAIR",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 34,
+    "round": 4,
+    "type": "text",
+    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "words": [],
+    "answer": "CLUB",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 35,
+    "round": 4,
+    "type": "text",
+    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "words": [],
+    "answer": "PITCH",
+    "seconds": 30,
+    "choices": []
+  },
+  {
+    "id": 36,
+    "round": 4,
+    "type": "text",
+    "prompt": "Question prompt unavailable in imported PowerPoint. Edit before playing.",
+    "words": [],
+    "answer": "PALM",
+    "seconds": 30,
+    "choices": []
+  }
+]
