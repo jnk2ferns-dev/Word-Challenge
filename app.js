@@ -5,11 +5,30 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 function setView(v){view=v;history.replaceState(null,'','?view='+v);render()}
 async function api(b){const r=await fetch('/api',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});const j=await r.json();if(!r.ok)throw Error(j.error||'Request failed');return j}
 async function host(op,extra={}){unlockAudio();try{await api({op,hostKey,...extra})}catch(e){alert(e.message);if(e.message==='Incorrect host key'){sessionStorage.removeItem('qm_host');hostKey='';render()}}}
-let audioContext=null,soundEnabled=false,lastTickKey='',suspenseTimer=null,correctSound=null;
+let audioContext=null,soundEnabled=false,lastTickKey='',suspenseTimer=null,correctSound=null,victorySound=null,victoryPlayedFor=null;
 fetch('/correct-answer.b64').then(r=>r.ok?r.text():Promise.reject(Error('Missing sound file'))).then(b64=>{correctSound=new Audio('data:audio/mpeg;base64,'+b64.trim());correctSound.preload='auto';correctSound.volume=.9}).catch(e=>console.warn('Unable to load uploaded audio:',e));
-function unlockAudio(){try{audioContext=audioContext||new(window.AudioContext||window.webkitAudioContext)();const p=audioContext.resume();if(p?.catch)p.catch(()=>{});soundEnabled=true;return true}catch(e){return false}}
+function unlockAudio(){try{audioContext=audioContext||new(window.AudioContext||window.webkitAudioContext)();const p=audioContext.resume();if(p?.catch)p.catch(()=>{});soundEnabled=true;loadVictoryAudio();return true}catch(e){return false}}
 function enableSound(){if(!unlockAudio()){alert('Sound unavailable on this device');return}playCorrectAnswer();render();if(state?.phase==='question')startSuspense()}
 function note(freq,t,dur,gain=.035,type='sine'){if(!soundEnabled||!audioContext||audioContext.state!=='running')return;const c=audioContext,o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(gain,t+.015);g.gain.setValueAtTime(gain,t+Math.max(.03,dur-.06));g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g).connect(c.destination);o.start(t);o.stop(t+dur+.01)}
+let victoryAudioPromise=null;
+function loadVictoryAudio(){
+ if(victoryAudioPromise)return victoryAudioPromise;
+ victoryAudioPromise=fetch('/final-victory.b64',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Victory fanfare resource missing');return r.text()}).then(encoded=>{
+  victorySound=new Audio('data:audio/ogg;codecs=opus;base64,'+encoded.trim());
+  victorySound.preload='auto';victorySound.loop=false;victorySound.volume=.9;
+  return victorySound;
+ }).catch(e=>{console.warn('Could not load victory sound',e);return null});
+ return victoryAudioPromise;
+}
+async function playVictoryOnce(){
+ if(!soundEnabled||!state||state.phase!=='finished')return;
+ const key=state.pin+':'+state.total;
+ if(victoryPlayedFor===key)return;
+ victoryPlayedFor=key;
+ stopSuspense();
+ if(correctSound){correctSound.pause();correctSound.currentTime=0}
+ try{const audio=await loadVictoryAudio();if(!audio)return;audio.loop=false;audio.pause();audio.currentTime=0;await audio.play()}catch(e){console.warn('Victory sound blocked on this device',e)}
+}
 function playCorrectAnswer(){if(!soundEnabled)return;try{if(correctSound){correctSound.pause();correctSound.currentTime=0;correctSound.play().catch(e=>console.warn('Correct answer audio blocked:',e))}else if(audioContext){const t=audioContext.currentTime;[523,659,784,1047].forEach((f,i)=>note(f,t+i*.13,.24,.08))}}catch(e){console.warn(e)}}
 function playTick(sec){if(!soundEnabled||!audioContext)return;note(sec<=3?940:690,audioContext.currentTime+.01,sec===1?.2:.095,sec<=3?.08:.045)}
 function suspensePulse(){if(state?.phase!=='question'||!state.endsAt||Date.now()>=state.endsAt){stopSuspense();return}const remain=Math.ceil((state.endsAt-Date.now())/1000);if(remain<=10)return;if(!soundEnabled||!audioContext)return;const t=audioContext.currentTime+.01;note(164.8,t,.32,.012,'sine');note(196,t+.28,.25,.012,'triangle');note(220,t+.59,.22,.01,'sine')}
@@ -101,5 +120,5 @@ async function join(){unlockAudio();try{const r=await api({op:'join',name:docume
 async function submitAnswer(){unlockAudio();if(!selected.trim())return alert('Enter or select an answer');try{await api({op:'answer',id:playerId,token:playerToken,answer:selected});submittedFor=state.index;render()}catch(e){alert(e.message)}}
 function render(){if(!state)return;el.innerHTML='<div class="view-'+view+'">'+soundControl()+(view==='host'?hostView():view==='screen'?screen():playerView())+'</div>';document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));fitQuestionText();tick()}
 function tick(){if(!state?.endsAt||state.phase!=='question')return;if(Date.now()>=state.endsAt){stopSuspense();return;}const secs=Math.max(0,Math.ceil((state.endsAt-Date.now())/1000)),n=document.getElementById('clock');if(n)n.textContent=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0');const key=state.index+':'+secs;if(secs>=1&&key!==lastTickKey){lastTickKey=key;if(secs<=10)playTick(secs)}}
-const connection=new EventSource('/events');connection.onerror=()=>{if(!state)el.innerHTML='<div class="panel center"><h2>Reconnecting to quiz...</h2><p>Check the internet connection or refresh the page.</p></div>'};connection.onmessage=e=>{const old=state;state=JSON.parse(e.data);if(old?.phase==='question'&&state.phase!=='question')stopSuspense();if(old?.phase==='question'&&state.phase==='results'&&lastResult!==state.index){lastResult=state.index;playCorrectAnswer()}if(old?.index!==state.index){selected='';submittedFor=-1}const preserveTyping=view==='player'&&old?.phase==='question'&&state.phase==='question'&&old.index===state.index&&document.activeElement?.id==='textanswer';if(!preserveTyping)render();else tick();if(state.phase==='question')startSuspense()};
+const connection=new EventSource('/events');connection.onerror=()=>{if(!state)el.innerHTML='<div class="panel center"><h2>Reconnecting to quiz...</h2><p>Check the internet connection or refresh the page.</p></div>'};connection.onmessage=e=>{const old=state;state=JSON.parse(e.data);if(old?.phase==='question'&&state.phase!=='question')stopSuspense();if(old?.phase==='question'&&state.phase==='results'&&lastResult!==state.index){lastResult=state.index;playCorrectAnswer()}if(old&&old.phase!=='finished'&&state.phase==='finished'){playVictoryOnce()}if(old?.index!==state.index){selected='';submittedFor=-1}const preserveTyping=view==='player'&&old?.phase==='question'&&state.phase==='question'&&old.index===state.index&&document.activeElement?.id==='textanswer';if(!preserveTyping)render();else tick();if(state.phase==='question')startSuspense()};
 setInterval(tick,250);
