@@ -19,7 +19,7 @@ h1,h2,h3{text-align:center}input,select{width:100%;border:1px solid #c5c9ca;bord
 .ppt-question{display:contents}.question-track{display:contents}
 /* Section title centred both horizontally and vertically. */
 .opening-stage::before{display:none}
-.title-hex{position:absolute;left:20.45%;top:39.5%;width:59.1%;height:21%;background:#ef752e;clip-path:none;display:flex;align-items:center;justify-content:center;padding:0}
+.title-hex{position:absolute;left:20.45%;top:39.5%;width:59.1%;height:21%;background:transparent;clip-path:none;display:flex;align-items:center;justify-content:center;padding:0}
 .title-hex::before{content:"";position:absolute;inset:0;background:#ef752e;clip-path:polygon(10% 0,90% 0,100% 50%,90% 100%,10% 100%,0 50%)}
 .title-hex span{font-size:clamp(24px,4.8vw,59px);font-weight:400;line-height:1;white-space:nowrap;color:#111;position:relative;z-index:2;text-align:center}
 .join-pin{position:absolute;bottom:3%;width:100%;text-align:center;font-size:clamp(12px,1.7vw,22px);color:#f1d292;font-weight:bold}
