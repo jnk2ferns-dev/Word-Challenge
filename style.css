@@ -91,3 +91,13 @@ h1,h2,h3{text-align:center}input,select{width:100%;border:1px solid #c5c9ca;bord
 .mobile-scores{display:flex;justify-content:space-around;gap:12px;margin:18px 0}.mobile-scores span{background:#e7efec;color:#284d42;padding:12px;border-radius:8px;flex:1;font-weight:bold}
 @media(max-width:780px){.players,.choices{grid-template-columns:1fr}.ppt-stage .ribbon-caption span:first-child{font-size:clamp(13px,2.4vw,20px)}.ppt-stage .ribbon-caption span:last-child{font-size:clamp(10px,1.8vw,16px)}.ppt-score small{display:none}.ppt-score{padding:2px 5px}.ppt-fast{font-size:clamp(10px,1.4vw,15px)}.ppt-hex{font-size:clamp(11px,2.5vw,19px)}.title-hex span{font-size:clamp(18px,4vw,35px)}}
 @media(prefers-reduced-motion:reduce){.confetti i{animation:none;display:none}}
+
+/* Congratulations: winning team title followed immediately by comma-separated names. */
+.finale-stage{padding:19% 5% 10%;gap:12px;justify-content:center}
+.finale-stage .ppt-final{font-size:clamp(23px,4vw,48px);line-height:1.1;margin:0;z-index:3}
+.winning-members{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;width:90%;margin:2% auto}
+.winner-team{text-align:center;width:100%;display:flex;flex-direction:column;gap:7px;align-items:center;justify-content:center}
+.winner-team-name{font-size:clamp(18px,2.2vw,28px);font-weight:800;color:#ffd766}
+.winner-member-names{max-width:100%;font-size:clamp(16px,2.1vw,27px);font-weight:600;line-height:1.3;color:white;overflow-wrap:break-word;text-align:center}
+.finale-stage .ppt-scores{position:relative!important;bottom:auto!important;left:auto!important;width:78%;height:50px;flex-shrink:0}
+@media(max-width:760px){.finale-stage{padding-top:24%;padding-bottom:8%}.winning-members{gap:7px}.winner-member-names{font-size:clamp(12px,2.4vw,20px)}}
