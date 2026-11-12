@@ -13,8 +13,53 @@ function note(freq,t,dur,gain=.035,type='sine'){if(!soundEnabled||!audioContext|
 function playCorrectAnswer(){if(!soundEnabled)return;try{if(correctSound){correctSound.pause();correctSound.currentTime=0;correctSound.play().catch(e=>console.warn('Correct answer audio blocked:',e))}else if(audioContext){const t=audioContext.currentTime;[523,659,784,1047].forEach((f,i)=>note(f,t+i*.13,.24,.08))}}catch(e){console.warn(e)}}
 function playTick(sec){if(!soundEnabled||!audioContext)return;note(sec<=3?940:690,audioContext.currentTime+.01,sec===1?.2:.095,sec<=3?.08:.045)}
 function suspensePulse(){if(state?.phase!=='question'||!state.endsAt||Date.now()>=state.endsAt){stopSuspense();return}const remain=Math.ceil((state.endsAt-Date.now())/1000);if(remain<=10)return;if(!soundEnabled||!audioContext)return;const t=audioContext.currentTime+.01;note(164.8,t,.32,.012,'sine');note(196,t+.28,.25,.012,'triangle');note(220,t+.59,.22,.01,'sine')}
-function stopSuspense(){if(suspenseTimer!==null){clearInterval(suspenseTimer);suspenseTimer=null}}
-function startSuspense(){if(!soundEnabled||state?.phase!=='question'||Date.now()>=state.endsAt||suspenseTimer!==null)return;suspensePulse();suspenseTimer=setInterval(suspensePulse,1080)}
+// Seamless soundtrack playback: overlapping buffer instances with short cross-fades.
+let suspenseAudioBuffer=null,suspenseLoadPromise=null,suspenseMix=null,suspenseSources=[],suspenseNextAt=0,suspenseSequence=null;
+function loadSuspenseAudio(){
+ if(suspenseLoadPromise)return suspenseLoadPromise;
+ suspenseLoadPromise=fetch('/suspense-audio.mp3').then(r=>{if(!r.ok)throw Error('Custom soundtrack not yet uploaded');return r.arrayBuffer()}).then(b=>audioContext.decodeAudioData(b)).then(b=>{suspenseAudioBuffer=b;return b}).catch(()=>null);
+ return suspenseLoadPromise;
+}
+function scheduleSoundtrack(){
+ if(!suspenseAudioBuffer||!suspenseMix||!audioContext||state?.phase!=='question')return;
+ const ctx=audioContext,overlap=Math.min(.16,suspenseAudioBuffer.duration/8);
+ const step=suspenseAudioBuffer.duration-overlap;
+ if(step<=0)return;
+ while(suspenseNextAt<ctx.currentTime+.6){
+   const remaining=(state.endsAt-Date.now())/1000+(suspenseNextAt-ctx.currentTime);
+   if(remaining<=0)break;
+   const start=suspenseNextAt;
+   const clip=ctx.createBufferSource(),gain=ctx.createGain();
+   clip.buffer=suspenseAudioBuffer;clip.connect(gain).connect(suspenseMix);
+   gain.gain.setValueAtTime(.0001,start);
+   gain.gain.linearRampToValueAtTime(.31,start+overlap);
+   gain.gain.setValueAtTime(.31,start+Math.max(overlap,suspenseAudioBuffer.duration-overlap));
+   gain.gain.linearRampToValueAtTime(.0001,start+suspenseAudioBuffer.duration);
+   clip.start(start);clip.stop(start+suspenseAudioBuffer.duration);
+   suspenseSources.push(clip);
+   clip.onended=()=>{suspenseSources=suspenseSources.filter(x=>x!==clip)};
+   suspenseNextAt+=step;
+ }
+}
+function stopSuspense(){
+ if(suspenseTimer!==null){clearInterval(suspenseTimer);suspenseTimer=null}
+ if(suspenseMix&&audioContext){const t=audioContext.currentTime;try{suspenseMix.gain.cancelScheduledValues(t);suspenseMix.gain.setValueAtTime(suspenseMix.gain.value,t);suspenseMix.gain.linearRampToValueAtTime(0,t+.13)}catch{}}
+ for(const src of suspenseSources){try{src.stop((audioContext?.currentTime||0)+.15)}catch{}}suspenseSources=[];
+ suspenseMix=null;suspenseSequence=null;
+}
+async function startSuspense(){
+ if(!soundEnabled||state?.phase!=='question'||Date.now()>=state.endsAt)return;
+ const sequence=state.index+':'+state.started;
+ if(suspenseSequence===sequence&&suspenseTimer!==null)return;
+ stopSuspense();suspenseSequence=sequence;
+ const buffer=await loadSuspenseAudio();
+ if(state?.phase!=='question'||Date.now()>=state.endsAt||!soundEnabled||suspenseSequence!==sequence)return;
+ if(!buffer){suspensePulse();suspenseTimer=setInterval(suspensePulse,1080);return}
+ suspenseMix=audioContext.createGain();suspenseMix.gain.value=1;suspenseMix.connect(audioContext.destination);
+ suspenseNextAt=audioContext.currentTime+.04;
+ scheduleSoundtrack();
+ suspenseTimer=setInterval(()=>{if(state?.phase!=='question'||Date.now()>=state.endsAt)stopSuspense();else scheduleSoundtrack()},140);
+}
 function soundControl(){return !soundEnabled?'<button class="soundbutton" onclick="enableSound()">🔊 Enable quiz sounds (tap once)</button>':'<button class="soundbutton sound-on" onclick="playCorrectAnswer()">🔊 Test correct-answer sound</button>'}
 function animatedBorder(){return '<svg class="travel-outline" viewBox="0 0 1000 240" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><path id="travelPath" d="M105 4 H895 L992 120 L895 236 H105 L8 120 Z"/><filter id="shineBlur"><feGaussianBlur stdDeviation="7"/></filter></defs><use href="#travelPath" fill="none" stroke="#fff" stroke-width="4"/><circle r="14" fill="white" opacity=".8" filter="url(#shineBlur)"><animateMotion dur="5s" repeatCount="indefinite"><mpath href="#travelPath"/></animateMotion></circle><circle r="5" fill="#fff"><animateMotion dur="5s" repeatCount="indefinite"><mpath href="#travelPath"/></animateMotion></circle></svg>'}
 function questionFontSize(prompt){const len=String(prompt||'').length;return len>185?19:len>145?21:len>110?23:len>82?25:29}
