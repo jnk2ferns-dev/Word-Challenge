@@ -35,7 +35,7 @@ h1,h2,h3{text-align:center}input,select{width:100%;border:1px solid #c5c9ca;bord
 .ppt-prompt{position:absolute;z-index:2;top:23.5%;left:17.5%;width:65%;height:23%;min-height:0;max-height:none;padding:0!important;display:flex;align-items:center;justify-content:center;text-align:center;border:0;clip-path:none;background:transparent!important}
 .ppt-prompt::before{content:"";position:absolute;inset:0;clip-path:polygon(10% 0,90% 0,100% 50%,90% 100%,10% 100%,0 50%);background:#08715d;z-index:0}
 .question-copy{position:relative;z-index:2;display:block;max-width:76%;width:76%;margin:0;font-size:26px;line-height:1.14;text-align:center;font-weight:400;color:white;overflow-wrap:normal;word-break:normal}
-.travel-outline{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;overflow:visible;filter:drop-shadow(0 0 3px #fff8)}
+.travel-outline{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;overflow:visible;filter:none!important;box-shadow:none!important;stroke:none}
 /* Three answer-word shapes only for challenges 1 and 2. */
 .ppt-words{position:absolute;top:49%;left:3%;width:94%;height:16.5%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3%;margin:0;padding:0}
 .ppt-hex{display:flex;align-items:center;justify-content:center;background:#08715d;clip-path:polygon(16% 0,84% 0,100% 50%,84% 100%,16% 100%,0 50%);font-size:clamp(15px,2.9vw,34px);font-weight:400;white-space:nowrap;padding:5px 10px;text-align:center;border:0}
@@ -101,3 +101,7 @@ h1,h2,h3{text-align:center}input,select{width:100%;border:1px solid #c5c9ca;bord
 .winner-member-names{max-width:100%;font-size:clamp(16px,2.1vw,27px);font-weight:600;line-height:1.3;color:white;overflow-wrap:break-word;text-align:center}
 .finale-stage .ppt-scores{position:relative!important;bottom:auto!important;left:auto!important;width:78%;height:50px;flex-shrink:0}
 @media(max-width:760px){.finale-stage{padding-top:24%;padding-bottom:8%}.winning-members{gap:7px}.winner-member-names{font-size:clamp(12px,2.4vw,20px)}}
+
+/* Clean polygon edges: no blurred duplicate outline or point shadows. */
+.ppt-prompt,.title-hex,.ppt-prompt::before,.title-hex::before{filter:none!important;box-shadow:none!important;text-shadow:none!important}
+.ppt-prompt .travel-outline,.title-hex .travel-outline{filter:none!important;box-shadow:none!important}
