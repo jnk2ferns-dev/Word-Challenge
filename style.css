@@ -170,3 +170,110 @@ h1,h2,h3{text-align:center}input,select{width:100%;border:1px solid #c5c9ca;bord
  .host-reset{margin-left:0}
  .host-timer-control{margin-right:0}
 }
+
+/* Shared final congratulations slide: member names and final team scores. */
+.finale-stage{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  align-items:center!important;
+  padding:0!important;
+  gap:0!important;
+}
+.finale-stage .ppt-ribbon{top:2%!important}
+.finale-stage .ppt-final{
+  position:absolute!important;
+  left:5%!important;
+  right:5%!important;
+  top:26%!important;
+  width:90%!important;
+  margin:0!important;
+  z-index:3!important;
+  font-size:clamp(20px,3.2vw,43px)!important;
+  line-height:1.17!important;
+  text-align:center!important;
+}
+.finale-stage .winning-members{
+  position:absolute!important;
+  left:8%!important;
+  top:43%!important;
+  width:84%!important;
+  height:27%!important;
+  min-height:0!important;
+  margin:0!important;
+  overflow:auto!important;
+  z-index:3!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:7px!important;
+}
+.finale-stage .winner-team{gap:4px!important}
+.finale-stage .winner-team-name{font-size:clamp(16px,2.1vw,27px)!important}
+.finale-stage .winner-member-names{font-size:clamp(14px,1.8vw,24px)!important;line-height:1.23!important}
+.final-tally{
+  position:absolute;
+  bottom:5%;
+  left:16%;
+  width:68%;
+  height:22%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:stretch;
+  gap:7px;
+  z-index:4;
+}
+.final-tally-title{text-align:center;font-weight:800;letter-spacing:1.4px;color:#ffdc84;font-size:clamp(13px,1.55vw,21px)}
+.final-tally-grid{display:grid;grid-template-columns:1fr 1fr;gap:8%;height:68%}
+.final-tally-team{display:flex;justify-content:space-around;align-items:center;gap:6px;border-radius:10px;border:1px solid #ffffff99;padding:7px 12px;min-width:0}
+.final-tally-team span{font-size:clamp(13px,1.8vw,23px);font-weight:800}
+.final-tally-team strong{font-size:clamp(22px,3.2vw,44px);color:#ffe57e}
+.final-tally-team small{font-size:clamp(10px,1.25vw,15px)}
+.final-tally-team.final-a{background:#1744bc}
+.final-tally-team.final-b{background:#c72b2b}
+/* The same celebratory slide is presented on participant phones, with a
+   vertical arrangement and a scrollable name section when a team is large. */
+.view-player .player-finale{width:100%;padding:0;margin:0}
+.view-player .finale-stage{
+  aspect-ratio:auto!important;
+  min-height:min(700px,calc(100dvh - 125px))!important;
+  height:auto!important;
+  padding:102px 14px 20px!important;
+  overflow:visible!important;
+  gap:18px!important;
+}
+.view-player .finale-stage .ppt-ribbon{top:12px!important;height:87px!important}
+.view-player .finale-stage .ppt-final,
+.view-player .finale-stage .winning-members,
+.view-player .finale-stage .final-tally{
+  position:relative!important;
+  left:auto!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:auto!important;
+  width:100%!important;
+  height:auto!important;
+}
+.view-player .finale-stage .ppt-final{font-size:clamp(20px,5.2vw,31px)!important}
+.view-player .finale-stage .winning-members{
+  max-height:45dvh!important;
+  min-height:85px!important;
+  overflow-y:auto!important;
+  gap:12px!important;
+  padding:0 8px!important;
+}
+.view-player .finale-stage .winner-team-name{font-size:clamp(18px,4.5vw,25px)!important}
+.view-player .finale-stage .winner-member-names{font-size:clamp(15px,3.9vw,21px)!important;line-height:1.34!important}
+.view-player .final-tally{margin-top:auto;gap:12px!important;padding:0 5px}
+.view-player .final-tally-title{font-size:17px!important}
+.view-player .final-tally-grid{gap:10px!important}
+.view-player .final-tally-team{padding:10px 8px!important;flex-direction:column;gap:4px}
+.view-player .final-tally-team span{font-size:15px!important}
+.view-player .final-tally-team strong{font-size:31px!important}
+@media(max-width:680px){
+ .view-screen .finale-stage .ppt-final{font-size:clamp(16px,3.5vw,25px)!important}
+ .view-screen .finale-stage .winner-member-names{font-size:clamp(12px,2.5vw,17px)!important}
+ .view-screen .final-tally{bottom:2%!important;height:23%!important;left:8%!important;width:84%!important}
+ .view-screen .final-tally-team{padding:3px!important}
+ .view-screen .final-tally-team small{display:none}
+}
