@@ -4,8 +4,8 @@ const PORT=Number(process.env.PORT||3000);
 const HOST_KEY=process.env.HOST_KEY;
 if(!HOST_KEY||HOST_KEY.length<20){console.error('HOST_KEY must be set to a secure 20+ character secret');process.exit(1)}
 const allQuestions=JSON.parse(fs.readFileSync(path.join(__dirname,'questions.json'),'utf8'));
-// Test edition: retain all 36 original questions in source, play two from each section.
-const questions=allQuestions.filter((q,i)=>allQuestions.filter(x=>x.round===q.round&&x.id<=q.id).length<=2);
+// Full edition: all nine questions in each of the four Word Challenge categories.
+const questions=allQuestions;
 const state={pin:String(crypto.randomInt(100000,1000000)),phase:'lobby',index:0,started:0,endsAt:null,duration:30,players:{},responses:{},scores:{A:0,B:0},results:null};
 const clients=new Set();
 // Configured for large quiz events. This is a registration ceiling, not a guaranteed concurrent capacity.
