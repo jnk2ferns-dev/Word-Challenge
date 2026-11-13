@@ -23,6 +23,27 @@ function action(req,res,data){let b;try{b=JSON.parse(data||'{}')}catch{return se
 if(b.op==='join'){const name=String(b.name||'').trim().slice(0,50),phone=String(b.phone||'').replace(/\D/g,'');if(!name||phone.length<7||phone.length>15||String(b.pin)!==state.pin)return send(res,400,{error:'Enter name, valid phone and game PIN'});if(state.phase!=='lobby')return send(res,409,{error:'Registration closed'});if(Object.values(state.players).some(p=>p.phone===phone))return send(res,409,{error:'Mobile number already registered'});if(Object.keys(state.players).length>=MAX_PLAYERS)return send(res,409,{error:'Registration is full ('+MAX_PLAYERS+' players)'});const id=crypto.randomUUID(),token=crypto.randomBytes(24).toString('hex');state.players[id]={id,token,name,phone,team:null};push();return send(res,200,{id,token})}
 if(b.op==='answer'){const p=state.players[b.id];if(!p||p.token!==b.token||!p.team)return send(res,403,{error:'Invalid participant registration'});if(state.phase!=='question'||Date.now()>=state.endsAt)return send(res,409,{error:'Question closed'});if(state.responses[b.id])return send(res,409,{error:'Already answered'});const q=questions[state.index],answer=String(b.answer||'');if(q.type==='choice'&&!q.choices?.includes(answer))return send(res,400,{error:'Select an answer'});if(q.type!=='choice'&&!/^[a-zA-Z ]{1,75}$/.test(answer))return send(res,400,{error:'Letters and spaces only, max 75 characters'});state.responses[b.id]={answer,at:Date.now()};push();return send(res,200,{ok:true})}
 if(b.hostKey!==HOST_KEY)return send(res,403,{error:'Incorrect host key'});
+if(testMode&&b.op==='demoPlayers'){
+ if(state.phase!=='lobby')return send(res,409,{error:'Reset the test before creating sample players'});
+ // No registration required on other devices. Only modifies the isolated test session.
+ state.players={};state.responses={};state.scores={A:0,B:0};state.results=null;
+ for(const [name,team] of [['Test Player A','A'],['Test Player B','B']]){
+  const id=crypto.randomUUID();
+  state.players[id]={id,token:crypto.randomBytes(24).toString('hex'),name,phone:'demo-'+team,team,demo:true};
+ }
+ pushNow();return send(res,200,{ok:true});
+}
+if(testMode&&b.op==='demoAnswer'){
+ if(state.phase!=='question')return send(res,409,{error:'Show the question before submitting a test answer'});
+ if(Date.now()>=state.endsAt)return send(res,409,{error:'Question timer ended'});
+ const team=String(b.team||'').toUpperCase();
+ if(!['A','B'].includes(team))return send(res,400,{error:'Choose Team A or B'});
+ const player=Object.values(state.players).find(p=>p.team===team&&p.demo);
+ if(!player)return send(res,409,{error:'Create the two sample players first'});
+ if(state.responses[player.id])return send(res,409,{error:'This test player has already answered'});
+ state.responses[player.id]={answer:String(b.correct===false?'WRONG':questions[state.index].answer),at:Date.now()};
+ pushNow();return send(res,200,{ok:true});
+}
 if(b.op==='team'){if(state.phase!=='lobby')return send(res,409,{error:'Assign teams before the game'});if(!state.players[b.id]||!['A','B'].includes(b.team))return send(res,400,{error:'Invalid team'});state.players[b.id].team=b.team}
 else if(b.op==='duration'){if(!['lobby','section','results'].includes(state.phase))return send(res,409,{error:'Change timer before starting a question'});const v=Number(b.seconds);if(!Number.isInteger(v)||v<5||v>300)return send(res,400,{error:'Choose 5–300 seconds'});state.duration=v}
 else if(b.op==='start'||b.op==='next'){if((b.op==='start'&&state.phase!=='lobby')||(b.op==='next'&&!['results','section'].includes(state.phase)))return send(res,409,{error:'Not ready'});if(b.op==='start'&&(!Object.keys(state.players).length||Object.values(state.players).some(p=>!p.team)||(testMode&&Object.keys(state.players).length!==2)))return send(res,409,{error:'Register both test players and assign each to a team'});if(b.op==='start'){state.phase='section';state.endsAt=null;state.responses={};state.results=null}else{if(state.phase==='results')state.index++;if(state.index>=questions.length){state.phase='finished';state.index=questions.length-1;state.results=null}else if(state.index>0&&questions[state.index].round!==questions[state.index-1].round&&state.phase==='results'){state.phase='section';state.results=null;state.endsAt=null}else{state.phase='question';state.responses={};state.results=null;state.started=Date.now();state.endsAt=state.started+state.duration*1000}}}
