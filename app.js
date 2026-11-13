@@ -110,7 +110,7 @@ function animateGlow(timestamp){
  }
  glowFrame=requestAnimationFrame(animateGlow);
 }
-function startGlow(){if(!glowFrame&&typeof requestAnimationFrame==='function')glowFrame=requestAnimationFrame(animateGlow)}
+function startGlow(){if(view==='screen'&&!glowFrame&&typeof requestAnimationFrame==='function')glowFrame=requestAnimationFrame(animateGlow)}
 function questionFontSize(prompt){const len=String(prompt||'').length;return len>185?19:len>145?21:len>110?23:len>82?25:29}
 function fitQuestionText(){document.querySelectorAll('.question-copy').forEach(n=>{const holder=n.closest('.ppt-prompt');if(!holder)return;let size=questionFontSize(n.textContent),maxHeight=holder.clientHeight-18;n.style.fontSize=size+'px';while(size>17&&n.scrollHeight>maxHeight){size--;n.style.fontSize=size+'px'}})}
 function fitHostQuestion(){document.querySelectorAll('[data-fit-host]').forEach(n=>{let size=48;n.style.fontSize=size+'px';const parent=n.closest('.host-content');const allowance=parent?Math.max(105,parent.clientHeight*.52):280;while(size>22&&(n.scrollHeight>allowance||n.scrollWidth>n.clientWidth+2)){size-=2;n.style.fontSize=size+'px'}})}
