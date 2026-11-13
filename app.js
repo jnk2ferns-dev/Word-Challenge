@@ -120,7 +120,7 @@ function fitQuestionText(){document.querySelectorAll('.question-copy').forEach(n
  const holder=n.closest('.ppt-prompt');if(!holder)return;
  const enlarged=testMode&&view==='screen'&&state?.question?.id===30;
  let size=questionFontSize(n.textContent)+(enlarged?8:0);
- const floor=enlarged?25:17;
+ const floor=17;
  const maxHeight=holder.clientHeight-12;
  n.style.fontSize=size+'px';
  while(size>floor&&(n.scrollHeight>maxHeight||n.scrollWidth>n.clientWidth+2)){size--;n.style.fontSize=size+'px'}
