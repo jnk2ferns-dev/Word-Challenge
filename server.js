@@ -20,9 +20,37 @@ function push(){if(pendingBroadcast!==null)return;pendingBroadcast=setTimeout(()
 function pushNow(){if(pendingBroadcast!==null){clearTimeout(pendingBroadcast);pendingBroadcast=null}const data='data: '+JSON.stringify(snapshot())+'\n\n';for(const client of clients){try{client.write(data)}catch{clients.delete(client)}}}
 function finish(){if(state.phase!=='question')return;const q=questions[state.index],round={A:0,B:0};let fast=null;for(const [id,r] of Object.entries(state.responses)){const p=state.players[id];if(!p?.team)continue;if(normal(r.answer)===normal(q.answer)){round[p.team]++;if(!fast||r.at<fast.at)fast={name:p.name,team:p.team,seconds:Math.max(0,Math.round((r.at-state.started)/100)/10),at:r.at}}}state.scores.A+=round.A;state.scores.B+=round.B;state.results={round,fast,roundWinner:round.A===round.B?'draw':round.A>round.B?'A':'B',correct:q.answer,completed:q.completed||[]};state.phase='results';state.endsAt=null;pushNow()}
 function action(req,res,data){let b;try{b=JSON.parse(data||'{}')}catch{return send(res,400,{error:'Invalid JSON'})}
-if(b.op==='join'){const name=String(b.name||'').trim().slice(0,50),phone=String(b.phone||'').replace(/\D/g,'');if(!name||phone.length<7||phone.length>15||String(b.pin)!==state.pin)return send(res,400,{error:'Enter name, valid phone and game PIN'});if(state.phase!=='lobby')return send(res,409,{error:'Registration closed'});if(Object.values(state.players).some(p=>p.phone===phone))return send(res,409,{error:'Mobile number already registered'});if(Object.keys(state.players).length>=MAX_PLAYERS)return send(res,409,{error:'Registration is full ('+MAX_PLAYERS+' players)'});const id=crypto.randomUUID(),token=crypto.randomBytes(24).toString('hex');state.players[id]={id,token,name,phone,team:null};push();return send(res,200,{id,token})}
+if(b.op==='join'){
+ const name=String(b.name||'').trim().slice(0,50),phone=String(b.phone||'').replace(/\D/g,'');
+ if(testMode){
+  if(String(b.pin)!==state.pin||!name)return send(res,400,{error:'Enter your assigned player name and game PIN'});
+  if(!['lobby','section','question'].includes(state.phase))return send(res,409,{error:'This test has ended'});
+  const player=Object.values(state.players).find(p=>normal(p.name)===normal(name)&&p.manual);
+  if(!player)return send(res,404,{error:'Ask the host to add your name before joining'});
+  if(player.claimed)return send(res,409,{error:'This player is already connected on another device'});
+  player.claimed=true;player.token=crypto.randomBytes(24).toString('hex');player.phone=phone||'test-device';
+  pushNow();return send(res,200,{id:player.id,token:player.token});
+ }
+ if(!name||phone.length<7||phone.length>15||String(b.pin)!==state.pin)return send(res,400,{error:'Enter name, valid phone and game PIN'});
+ if(state.phase!=='lobby')return send(res,409,{error:'Registration closed'});
+ if(Object.values(state.players).some(p=>p.phone===phone))return send(res,409,{error:'Mobile number already registered'});
+ if(Object.keys(state.players).length>=MAX_PLAYERS)return send(res,409,{error:'Registration is full ('+MAX_PLAYERS+' players)'});
+ const id=crypto.randomUUID(),token=crypto.randomBytes(24).toString('hex');
+ state.players[id]={id,token,name,phone,team:null};push();return send(res,200,{id,token});
+}
 if(b.op==='answer'){const p=state.players[b.id];if(!p||p.token!==b.token||!p.team)return send(res,403,{error:'Invalid participant registration'});if(state.phase!=='question'||Date.now()>=state.endsAt)return send(res,409,{error:'Question closed'});if(state.responses[b.id])return send(res,409,{error:'Already answered'});const q=questions[state.index],answer=String(b.answer||'');if(q.type==='choice'&&!q.choices?.includes(answer))return send(res,400,{error:'Select an answer'});if(q.type!=='choice'&&!/^[a-zA-Z ]{1,75}$/.test(answer))return send(res,400,{error:'Letters and spaces only, max 75 characters'});state.responses[b.id]={answer,at:Date.now()};push();return send(res,200,{ok:true})}
 if(b.hostKey!==HOST_KEY)return send(res,403,{error:'Incorrect host key'});
+if(testMode&&b.op==='addTestPlayer'){
+ if(state.phase!=='lobby')return send(res,409,{error:'Reset the test before adding players'});
+ const name=String(b.name||'').trim().slice(0,50),team=String(b.team||'').toUpperCase();
+ if(!name||!['A','B'].includes(team))return send(res,400,{error:'Enter a name and select Team A or B'});
+ if(Object.values(state.players).some(p=>p.team===team))return send(res,409,{error:'Team '+team+' already has a player'});
+ if(Object.values(state.players).some(p=>normal(p.name)===normal(name)))return send(res,409,{error:'Use two different player names'});
+ const id=crypto.randomUUID();
+ state.players[id]={id,token:'',name,phone:'',team,manual:true,claimed:false};
+ pushNow();return send(res,200,{ok:true});
+}
+
 if(testMode&&b.op==='demoPlayers'){
  if(state.phase!=='lobby')return send(res,409,{error:'Reset the test before creating sample players'});
  // No registration required on other devices. Only modifies the isolated test session.
@@ -46,7 +74,7 @@ if(testMode&&b.op==='demoAnswer'){
 }
 if(b.op==='team'){if(state.phase!=='lobby')return send(res,409,{error:'Assign teams before the game'});if(!state.players[b.id]||!['A','B'].includes(b.team))return send(res,400,{error:'Invalid team'});state.players[b.id].team=b.team}
 else if(b.op==='duration'){if(!['lobby','section','results'].includes(state.phase))return send(res,409,{error:'Change timer before starting a question'});const v=Number(b.seconds);if(!Number.isInteger(v)||v<5||v>300)return send(res,400,{error:'Choose 5–300 seconds'});state.duration=v}
-else if(b.op==='start'||b.op==='next'){if((b.op==='start'&&state.phase!=='lobby')||(b.op==='next'&&!['results','section'].includes(state.phase)))return send(res,409,{error:'Not ready'});if(b.op==='start'&&(!Object.keys(state.players).length||Object.values(state.players).some(p=>!p.team)||(testMode&&Object.keys(state.players).length!==2)))return send(res,409,{error:'Register both test players and assign each to a team'});if(b.op==='start'){state.phase='section';state.endsAt=null;state.responses={};state.results=null}else{if(state.phase==='results')state.index++;if(state.index>=questions.length){state.phase='finished';state.index=questions.length-1;state.results=null}else if(state.index>0&&questions[state.index].round!==questions[state.index-1].round&&state.phase==='results'){state.phase='section';state.results=null;state.endsAt=null}else{state.phase='question';state.responses={};state.results=null;state.started=Date.now();state.endsAt=state.started+state.duration*1000}}}
+else if(b.op==='start'||b.op==='next'){if((b.op==='start'&&state.phase!=='lobby')||(b.op==='next'&&!['results','section'].includes(state.phase)))return send(res,409,{error:'Not ready'});if(b.op==='start'&&(!Object.keys(state.players).length||Object.values(state.players).some(p=>!p.team)||(testMode&&(Object.keys(state.players).length!==2||!Object.values(state.players).every(p=>p.claimed)))))return send(res,409,{error:'Add both test players on the Host and have each join on their device before starting'});if(b.op==='start'){state.phase='section';state.endsAt=null;state.responses={};state.results=null}else{if(state.phase==='results')state.index++;if(state.index>=questions.length){state.phase='finished';state.index=questions.length-1;state.results=null}else if(state.index>0&&questions[state.index].round!==questions[state.index-1].round&&state.phase==='results'){state.phase='section';state.results=null;state.endsAt=null}else{state.phase='question';state.responses={};state.results=null;state.started=Date.now();state.endsAt=state.started+state.duration*1000}}}
 else if(b.op==='reveal'){finish();return send(res,200,{ok:true})}
 else if(b.op==='reset'){state.phase='lobby';state.index=0;state.endsAt=null;state.responses={};state.scores={A:0,B:0};state.results=null;state.pin=String(crypto.randomInt(100000,1000000));state.players={}}
 else return send(res,400,{error:'Unknown action'});pushNow();return send(res,200,{ok:true})}
