@@ -429,3 +429,30 @@ body.single-preview-mode #app,body.single-preview-mode .view-host{height:100%;wi
 .demo-submit>span{font-size:12px;color:#dcebe4;font-weight:800;letter-spacing:.7px}
 .demo-submit button{font-size:13px;padding:9px 12px;background:#e9aa58;color:#1a241d}
 @media(max-height:720px){.demo-submit{padding:4px}.demo-submit button{padding:6px 9px}}
+
+/* Isolated Category 4 Question 30 trial only: enlarge projector text by 6pt
+   and expand its hexagon safely, without changing the other 36-question show. */
+body.test-big-screen .ppt-stage.definition-slide .ppt-prompt{
+ left:10%!important;width:80%!important;top:23%!important;height:33%!important;
+}
+body.test-big-screen .ppt-stage.definition-slide .question-copy{
+ width:80%!important;max-width:80%!important;
+ line-height:1.10!important;font-weight:500!important;
+ overflow-wrap:break-word!important;word-break:normal!important;
+}
+body.test-big-screen .ppt-stage.definition-slide .ppt-count{top:60%!important}
+body.test-big-screen .ppt-stage.definition-slide.results-stage .ppt-answer{top:66%!important}
+/* Manual test player registration on Host only */
+.test-manual-add{
+ display:grid;grid-template-columns:minmax(145px,1fr) auto minmax(145px,1fr) auto;
+ gap:8px;width:100%;align-items:center;
+}
+.test-manual-add input{margin:0;padding:11px 12px;font-size:16px;width:100%}
+.test-manual-add button{background:#ed8a43;color:#14231d;padding:11px 13px;font-size:14px}
+.demo-setup{display:flex;flex-direction:column;align-items:stretch;max-width:1100px;margin:0 auto;padding:14px}
+.demo-setup>span{line-height:1.35}
+.demo-setup>.host-screen-link{align-self:center}
+@media(max-width:700px){
+ .test-manual-add{grid-template-columns:minmax(0,1fr) auto}
+ .demo-setup{padding:10px}
+}
