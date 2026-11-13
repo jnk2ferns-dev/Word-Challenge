@@ -318,3 +318,35 @@ body.screen-mode .soundbutton{display:none!important}
 body.player-mode>header nav{display:none!important}
 body.player-mode>header{justify-content:center;padding:11px 14px}
 body.player-mode>header .brand{text-align:center;font-size:clamp(13px,3.7vw,18px)}
+
+/* Clear moving stroke with a blurred light trail rather than a white moving dot. */
+.travel-outline{overflow:visible!important;filter:none!important;isolation:isolate}
+.travel-outline path{vector-effect:none}
+.host-content .host-question-text{
+ font-size:clamp(30px,3.6vw,48px);
+ line-height:1.17;
+ max-width:100%;
+ width:100%;
+ text-align:center;
+ text-wrap:balance;
+ overflow-wrap:break-word;
+ overflow:visible;
+ flex:0 1 auto;
+}
+/* Participant challenge label stays inside the question card, above the prompt. */
+.mobile-category{
+ display:block;
+ width:100%;
+ background:#0d6c5b;
+ color:#fff;
+ border:1px solid #72bfae;
+ border-radius:10px;
+ padding:12px 14px;
+ font-size:clamp(14px,3.6vw,19px);
+ line-height:1.3;
+ font-weight:800;
+ text-align:center;
+ margin:8px 0 18px;
+ overflow-wrap:break-word;
+}
+.mobile-card .mobile-question{margin-top:14px}
