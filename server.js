@@ -35,6 +35,7 @@ return {state,questions,clients,snapshot,action,finish};
 const mainGame=createGame(allQuestions,Math.max(100,Math.min(500,Number(process.env.MAX_PLAYERS)||200)),false);
 const testGame=createGame([allQuestions.find(q=>q.id===30&&q.round===4)],2,true);
 if(!testGame.questions[0])throw Error('Test question 30 missing');
+function send(res,status,data){res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(data))}
 const allowed=new Set(['index.html','app.js','style.css','word-challenge-1.svg','correct-answer.b64','suspense-audio.mp3','final-victory.b64']);
 http.createServer((req,res)=>{
  const pathname=new URL(req.url,'http://localhost').pathname;
