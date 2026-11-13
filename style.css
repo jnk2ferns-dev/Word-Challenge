@@ -419,3 +419,13 @@ body.single-preview-mode #app,body.single-preview-mode .view-host{height:100%;wi
 .single-question-toolbar>span{padding:0 8px;color:#ebf2ed;font-weight:800}
 .single-question-toolbar button{padding:9px 14px;background:#ed8a43;color:#1a241f;font-size:14px}
 @media(max-width:740px){.single-question-preview{padding:10px}.single-question-inner{width:100%;padding:12px;gap:16px}.single-question-text{line-height:1.13}.single-question-category{font-size:13px}.single-question-toolbar{bottom:6px}}
+
+/* Isolated one-question test controls. Not shown in the full live game. */
+.demo-setup{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px;padding:12px 16px;background:#185b4b;border:1px solid #68ac94;border-radius:11px}
+.demo-setup>strong{color:#ffdb8b;font-size:17px}
+.demo-setup>span{font-size:13px;color:#e2f1e9}
+.demo-setup .host-primary{min-width:220px}
+.demo-submit{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:9px;background:#164f43;border-radius:9px;padding:9px}
+.demo-submit>span{font-size:12px;color:#dcebe4;font-weight:800;letter-spacing:.7px}
+.demo-submit button{font-size:13px;padding:9px 12px;background:#e9aa58;color:#1a241d}
+@media(max-height:720px){.demo-submit{padding:4px}.demo-submit button{padding:6px 9px}}
