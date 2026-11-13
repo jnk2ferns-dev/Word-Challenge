@@ -99,7 +99,18 @@ async function startSuspense(){
  suspenseTimer=setInterval(()=>{if(state?.phase!=='question'||Date.now()>=state.endsAt)stopSuspense();else scheduleSoundtrack()},140);
 }
 function soundControl(){return !soundEnabled?'<button class="soundbutton" onclick="enableSound()">🔊 Enable quiz sounds (tap once)</button>':'<button class="soundbutton sound-on" onclick="playCorrectAnswer()">🔊 Test correct-answer sound</button>'}
-function animatedBorder(){return '<svg class="travel-outline" viewBox="0 0 1000 240" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><path id="dotOrbit" d="M109 3 L891 3 Q900 3 906 10 L991 113 Q997 120 991 127 L906 230 Q900 237 891 237 L109 237 Q100 237 94 230 L9 127 Q3 120 9 113 L94 10 Q100 3 109 3 Z"/><filter id="dotHalo" x="-350%" y="-350%" width="800%" height="800%"><feGaussianBlur stdDeviation="11"/></filter></defs><g><circle r="22" fill="#c6fff6" opacity=".85" filter="url(#dotHalo)"/><circle r="8" fill="#effffb" opacity=".92"/><animateMotion dur="5s" repeatCount="indefinite" calcMode="paced"><mpath href="#dotOrbit"/></animateMotion></g></svg>'}
+function animatedBorder(){return '<svg class="travel-outline" viewBox="0 0 1000 240" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><radialGradient id="dotSoftGlow"><stop offset="0%" stop-color="#f5fffa" stop-opacity=".98"/><stop offset="28%" stop-color="#c9fff4" stop-opacity=".83"/><stop offset="65%" stop-color="#a1f8e8" stop-opacity=".32"/><stop offset="100%" stop-color="#a1f8e8" stop-opacity="0"/></radialGradient></defs><path class="orbit-path" d="M100 3 L900 3 L997 120 L900 237 L100 237 L3 120 Z" fill="none" stroke="none"/><g class="orbit-dot"><circle r="26" fill="url(#dotSoftGlow)"/><circle r="5" fill="#f7fffb"/></g></svg>'}
+let glowFrame=0,glowStart=0;
+function animateGlow(timestamp){
+ if(!glowStart)glowStart=timestamp;
+ const dots=document.querySelectorAll('.travel-outline');
+ if(dots.length){
+  const fraction=((timestamp-glowStart)%5000)/5000;
+  dots.forEach(svg=>{const path=svg.querySelector('.orbit-path'),dot=svg.querySelector('.orbit-dot');if(!path||!dot)return;const length=path.getTotalLength(),pt=path.getPointAtLength(fraction*length);dot.setAttribute('transform','translate('+pt.x.toFixed(3)+' '+pt.y.toFixed(3)+')')});
+ }
+ glowFrame=requestAnimationFrame(animateGlow);
+}
+function startGlow(){if(!glowFrame&&typeof requestAnimationFrame==='function')glowFrame=requestAnimationFrame(animateGlow)}
 function questionFontSize(prompt){const len=String(prompt||'').length;return len>185?19:len>145?21:len>110?23:len>82?25:29}
 function fitQuestionText(){document.querySelectorAll('.question-copy').forEach(n=>{const holder=n.closest('.ppt-prompt');if(!holder)return;let size=questionFontSize(n.textContent),maxHeight=holder.clientHeight-18;n.style.fontSize=size+'px';while(size>17&&n.scrollHeight>maxHeight){size--;n.style.fontSize=size+'px'}})}
 function fitHostQuestion(){document.querySelectorAll('[data-fit-host]').forEach(n=>{let size=48;n.style.fontSize=size+'px';const parent=n.closest('.host-content');const allowance=parent?Math.max(105,parent.clientHeight*.52):280;while(size>22&&(n.scrollHeight>allowance||n.scrollWidth>n.clientWidth+2)){size-=2;n.style.fontSize=size+'px'}})}
@@ -168,7 +179,7 @@ const presentationControls=view==='screen'&&!document.fullscreenElement
 :'';
 const otherSound=(view==='screen'||view==='player')?'':soundControl();
 el.innerHTML='<div class="view-'+view+'">'+presentationControls+otherSound+(view==='host'?hostView():view==='screen'?screen():playerView())+'</div>';
-document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));fitQuestionText();fitHostQuestion();tick()}
+document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));fitQuestionText();fitHostQuestion();startGlow();tick()}
 function tick(){if(!state?.endsAt||state.phase!=='question')return;if(Date.now()>=state.endsAt){stopSuspense();return;}const secs=Math.max(0,Math.ceil((state.endsAt-Date.now())/1000)),n=document.getElementById('clock');if(n)n.textContent=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0');const key=state.index+':'+secs;if(secs>=1&&key!==lastTickKey){lastTickKey=key;if(secs<=10)playTick(secs)}}
 const connection=new EventSource('/events');connection.onerror=()=>{if(!state)el.innerHTML='<div class="panel center"><h2>Reconnecting to quiz...</h2><p>Check the internet connection or refresh the page.</p></div>'};connection.onmessage=e=>{const old=state;state=JSON.parse(e.data);if(old?.phase==='question'&&state.phase!=='question')stopSuspense();if(old?.phase==='question'&&state.phase==='results'&&lastResult!==state.index){lastResult=state.index;playCorrectAnswer()}if(old&&old.phase!=='finished'&&state.phase==='finished'){playVictoryOnce()}if(old?.index!==state.index){selected='';submittedFor=-1}const preserveTyping=view==='player'&&old?.phase==='question'&&state.phase==='question'&&old.index===state.index&&document.activeElement?.id==='textanswer';const preserveProjection=view==='screen'&&old&&old.phase===state.phase&&old.index===state.index&&old.sectionRound===state.sectionRound;if(!preserveTyping&&!preserveProjection)render();else tick();if(state.phase==='question')startSuspense()};
 setInterval(tick,250);
