@@ -350,3 +350,14 @@ body.player-mode>header .brand{text-align:center;font-size:clamp(13px,3.7vw,18px
  overflow-wrap:break-word;
 }
 .mobile-card .mobile-question{margin-top:14px}
+
+/* Host's isolated typography approval screen, without advancing live questions. */
+.host-preview-link{background:#334c47;border:1px solid #94b9a5;color:#fff;text-decoration:none;font-size:13px;font-weight:700;border-radius:8px;padding:10px;white-space:nowrap}
+.host-preview .host-preview-text{width:100%;max-width:100%;line-height:1.15;overflow-wrap:break-word;word-break:normal;text-wrap:balance;font-weight:750}
+.host-preview-controls{justify-content:center;gap:13px}
+.host-preview-controls>span:first-child{font-size:15px;color:#dce9e3;white-space:nowrap}
+.host-preview-controls .host-primary{min-width:0}
+.host-preview-controls .host-preview-note{font-size:12px;color:#bcd3ca;max-width:240px;text-align:left}
+.host-preview .host-content{overflow:auto}
+@media(max-height:680px){.host-preview .host-content{gap:7px}.host-preview-controls .host-preview-note{display:none}}
+@media(max-width:760px){.host-preview-controls .host-preview-note{text-align:center}.host-preview .host-topbar{justify-content:center}}
