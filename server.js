@@ -39,6 +39,8 @@ function send(res,status,data){res.writeHead(status,{'Content-Type':'application
 const allowed=new Set(['index.html','app.js','style.css','word-challenge-1.svg','correct-answer.b64','suspense-audio.mp3','final-victory.b64']);
 http.createServer((req,res)=>{
  const pathname=new URL(req.url,'http://localhost').pathname;
+ const directTestRoutes={'/test-host':'host','/test-player':'player','/test-screen':'screen'};
+ if(directTestRoutes[pathname]){res.writeHead(302,{'Location':'/?view='+directTestRoutes[pathname]+'&test=1','Cache-Control':'no-store'});return res.end()}
  const test=pathname.startsWith('/test/');
  const game=test?testGame:mainGame;
  const resource=test?pathname.slice(5):pathname;
