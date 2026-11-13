@@ -2,7 +2,7 @@ let view=new URLSearchParams(location.search).get('view')||'host';
 let state=null,playerId=localStorage.getItem('qm_player')||'',playerToken=localStorage.getItem('qm_token')||'',hostKey=sessionStorage.getItem('qm_host')||'',selected='',submittedFor=-1,lastResult=-1;
 const el=document.getElementById('app');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function setView(v){view=v;history.replaceState(null,'','?view='+v);document.body.classList.toggle('screen-mode',v==='screen');render()}
+function setView(v){view=v;history.replaceState(null,'','?view='+v);document.body.classList.toggle('screen-mode',v==='screen');document.body.classList.toggle('player-mode',v==='player');render()}
 async function launchSlideshow(){
  // Fullscreen requires a direct tap/click in supported browsers.
  try{
@@ -18,6 +18,7 @@ async function launchSlideshow(){
 }
 function exitSlideshow(){if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen();document.body.classList.remove('slideshow-playing');render()}
 document.body.classList.toggle('screen-mode',view==='screen');
+document.body.classList.toggle('player-mode',view==='player');
 document.addEventListener('fullscreenchange',()=>{document.body.classList.toggle('slideshow-playing',!!document.fullscreenElement);if(state)render()});
 
 async function api(b){const r=await fetch('/api',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});const j=await r.json();if(!r.ok)throw Error(j.error||'Request failed');return j}
