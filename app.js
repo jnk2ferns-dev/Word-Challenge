@@ -2,7 +2,7 @@ let view=new URLSearchParams(location.search).get('view')||'host';
 let state=null,playerId=localStorage.getItem('qm_player')||'',playerToken=localStorage.getItem('qm_token')||'',hostKey=sessionStorage.getItem('qm_host')||'',selected='',submittedFor=-1,lastResult=-1;
 const el=document.getElementById('app');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function setView(v){view=v;history.replaceState(null,'','?view='+v);document.body.classList.toggle('screen-mode',v==='screen');document.body.classList.toggle('player-mode',v==='player');render()}
+function setView(v){if(v==='player'){stopAllQuizAudio()}view=v;history.replaceState(null,'','?view='+v);document.body.classList.toggle('screen-mode',v==='screen');document.body.classList.toggle('player-mode',v==='player');render()}
 async function launchSlideshow(){
  // Fullscreen requires a direct tap/click in supported browsers.
  try{
@@ -25,9 +25,9 @@ async function api(b){const r=await fetch('/api',{method:'POST',headers:{'Conten
 async function host(op,extra={}){unlockAudio();try{await api({op,hostKey,...extra})}catch(e){alert(e.message);if(e.message==='Incorrect host key'){sessionStorage.removeItem('qm_host');hostKey='';render()}}}
 let audioContext=null,soundEnabled=false,lastTickKey='',suspenseTimer=null,correctSound=null,victorySound=null,victoryPlayedFor=null;
 fetch('/correct-answer.b64').then(r=>r.ok?r.text():Promise.reject(Error('Missing sound file'))).then(b64=>{correctSound=new Audio('data:audio/mpeg;base64,'+b64.trim());correctSound.preload='auto';correctSound.volume=.9}).catch(e=>console.warn('Unable to load uploaded audio:',e));
-function unlockAudio(){try{audioContext=audioContext||new(window.AudioContext||window.webkitAudioContext)();const p=audioContext.resume();if(p?.catch)p.catch(()=>{});soundEnabled=true;loadVictoryAudio();return true}catch(e){return false}}
-function enableSound(){if(!unlockAudio()){alert('Sound unavailable on this device');return}playCorrectAnswer();render();if(state?.phase==='question')startSuspense()}
-function note(freq,t,dur,gain=.035,type='sine'){if(!soundEnabled||!audioContext||audioContext.state!=='running')return;const c=audioContext,o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(gain,t+.015);g.gain.setValueAtTime(gain,t+Math.max(.03,dur-.06));g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g).connect(c.destination);o.start(t);o.stop(t+dur+.01)}
+function unlockAudio(){if(view==='player')return false;try{audioContext=audioContext||new(window.AudioContext||window.webkitAudioContext)();const p=audioContext.resume();if(p?.catch)p.catch(()=>{});soundEnabled=true;loadVictoryAudio();return true}catch(e){return false}}
+function enableSound(){if(view==='player')return;if(!unlockAudio()){alert('Sound unavailable on this device');return}playCorrectAnswer();render();if(state?.phase==='question')startSuspense()}
+function note(freq,t,dur,gain=.035,type='sine'){if(view==='player'||!soundEnabled||!audioContext||audioContext.state!=='running')return;const c=audioContext,o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(gain,t+.015);g.gain.setValueAtTime(gain,t+Math.max(.03,dur-.06));g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g).connect(c.destination);o.start(t);o.stop(t+dur+.01)}
 let victoryAudioPromise=null;
 function loadVictoryAudio(){
  if(victoryAudioPromise)return victoryAudioPromise;
@@ -39,7 +39,7 @@ function loadVictoryAudio(){
  return victoryAudioPromise;
 }
 async function playVictoryOnce(){
- if(!soundEnabled||!state||state.phase!=='finished')return;
+ if(view==='player'||!soundEnabled||!state||state.phase!=='finished')return;
  const key=state.pin+':'+state.total;
  if(victoryPlayedFor===key)return;
  victoryPlayedFor=key;
@@ -47,9 +47,9 @@ async function playVictoryOnce(){
  if(correctSound){correctSound.pause();correctSound.currentTime=0}
  try{const audio=await loadVictoryAudio();if(!audio)return;audio.loop=false;audio.pause();audio.currentTime=0;await audio.play()}catch(e){console.warn('Victory sound blocked on this device',e)}
 }
-function playCorrectAnswer(){if(!soundEnabled)return;try{if(correctSound){correctSound.pause();correctSound.currentTime=0;correctSound.play().catch(e=>console.warn('Correct answer audio blocked:',e))}else if(audioContext){const t=audioContext.currentTime;[523,659,784,1047].forEach((f,i)=>note(f,t+i*.13,.24,.08))}}catch(e){console.warn(e)}}
-function playTick(sec){if(!soundEnabled||!audioContext)return;note(sec<=3?940:690,audioContext.currentTime+.01,sec===1?.2:.095,sec<=3?.08:.045)}
-function suspensePulse(){if(state?.phase!=='question'||!state.endsAt||Date.now()>=state.endsAt){stopSuspense();return}const remain=Math.ceil((state.endsAt-Date.now())/1000);if(remain<=10)return;if(!soundEnabled||!audioContext)return;const t=audioContext.currentTime+.01;note(164.8,t,.32,.012,'sine');note(196,t+.28,.25,.012,'triangle');note(220,t+.59,.22,.01,'sine')}
+function playCorrectAnswer(){if(view==='player'||!soundEnabled)return;try{if(correctSound){correctSound.pause();correctSound.currentTime=0;correctSound.play().catch(e=>console.warn('Correct answer audio blocked:',e))}else if(audioContext){const t=audioContext.currentTime;[523,659,784,1047].forEach((f,i)=>note(f,t+i*.13,.24,.08))}}catch(e){console.warn(e)}}
+function playTick(sec){if(view==='player'||!soundEnabled||!audioContext)return;note(sec<=3?940:690,audioContext.currentTime+.01,sec===1?.2:.095,sec<=3?.08:.045)}
+function suspensePulse(){if(view==='player')return;if(state?.phase!=='question'||!state.endsAt||Date.now()>=state.endsAt){stopSuspense();return}const remain=Math.ceil((state.endsAt-Date.now())/1000);if(remain<=10)return;if(!soundEnabled||!audioContext)return;const t=audioContext.currentTime+.01;note(164.8,t,.32,.012,'sine');note(196,t+.28,.25,.012,'triangle');note(220,t+.59,.22,.01,'sine')}
 // Seamless soundtrack playback: overlapping buffer instances with short cross-fades.
 let suspenseAudioBuffer=null,suspenseLoadPromise=null,suspenseMix=null,suspenseSources=[],suspenseNextAt=0,suspenseSequence=null;
 function loadSuspenseAudio(){
@@ -78,6 +78,7 @@ function scheduleSoundtrack(){
    suspenseNextAt+=step;
  }
 }
+function stopAllQuizAudio(){soundEnabled=false;stopSuspense();if(correctSound){try{correctSound.pause();correctSound.currentTime=0}catch{}}if(victorySound){try{victorySound.pause();victorySound.currentTime=0}catch{}}if(audioContext){try{audioContext.suspend()}catch{}}}
 function stopSuspense(){
  if(suspenseTimer!==null){clearInterval(suspenseTimer);suspenseTimer=null}
  if(suspenseMix&&audioContext){const t=audioContext.currentTime;try{suspenseMix.gain.cancelScheduledValues(t);suspenseMix.gain.setValueAtTime(suspenseMix.gain.value,t);suspenseMix.gain.linearRampToValueAtTime(0,t+.13)}catch{}}
@@ -85,7 +86,7 @@ function stopSuspense(){
  suspenseMix=null;suspenseSequence=null;
 }
 async function startSuspense(){
- if(!soundEnabled||state?.phase!=='question'||Date.now()>=state.endsAt)return;
+ if(view==='player'||!soundEnabled||state?.phase!=='question'||Date.now()>=state.endsAt)return;
  const sequence=state.index+':'+state.started;
  if(suspenseSequence===sequence&&suspenseTimer!==null)return;
  stopSuspense();suspenseSequence=sequence;
@@ -159,13 +160,13 @@ const q=state.question,done=submittedFor===state.index;
 return '<div class="player-app">'+head+'<div class="mobile-card"><div class="mobile-progress"><span>Challenge '+q.round+' · Question '+(state.index+1)+' of '+state.total+'</span><span class="timer" id="clock"></span></div><div class="mobile-category">Word Challenge: '+challengeLabel(q.round)+'</div><h2 class="mobile-question">'+esc(q.prompt)+'</h2>'+(q.words?.length?'<div class="mobile-words">'+q.words.map(w=>'<span>'+esc(w)+'</span>').join('')+'</div>':'')+(done?'<div class="mobile-success">✓ Your answer has been submitted.</div>':q.type==='choice'?'<div class="mobile-choices">'+q.choices.map((c,i)=>'<button class="mobile-choice '+(selected===c?'selected':'')+'" onclick="choose('+i+')">'+esc(c)+'</button>').join('')+'</div><button class="submit-button" onclick="submitAnswer()">Submit answer</button>':'<label class="answer-label" for="textanswer">Your answer</label><input id="textanswer" maxlength="75" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Type your answer" value="'+esc(selected)+'" oninput="this.value=this.value.replace(/[^a-zA-Z ]/g,\'\').slice(0,75);selected=this.value"><p class="input-note">Letters and spaces only, maximum 75 characters.</p><button class="submit-button" onclick="selected=document.getElementById(\'textanswer\').value;submitAnswer()">Submit answer</button>')+'</div></div>'
 }
 function choose(i){selected=state.question.choices[i];render()}
-async function join(){unlockAudio();try{const r=await api({op:'join',name:document.getElementById('name').value,phone:document.getElementById('phone').value,pin:document.getElementById('pin').value});playerId=r.id;playerToken=r.token;localStorage.setItem('qm_player',playerId);localStorage.setItem('qm_token',playerToken);render()}catch(e){alert(e.message)}}
-async function submitAnswer(){unlockAudio();if(!selected.trim())return alert('Enter or select an answer');try{await api({op:'answer',id:playerId,token:playerToken,answer:selected});submittedFor=state.index;render()}catch(e){alert(e.message)}}
+async function join(){try{const r=await api({op:'join',name:document.getElementById('name').value,phone:document.getElementById('phone').value,pin:document.getElementById('pin').value});playerId=r.id;playerToken=r.token;localStorage.setItem('qm_player',playerId);localStorage.setItem('qm_token',playerToken);render()}catch(e){alert(e.message)}}
+async function submitAnswer(){if(!selected.trim())return alert('Enter or select an answer');try{await api({op:'answer',id:playerId,token:playerToken,answer:selected});submittedFor=state.index;render()}catch(e){alert(e.message)}}
 function render(){if(!state)return;
 const presentationControls=view==='screen'&&!document.fullscreenElement
 ?'<div class="slideshow-toolbar"><button class="launch-slideshow" onclick="launchSlideshow()">⛶ Full Screen Slideshow</button>'+(!soundEnabled?'<button class="screen-audio-btn" onclick="enableSound()">🔊 Enable Sound</button>':'')+'<div id="slideshow-help" class="slideshow-help hidden">This browser does not allow websites to hide its tabs or address bar. Use a browser with fullscreen support or open this screen from your TV browser in fullscreen mode.</div></div>'
 :'';
-const otherSound=view==='screen'?'':soundControl();
+const otherSound=(view==='screen'||view==='player')?'':soundControl();
 el.innerHTML='<div class="view-'+view+'">'+presentationControls+otherSound+(view==='host'?hostView():view==='screen'?screen():playerView())+'</div>';
 document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));fitQuestionText();fitHostQuestion();tick()}
 function tick(){if(!state?.endsAt||state.phase!=='question')return;if(Date.now()>=state.endsAt){stopSuspense();return;}const secs=Math.max(0,Math.ceil((state.endsAt-Date.now())/1000)),n=document.getElementById('clock');if(n)n.textContent=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0');const key=state.index+':'+secs;if(secs>=1&&key!==lastTickKey){lastTickKey=key;if(secs<=10)playTick(secs)}}
