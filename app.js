@@ -2,7 +2,24 @@ let view=new URLSearchParams(location.search).get('view')||'host';
 let state=null,playerId=localStorage.getItem('qm_player')||'',playerToken=localStorage.getItem('qm_token')||'',hostKey=sessionStorage.getItem('qm_host')||'',selected='',submittedFor=-1,lastResult=-1;
 const el=document.getElementById('app');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function setView(v){view=v;history.replaceState(null,'','?view='+v);render()}
+function setView(v){view=v;history.replaceState(null,'','?view='+v);document.body.classList.toggle('screen-mode',v==='screen');render()}
+async function launchSlideshow(){
+ // Fullscreen requires a direct tap/click in supported browsers.
+ try{
+  unlockAudio();
+  if(document.documentElement.requestFullscreen){await document.documentElement.requestFullscreen({navigationUI:'hide'});}
+  else if(document.documentElement.webkitRequestFullscreen){document.documentElement.webkitRequestFullscreen();}
+  else{document.getElementById('slideshow-help')?.classList.remove('hidden');return}
+  document.body.classList.add('slideshow-playing');
+ }catch(e){
+  document.getElementById('slideshow-help')?.classList.remove('hidden');
+ }
+ render();
+}
+function exitSlideshow(){if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen();document.body.classList.remove('slideshow-playing');render()}
+document.body.classList.toggle('screen-mode',view==='screen');
+document.addEventListener('fullscreenchange',()=>{document.body.classList.toggle('slideshow-playing',!!document.fullscreenElement);if(state)render()});
+
 async function api(b){const r=await fetch('/api',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});const j=await r.json();if(!r.ok)throw Error(j.error||'Request failed');return j}
 async function host(op,extra={}){unlockAudio();try{await api({op,hostKey,...extra})}catch(e){alert(e.message);if(e.message==='Incorrect host key'){sessionStorage.removeItem('qm_host');hostKey='';render()}}}
 let audioContext=null,soundEnabled=false,lastTickKey='',suspenseTimer=null,correctSound=null,victorySound=null,victoryPlayedFor=null;
@@ -92,7 +109,7 @@ function question(){const q=state.question;return '<div class="ppt-question '+(q
 function results(){const r=state.results,q=state.question;return '<div class="ppt-stage '+(q.words?.length?'word-slide':'definition-slide')+' results-stage"><div class="ppt-question '+(q.words?.length?'word-mode':'definition-mode')+'">'+banner(q.round)+questionPanel(q)+(r.completed?.length?'<div class="ppt-words">'+r.completed.map(w=>'<div class="ppt-hex revealed">'+esc(w)+'</div>').join('')+'</div>':'')+'</div><div class="ppt-answer">'+esc(r.correct)+'</div><div class="ppt-outcome">'+(r.roundWinner==='draw'?'ROUND DRAW — EQUAL POINTS':'TEAM '+r.roundWinner+' WINS THIS QUESTION!')+'</div><div class="ppt-fast">⚡ FASTEST CORRECT: '+(r.fast?esc(r.fast.name)+' (TEAM '+r.fast.team+' · '+r.fast.seconds.toFixed(1)+'s)':'No correct answer submitted')+'</div>'+scores()+'</div>'}
 function finale(){const a=state.scores.A,b=state.scores.B,w=a===b?'draw':a>b?'A':'B';const winners=w==='draw'?['A','B']:[w];const names=winners.map(t=>'<div class="winner-team"><div class="winner-team-name">TEAM '+t+'</div><div class="winner-member-names">'+(state.players.filter(p=>p.team===t).map(p=>esc(p.name)).join(', ')||'')+'</div></div>').join('');return '<div class="ppt-stage finale-stage">'+confetti()+'<div class="ppt-ribbon"><svg class="ribbon-art" viewBox="0 0 1100 130" preserveAspectRatio="none" aria-hidden="true"><path d="M14 32 L283 20 L284 104 L14 121 L149 77 Z" fill="#EE752D" stroke="white" stroke-width="2.5"/><path d="M1086 32 L817 20 L816 104 L1086 121 L951 77 Z" fill="#EE752D" stroke="white" stroke-width="2.5"/><path d="M282 10 L818 10 L818 106 L282 106 Z" fill="#EE752D" stroke="white" stroke-width="2.5"/><path d="M306 106 L415 122 L415 106 M685 106 L685 122 L794 106" fill="none" stroke="white" stroke-width="2"/></svg><div class="ribbon-caption"><span>The Quiz Master Show:</span><span>Quiz Complete!</span></div></div><h1 class="ppt-final">'+(w==='draw'?"IT'S A TIE! CONGRATULATIONS TO BOTH TEAMS!":'CONGRATULATIONS TEAM '+w+'!')+'</h1><div class="winning-members">'+names+'</div><div class="final-tally"><div class="final-tally-title">FINAL SCORES</div><div class="final-tally-grid"><div class="final-tally-team final-a"><span>TEAM A</span><strong>'+a+'</strong><small>POINTS</small></div><div class="final-tally-team final-b"><span>TEAM B</span><strong>'+b+'</strong><small>POINTS</small></div></div></div></div>'}
 function sectionScreen(){return '<div class="ppt-stage opening-stage"><div class="title-hex"><span>Word Challenge '+state.sectionRound+'</span></div></div>'}
-function screen(){if(state.phase==='lobby')return '<div class="ppt-stage opening-stage"><div class="title-hex"><span>Word Challenge 1</span></div><div class="join-pin">GAME PIN: '+state.pin+' · '+state.players.length+' registered</div></div>';if(state.phase==='section')return sectionScreen();if(state.phase==='finished')return finale();if(state.phase==='results')return results();return '<div class="ppt-stage '+(state.question.words?.length?'word-slide':'definition-slide')+'">'+question()+'<div class="ppt-count"><span class="timer" id="clock"></span><span>'+state.answered+' answers received</span></div>'+scores()+'</div>'}
+function screen(){if(state.phase==='lobby')return '<div class="ppt-stage opening-stage"><div class="title-hex"><span>Word Challenge 1</span></div></div>';if(state.phase==='section')return sectionScreen();if(state.phase==='finished')return finale();if(state.phase==='results')return results();return '<div class="ppt-stage '+(state.question.words?.length?'word-slide':'definition-slide')+'">'+question()+'<div class="ppt-count"><span class="timer" id="clock"></span></div>'+scores()+'</div>'}
 function hostView(){
 if(!hostKey)return '<div class="panel"><h2>Host login</h2><p>Enter the private host password set in Render.</p><input id="hostkey" type="password" placeholder="Host password"><button onclick="hostKey=document.getElementById(\'hostkey\').value;sessionStorage.setItem(\'qm_host\',hostKey);render()">Open dashboard</button></div>';
 const active=state.phase!=='lobby';
@@ -142,7 +159,13 @@ return '<div class="player-app">'+head+'<div class="mobile-card"><div class="mob
 function choose(i){selected=state.question.choices[i];render()}
 async function join(){unlockAudio();try{const r=await api({op:'join',name:document.getElementById('name').value,phone:document.getElementById('phone').value,pin:document.getElementById('pin').value});playerId=r.id;playerToken=r.token;localStorage.setItem('qm_player',playerId);localStorage.setItem('qm_token',playerToken);render()}catch(e){alert(e.message)}}
 async function submitAnswer(){unlockAudio();if(!selected.trim())return alert('Enter or select an answer');try{await api({op:'answer',id:playerId,token:playerToken,answer:selected});submittedFor=state.index;render()}catch(e){alert(e.message)}}
-function render(){if(!state)return;el.innerHTML='<div class="view-'+view+'">'+soundControl()+(view==='host'?hostView():view==='screen'?screen():playerView())+'</div>';document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));fitQuestionText();tick()}
+function render(){if(!state)return;
+const presentationControls=view==='screen'&&!document.fullscreenElement
+?'<div class="slideshow-toolbar"><button class="launch-slideshow" onclick="launchSlideshow()">⛶ Full Screen Slideshow</button>'+(!soundEnabled?'<button class="screen-audio-btn" onclick="enableSound()">🔊 Enable Sound</button>':'')+'<div id="slideshow-help" class="slideshow-help hidden">This browser does not allow websites to hide its tabs or address bar. Use a browser with fullscreen support or open this screen from your TV browser in fullscreen mode.</div></div>'
+:'';
+const otherSound=view==='screen'?'':soundControl();
+el.innerHTML='<div class="view-'+view+'">'+presentationControls+otherSound+(view==='host'?hostView():view==='screen'?screen():playerView())+'</div>';
+document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));fitQuestionText();tick()}
 function tick(){if(!state?.endsAt||state.phase!=='question')return;if(Date.now()>=state.endsAt){stopSuspense();return;}const secs=Math.max(0,Math.ceil((state.endsAt-Date.now())/1000)),n=document.getElementById('clock');if(n)n.textContent=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0');const key=state.index+':'+secs;if(secs>=1&&key!==lastTickKey){lastTickKey=key;if(secs<=10)playTick(secs)}}
 const connection=new EventSource('/events');connection.onerror=()=>{if(!state)el.innerHTML='<div class="panel center"><h2>Reconnecting to quiz...</h2><p>Check the internet connection or refresh the page.</p></div>'};connection.onmessage=e=>{const old=state;state=JSON.parse(e.data);if(old?.phase==='question'&&state.phase!=='question')stopSuspense();if(old?.phase==='question'&&state.phase==='results'&&lastResult!==state.index){lastResult=state.index;playCorrectAnswer()}if(old&&old.phase!=='finished'&&state.phase==='finished'){playVictoryOnce()}if(old?.index!==state.index){selected='';submittedFor=-1}const preserveTyping=view==='player'&&old?.phase==='question'&&state.phase==='question'&&old.index===state.index&&document.activeElement?.id==='textanswer';if(!preserveTyping)render();else tick();if(state.phase==='question')startSuspense()};
 setInterval(tick,250);
