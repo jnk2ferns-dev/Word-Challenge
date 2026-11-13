@@ -430,10 +430,10 @@ body.single-preview-mode #app,body.single-preview-mode .view-host{height:100%;wi
 .demo-submit button{font-size:13px;padding:9px 12px;background:#e9aa58;color:#1a241d}
 @media(max-height:720px){.demo-submit{padding:4px}.demo-submit button{padding:6px 9px}}
 
-/* Category 4 Question 30 trial: preserve original question polygon,
-   position, size, answer placement and the original text width.
-   Only the text size and line height may change. */
-body.test-big-screen .ppt-stage.definition-slide .question-copy{
+/* Approved Big Screen typography for all 36 questions and answer reveals.
+   Preserve the original polygon shape, position, size and text width.
+   Participant and Host Dashboard typography are unchanged. */
+body.screen-mode .view-screen .ppt-stage .question-copy{
  line-height:1.08!important;
  overflow-wrap:break-word!important;
  word-break:normal!important;
