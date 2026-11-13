@@ -6,10 +6,11 @@ if(!HOST_KEY||HOST_KEY.length<20){console.error('HOST_KEY must be set to a secur
 const allQuestions=JSON.parse(fs.readFileSync(path.join(__dirname,'questions.json'),'utf8'));
 // Full edition: all nine questions in each of the four Word Challenge categories.
 const questions=allQuestions;
+function createGame(questions,capacity,testMode=false){
 const state={pin:String(crypto.randomInt(100000,1000000)),phase:'lobby',index:0,started:0,endsAt:null,duration:30,players:{},responses:{},scores:{A:0,B:0},results:null};
 const clients=new Set();
 // Configured for large quiz events. This is a registration ceiling, not a guaranteed concurrent capacity.
-const MAX_PLAYERS=Math.max(100,Math.min(500,Number(process.env.MAX_PLAYERS)||200));
+const MAX_PLAYERS=capacity;
 let pendingBroadcast=null;
 function normal(s){return String(s??'').trim().replace(/\s+/g,' ').toLowerCase()}
 function safePlayer(p){return {id:p.id,name:p.name,team:p.team}}
@@ -24,12 +25,37 @@ if(b.op==='answer'){const p=state.players[b.id];if(!p||p.token!==b.token||!p.tea
 if(b.hostKey!==HOST_KEY)return send(res,403,{error:'Incorrect host key'});
 if(b.op==='team'){if(state.phase!=='lobby')return send(res,409,{error:'Assign teams before the game'});if(!state.players[b.id]||!['A','B'].includes(b.team))return send(res,400,{error:'Invalid team'});state.players[b.id].team=b.team}
 else if(b.op==='duration'){if(!['lobby','section','results'].includes(state.phase))return send(res,409,{error:'Change timer before starting a question'});const v=Number(b.seconds);if(!Number.isInteger(v)||v<5||v>300)return send(res,400,{error:'Choose 5–300 seconds'});state.duration=v}
-else if(b.op==='start'||b.op==='next'){if((b.op==='start'&&state.phase!=='lobby')||(b.op==='next'&&!['results','section'].includes(state.phase)))return send(res,409,{error:'Not ready'});if(b.op==='start'&&(!Object.keys(state.players).length||Object.values(state.players).some(p=>!p.team)))return send(res,409,{error:'Register players and assign every player to a team'});if(b.op==='start'){state.phase='section';state.endsAt=null;state.responses={};state.results=null}else{if(state.phase==='results')state.index++;if(state.index>=questions.length){state.phase='finished';state.index=questions.length-1;state.results=null}else if(state.index>0&&questions[state.index].round!==questions[state.index-1].round&&state.phase==='results'){state.phase='section';state.results=null;state.endsAt=null}else{state.phase='question';state.responses={};state.results=null;state.started=Date.now();state.endsAt=state.started+state.duration*1000}}}
+else if(b.op==='start'||b.op==='next'){if((b.op==='start'&&state.phase!=='lobby')||(b.op==='next'&&!['results','section'].includes(state.phase)))return send(res,409,{error:'Not ready'});if(b.op==='start'&&(!Object.keys(state.players).length||Object.values(state.players).some(p=>!p.team)||(testMode&&Object.keys(state.players).length!==2)))return send(res,409,{error:'Register both test players and assign each to a team'});if(b.op==='start'){state.phase='section';state.endsAt=null;state.responses={};state.results=null}else{if(state.phase==='results')state.index++;if(state.index>=questions.length){state.phase='finished';state.index=questions.length-1;state.results=null}else if(state.index>0&&questions[state.index].round!==questions[state.index-1].round&&state.phase==='results'){state.phase='section';state.results=null;state.endsAt=null}else{state.phase='question';state.responses={};state.results=null;state.started=Date.now();state.endsAt=state.started+state.duration*1000}}}
 else if(b.op==='reveal'){finish();return send(res,200,{ok:true})}
 else if(b.op==='reset'){state.phase='lobby';state.index=0;state.endsAt=null;state.responses={};state.scores={A:0,B:0};state.results=null;state.pin=String(crypto.randomInt(100000,1000000));state.players={}}
 else return send(res,400,{error:'Unknown action'});pushNow();return send(res,200,{ok:true})}
+
+return {state,questions,clients,snapshot,action,finish};
+}
+const mainGame=createGame(allQuestions,Math.max(100,Math.min(500,Number(process.env.MAX_PLAYERS)||200)),false);
+const testGame=createGame([allQuestions.find(q=>q.id===30&&q.round===4)],2,true);
+if(!testGame.questions[0])throw Error('Test question 30 missing');
 const allowed=new Set(['index.html','app.js','style.css','word-challenge-1.svg','correct-answer.b64','suspense-audio.mp3','final-victory.b64']);
-http.createServer((req,res)=>{const pathname=new URL(req.url,'http://localhost').pathname;if(req.method==='GET'&&pathname==='/health')return send(res,200,{ok:true});if(req.method==='GET'&&pathname==='/events'){res.writeHead(200,{'Content-Type':'text/event-stream','Cache-Control':'no-cache, no-transform','Connection':'keep-alive','X-Accel-Buffering':'no'});res.write('data: '+JSON.stringify(snapshot())+'\n\n');clients.add(res);req.on('close',()=>clients.delete(res));return}if(req.method==='GET'&&pathname==='/state')return send(res,200,snapshot());if(req.method==='POST'&&pathname==='/api'){let body='';req.on('data',chunk=>{body+=chunk;if(body.length>12000)req.destroy()});req.on('end',()=>action(req,res,body));return}let filename=pathname==='/'?'index.html':pathname.slice(1);if(req.method!=='GET'||!allowed.has(filename))return send(res,404,{error:'Not found'});res.writeHead(200,{'Content-Type':filename.endsWith('.js')?'application/javascript':filename.endsWith('.css')?'text/css':filename.endsWith('.svg')?'image/svg+xml':filename.endsWith('.b64')?'text/plain':filename.endsWith('.mp3')?'audio/mpeg':'text/html','Cache-Control':'no-cache'});fs.createReadStream(path.join(__dirname,filename)).pipe(res)}).listen(PORT,'0.0.0.0',()=>console.log('Word Challenge server on '+PORT));
-setInterval(()=>{if(state.phase==='question'&&Date.now()>=state.endsAt)finish()},250);
-// One keepalive every 15 seconds rather than twice per second per participant.
-setInterval(()=>{for(const client of clients)try{client.write(': ping\n\n')}catch{clients.delete(client)}},15000);
+http.createServer((req,res)=>{
+ const pathname=new URL(req.url,'http://localhost').pathname;
+ const test=pathname.startsWith('/test/');
+ const game=test?testGame:mainGame;
+ const resource=test?pathname.slice(5):pathname;
+ if(req.method==='GET'&&resource==='/health')return send(res,200,{ok:true});
+ if(req.method==='GET'&&resource==='/events'){
+  res.writeHead(200,{'Content-Type':'text/event-stream','Cache-Control':'no-cache, no-transform','Connection':'keep-alive','X-Accel-Buffering':'no'});
+  res.write('data: '+JSON.stringify(game.snapshot())+'\n\n');
+  game.clients.add(res);req.on('close',()=>game.clients.delete(res));return;
+ }
+ if(req.method==='GET'&&resource==='/state')return send(res,200,game.snapshot());
+ if(req.method==='POST'&&resource==='/api'){
+  let body='';req.on('data',chunk=>{body+=chunk;if(body.length>12000)req.destroy()});
+  req.on('end',()=>game.action(req,res,body));return;
+ }
+ let filename=pathname==='/'?'index.html':pathname.slice(1);
+ if(req.method!=='GET'||!allowed.has(filename))return send(res,404,{error:'Not found'});
+ res.writeHead(200,{'Content-Type':filename.endsWith('.js')?'application/javascript':filename.endsWith('.css')?'text/css':filename.endsWith('.svg')?'image/svg+xml':filename.endsWith('.b64')?'text/plain':filename.endsWith('.mp3')?'audio/mpeg':'text/html','Cache-Control':'no-cache'});
+ fs.createReadStream(path.join(__dirname,filename)).pipe(res);
+}).listen(PORT,'0.0.0.0',()=>console.log('Word Challenge server on '+PORT));
+setInterval(()=>{for(const game of [mainGame,testGame])if(game.state.phase==='question'&&Date.now()>=game.state.endsAt)game.finish()},250);
+setInterval(()=>{for(const game of [mainGame,testGame])for(const client of game.clients)try{client.write(': ping\n\n')}catch{game.clients.delete(client)}},15000);
