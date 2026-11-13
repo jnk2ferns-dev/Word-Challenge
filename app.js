@@ -195,6 +195,34 @@ const otherSound=(view==='screen'||view==='player')?'':soundControl();
 el.innerHTML='<div class="view-'+view+'">'+(hostPreviewMode?'':presentationControls+otherSound)+(hostPreviewMode?hostFontPreview():view==='host'?hostView():view==='screen'?screen():playerView())+'</div>';
 document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));fitQuestionText();fitHostQuestion();startGlow();tick()}
 function tick(){if(!state?.endsAt||state.phase!=='question')return;if(Date.now()>=state.endsAt){stopSuspense();return;}const secs=Math.max(0,Math.ceil((state.endsAt-Date.now())/1000)),n=document.getElementById('clock');if(n)n.textContent=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0');const key=state.index+':'+secs;if(secs>=1&&key!==lastTickKey){lastTickKey=key;if(secs<=10)playTick(secs)}}
-const connection=new EventSource(endpointPrefix+'/events');connection.onerror=()=>{if(!state)el.innerHTML='<div class="panel center"><h2>Reconnecting to quiz...</h2><p>Check the internet connection or refresh the page.</p></div>'};connection.onmessage=e=>{const old=state;state=JSON.parse(e.data);if(old?.phase==='question'&&state.phase!=='question')stopSuspense();if(old?.phase==='question'&&state.phase==='results'&&lastResult!==state.index){lastResult=state.index;playCorrectAnswer()}if(old&&old.phase!=='finished'&&state.phase==='finished'){playVictoryOnce()}if(old?.index!==state.index){selected='';submittedFor=-1}const preserveTyping=view==='player'&&old?.phase==='question'&&state.phase==='question'&&old.index===state.index&&document.activeElement?.id==='textanswer';const preserveProjection=view==='screen'&&old&&old.phase===state.phase&&old.index===state.index&&old.sectionRound===state.sectionRound;if(!preserveTyping&&!preserveProjection)render();else tick();if(state.phase==='question')startSuspense()};
+function applyQuizState(incoming){
+ const old=state;
+ state=incoming;
+ if(old?.phase==='question'&&state.phase!=='question')stopSuspense();
+ if(old?.phase==='question'&&state.phase==='results'&&lastResult!==state.index){lastResult=state.index;playCorrectAnswer()}
+ if(old&&old.phase!=='finished'&&state.phase==='finished')playVictoryOnce();
+ if(old?.index!==state.index){selected='';submittedFor=-1}
+ const preserveTyping=view==='player'&&old?.phase==='question'&&state.phase==='question'&&old.index===state.index&&document.activeElement?.id==='textanswer';
+ const preserveProjection=view==='screen'&&old&&old.phase===state.phase&&old.index===state.index&&old.sectionRound===state.sectionRound;
+ if(!preserveTyping&&!preserveProjection)render();else tick();
+ if(state.phase==='question')startSuspense();
+}
+function showConnectionProblem(){
+ if(state)return;
+ el.innerHTML='<div class="panel center"><h2>Unable to connect to the test quiz</h2><p>The game server may be starting or the connection was interrupted.</p><button onclick="location.reload()">Reconnect</button><p class="muted">If this continues, open '+(testMode?'the dedicated test link':'the quiz link')+' again in Safari or Chrome.</p></div>';
+}
+async function refreshQuizState(){
+ try{
+  const response=await fetch(endpointPrefix+'/state',{cache:'no-store'});
+  if(!response.ok)throw Error('Quiz state '+response.status);
+  const incoming=await response.json();
+  if(!state||connection.readyState!==EventSource.OPEN)applyQuizState(incoming);
+ }catch(e){console.warn('Quiz connection issue:',e);showConnectionProblem()}
+}
+const connection=new EventSource(endpointPrefix+'/events');
+connection.onerror=()=>{refreshQuizState()};
+connection.onmessage=e=>{try{applyQuizState(JSON.parse(e.data))}catch(error){console.error('Quiz update error:',error);showConnectionProblem()}};
+refreshQuizState();
+setInterval(()=>{if(connection.readyState!==EventSource.OPEN)refreshQuizState()},4000);
 setInterval(tick,250);
 if(hostPreviewMode)render();
