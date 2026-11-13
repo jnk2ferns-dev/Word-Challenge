@@ -313,3 +313,8 @@ body.screen-mode .slideshow-help{color:#fff;background:#1a2623;padding:12px 15px
 body.screen-mode.slideshow-playing .slideshow-toolbar{display:none!important}
 body.screen-mode .soundbutton{display:none!important}
 @media(max-width:700px){body.screen-mode .slideshow-toolbar{bottom:8px}body.screen-mode .slideshow-toolbar button{font-size:13px;padding:9px 13px}}
+
+/* Participant-facing pages are single-purpose: no Host/Big Screen/Participant menu. */
+body.player-mode>header nav{display:none!important}
+body.player-mode>header{justify-content:center;padding:11px 14px}
+body.player-mode>header .brand{text-align:center;font-size:clamp(13px,3.7vw,18px)}
