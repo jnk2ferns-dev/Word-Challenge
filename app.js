@@ -118,7 +118,7 @@ function startGlow(){if(view==='screen'&&!glowFrame&&typeof requestAnimationFram
 function questionFontSize(prompt){const len=String(prompt||'').length;return len>185?19:len>145?21:len>110?23:len>82?25:29}
 function fitQuestionText(){document.querySelectorAll('.question-copy').forEach(n=>{
  const holder=n.closest('.ppt-prompt');if(!holder)return;
- const enlarged=testMode&&view==='screen'&&state?.question?.id===30;
+ const enlarged=view==='screen';
  let size=questionFontSize(n.textContent)+(enlarged?21.333:0);
  const floor=17;
  const maxHeight=holder.clientHeight-12;
