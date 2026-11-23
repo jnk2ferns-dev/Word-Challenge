@@ -609,14 +609,13 @@ body.review-mode.review-minimal .review-slide-frame .ppt-stage{width:min(100vw,c
 
 /* Christmas Quiz final PPTM typography and background transparency refinement.
    Text only changes; all PowerPoint-derived shape geometry remains intact. */
-/* 10% transparent image over the original turquoise base = 90% artwork opacity. */
+/* Full-strength Christmas artwork: 100% opacity, no transparency overlay. */
 .ppt-stage{
  background-color:#84ced1!important;
- background-image:
-  linear-gradient(rgba(132,206,209,.10),rgba(132,206,209,.10)),
-  url('/christmas-bg.webp')!important;
- background-size:cover,cover!important;
- background-position:center,center!important;
+ background-image:url('/christmas-bg.webp')!important;
+ background-size:cover!important;
+ background-position:center!important;
+ background-repeat:no-repeat!important;
 }
 /* Reduce BOTH banner text lines by two typographic points (2.667 CSS px).
    Keep the complete PPTM wording and existing ribbon shapes/positions. */
