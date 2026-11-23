@@ -606,3 +606,52 @@ body.review-mode.review-minimal .review-slide-frame .ppt-stage{width:min(100vw,c
  overflow-wrap:break-word!important;
  padding:4px 12px!important;
 }
+
+/* Christmas Quiz final PPTM typography and background transparency refinement.
+   Text only changes; all PowerPoint-derived shape geometry remains intact. */
+/* 10% transparent image over the original turquoise base = 90% artwork opacity. */
+.ppt-stage{
+ background-color:#84ced1!important;
+ background-image:
+  linear-gradient(rgba(132,206,209,.10),rgba(132,206,209,.10)),
+  url('/christmas-bg.webp')!important;
+ background-size:cover,cover!important;
+ background-position:center,center!important;
+}
+/* Increase BOTH ribbon title lines a further two typographic points (2.667px).
+   For long exact PowerPoint subtitles, fitRibbonCaptions scales the letter
+   width if required; the banner itself is never enlarged or repositioned. */
+.ppt-stage .ribbon-caption span:first-child,
+.ppt-stage .ppt-banner-label span:first-child{
+ font-size:clamp(29.667px,calc(2.65vw + 10.667px),42.667px)!important;
+}
+.ppt-stage .ribbon-caption span:last-child,
+.ppt-stage .ppt-banner-label span:last-child{
+ font-size:clamp(25.667px,calc(2.1vw + 10.667px),35.667px)!important;
+}
+.ppt-stage .ribbon-caption span{
+ white-space:nowrap!important;
+ max-width:none!important;
+ flex-shrink:0!important;
+ overflow:visible!important;
+}
+/* Identical centered horizontal and vertical paragraph alignment on all
+   36 questions and their 36 answer reveals. The DOM applies the same
+   31px-at-1100-stage font size to every question, even the longest. */
+.ppt-stage .ppt-prompt{
+ align-items:center!important;
+ justify-content:center!important;
+ text-align:center!important;
+}
+.ppt-stage .ppt-prompt .question-copy{
+ width:76%!important;max-width:76%!important;
+ font-family:Arial,Helvetica,sans-serif!important;
+ font-weight:400!important;
+ line-height:1.08!important;
+ text-align:center!important;
+ text-wrap:balance!important;
+ letter-spacing:0!important;
+ word-spacing:normal!important;
+ overflow-wrap:break-word!important;
+ white-space:normal!important;
+}
