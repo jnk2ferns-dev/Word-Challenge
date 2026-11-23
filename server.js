@@ -43,6 +43,8 @@ if(b.op==='join'){
 }
 if(b.op==='answer'){const p=state.players[b.id];if(!p||p.token!==b.token||!p.team)return send(res,403,{error:'Invalid participant registration'});if(state.phase!=='question'||Date.now()>=state.endsAt)return send(res,409,{error:'Question closed'});if(state.responses[b.id])return send(res,409,{error:'Already answered'});const q=questions[state.index],answer=String(b.answer||'');if(q.type==='choice'&&!q.choices?.includes(answer))return send(res,400,{error:'Select an answer'});if(q.type!=='choice'&&!/^[a-zA-Z ]{1,75}$/.test(answer))return send(res,400,{error:'Letters and spaces only, max 75 characters'});state.responses[b.id]={answer,at:Date.now()};push();return send(res,200,{ok:true})}
 if(b.hostKey!==HOST_KEY)return send(res,403,{error:'Incorrect host key'});
+// Standalone presentation review; no registration, timer state or score updates.
+if(b.op==='reviewQuestions')return send(res,200,{questions:allQuestions});
 if(testMode&&b.op==='addTestPlayer'){
  if(state.phase!=='lobby')return send(res,409,{error:'Reset the test before adding players'});
  const name=String(b.name||'').trim().slice(0,50),team=String(b.team||'').toUpperCase();
