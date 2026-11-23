@@ -6,14 +6,14 @@
     "prompt": "What word comes after all three words below?",
     "words": [
       "CANDLE",
-      "STAR",
-      "FIRE"
+      "FIRE",
+      "STAR"
     ],
     "answer": "LIGHT",
     "completed": [
       "CANDLELIGHT",
-      "STARLIGHT",
-      "FIRELIGHT"
+      "FIRELIGHT",
+      "STARLIGHT"
     ],
     "seconds": 30,
     "choices": []
@@ -25,14 +25,14 @@
     "prompt": "What word comes after all three words below?",
     "words": [
       "CHEESE",
-      "PLUM",
-      "FRUIT"
+      "FRUIT",
+      "PLUM"
     ],
     "answer": "CAKE",
     "completed": [
       "CHEESECAKE",
-      "PLUMCAKE",
-      "FRUITCAKE"
+      "FRUITCAKE",
+      "PLUMCAKE"
     ],
     "seconds": 30,
     "choices": []
@@ -44,14 +44,14 @@
     "prompt": "What word comes after all three words below?",
     "words": [
       "CHEST",
-      "HAZEL",
-      "COCO"
+      "COCO",
+      "HAZEL"
     ],
     "answer": "NUT",
     "completed": [
       "CHESTNUT",
-      "HAZELNUT",
-      "COCONUT"
+      "COCONUT",
+      "HAZELNUT"
     ],
     "seconds": 30,
     "choices": []
@@ -63,14 +63,14 @@
     "prompt": "What word comes after all three words below?",
     "words": [
       "CORN",
-      "SHORT",
-      "GINGER"
+      "GINGER",
+      "SHORT"
     ],
     "answer": "BREAD",
     "completed": [
       "CORNBREAD",
-      "SHORTBREAD",
-      "GINGERBREAD"
+      "GINGERBREAD",
+      "SHORTBREAD"
     ],
     "seconds": 30,
     "choices": []
@@ -82,14 +82,14 @@
     "prompt": "What word comes after all three words below?",
     "words": [
       "GLITTER",
-      "WINTER",
-      "SNOW"
+      "SNOW",
+      "WINTER"
     ],
     "answer": "BALL",
     "completed": [
       "GLITTERBALL",
-      "WINTERBALL",
-      "SNOWBALL"
+      "SNOWBALL",
+      "WINTERBALL"
     ],
     "seconds": 30,
     "choices": []
@@ -101,14 +101,14 @@
     "prompt": "What word comes after all three words below?",
     "words": [
       "BAKE",
-      "SNOW",
-      "CARD"
+      "CARD",
+      "SNOW"
     ],
     "answer": "BOARD",
     "completed": [
       "BAKEBOARD",
-      "SNOWBOARD",
-      "CARDBOARD"
+      "CARDBOARD",
+      "SNOWBOARD"
     ],
     "seconds": 30,
     "choices": []
@@ -120,14 +120,14 @@
     "prompt": "What word comes after all three words below?",
     "words": [
       "CLERGY",
-      "SNOW",
-      "POST"
+      "POST",
+      "SNOW"
     ],
     "answer": "MAN",
     "completed": [
       "CLERGYMAN",
-      "SNOWMAN",
-      "POSTMAN"
+      "POSTMAN",
+      "SNOWMAN"
     ],
     "seconds": 30,
     "choices": []
@@ -139,14 +139,14 @@
     "prompt": "What word comes after all three words below?",
     "words": [
       "CHRISTMAS",
-      "YULE",
-      "WINTER"
+      "WINTER",
+      "YULE"
     ],
     "answer": "TIDE",
     "completed": [
       "CHRISTMASTIDE",
-      "YULETIDE",
-      "WINTERTIDE"
+      "WINTERTIDE",
+      "YULETIDE"
     ],
     "seconds": 30,
     "choices": []
@@ -158,14 +158,14 @@
     "prompt": "What word comes after all three words below?",
     "words": [
       "GIFT",
-      "UN",
-      "SHRINK"
+      "SHRINK",
+      "UN"
     ],
     "answer": "WRAP",
     "completed": [
       "GIFTWRAP",
-      "UNWRAP",
-      "SHRINKWRAP"
+      "SHRINKWRAP",
+      "UNWRAP"
     ],
     "seconds": 30,
     "choices": []
@@ -177,20 +177,20 @@
     "prompt": "Which of Santa's reindeer has a name that comes from an old word for 'lightning'?",
     "words": [
       "COMET",
-      "BLITZEN",
-      "DANCER"
+      "DANCER",
+      "BLITZEN"
     ],
     "answer": "BLITZEN",
     "completed": [
       "COMET",
-      "BLITZEN",
-      "DANCER"
+      "DANCER",
+      "BLITZEN"
     ],
     "seconds": 30,
     "choices": [
       "COMET",
-      "BLITZEN",
-      "DANCER"
+      "DANCER",
+      "BLITZEN"
     ]
   },
   {
@@ -200,20 +200,20 @@
     "prompt": "In the carol 'Rudolph the Red-Nosed Reindeer,' what kind of weather makes Santa ask Rudolph to guide his sleigh?",
     "words": [
       "A BLIZZARD",
-      "HEAVY RAIN",
-      "FOG"
+      "FOG",
+      "HEAVY RAIN"
     ],
     "answer": "FOG",
     "completed": [
       "A BLIZZARD",
-      "HEAVY RAIN",
-      "FOG"
+      "FOG",
+      "HEAVY RAIN"
     ],
     "seconds": 30,
     "choices": [
       "A BLIZZARD",
-      "HEAVY RAIN",
-      "FOG"
+      "FOG",
+      "HEAVY RAIN"
     ]
   },
   {
@@ -223,20 +223,20 @@
     "prompt": "In the carol 'The Twelve Days of Christmas,' which bird sits in a pear tree on the first day?",
     "words": [
       "A DOVE",
-      "A PARTRIDGE",
-      "A ROBIN"
+      "A ROBIN",
+      "A PARTRIDGE"
     ],
     "answer": "A PARTRIDGE",
     "completed": [
       "A DOVE",
-      "A PARTRIDGE",
-      "A ROBIN"
+      "A ROBIN",
+      "A PARTRIDGE"
     ],
     "seconds": 30,
     "choices": [
       "A DOVE",
-      "A PARTRIDGE",
-      "A ROBIN"
+      "A ROBIN",
+      "A PARTRIDGE"
     ]
   },
   {
@@ -246,20 +246,20 @@
     "prompt": "According to the Gospels of Matthew and Luke, in which town was Jesus born?",
     "words": [
       "NAZARETH",
-      "JERUSALEM",
-      "BETHLEHEM"
+      "BETHLEHEM",
+      "JERUSALEM"
     ],
     "answer": "BETHLEHEM",
     "completed": [
       "NAZARETH",
-      "JERUSALEM",
-      "BETHLEHEM"
+      "BETHLEHEM",
+      "JERUSALEM"
     ],
     "seconds": 30,
     "choices": [
       "NAZARETH",
-      "JERUSALEM",
-      "BETHLEHEM"
+      "BETHLEHEM",
+      "JERUSALEM"
     ]
   },
   {
@@ -269,20 +269,20 @@
     "prompt": "Myrrh, one of the Magi's three gifts in the Gospel of Matthew, is what kind of substance?",
     "words": [
       "A TREE RESIN",
-      "A MINERAL SALT",
-      "A PRESSED FLOWER OIL"
+      "A PRESSED FLOWER OIL",
+      "A MINERAL SALT"
     ],
     "answer": "A TREE RESIN",
     "completed": [
       "A TREE RESIN",
-      "A MINERAL SALT",
-      "A PRESSED FLOWER OIL"
+      "A PRESSED FLOWER OIL",
+      "A MINERAL SALT"
     ],
     "seconds": 30,
     "choices": [
       "A TREE RESIN",
-      "A MINERAL SALT",
-      "A PRESSED FLOWER OIL"
+      "A PRESSED FLOWER OIL",
+      "A MINERAL SALT"
     ]
   },
   {
@@ -292,20 +292,20 @@
     "prompt": "According to the Bible what mode of transportation does Mary and Joseph take to travel to Bethlehem?",
     "words": [
       "CAMEL",
-      "IT DOES NOT STATE",
-      "DONKEY"
+      "DONKEY",
+      "IT DOES NOT STATE"
     ],
     "answer": "IT DOES NOT STATE",
     "completed": [
       "CAMEL",
-      "IT DOES NOT STATE",
-      "DONKEY"
+      "DONKEY",
+      "IT DOES NOT STATE"
     ],
     "seconds": 30,
     "choices": [
       "CAMEL",
-      "IT DOES NOT STATE",
-      "DONKEY"
+      "DONKEY",
+      "IT DOES NOT STATE"
     ]
   },
   {
@@ -315,20 +315,20 @@
     "prompt": "Which carol is also known by the Latin title “Adeste Fideles”?",
     "words": [
       "JOY TO THE WORLD",
-      "AWAY IN A MANGER",
-      "O COME ALL YE FAITHFUL"
+      "O COME ALL YE FAITHFUL",
+      "AWAY IN A MANGER"
     ],
     "answer": "O COME ALL YE FAITHFUL",
     "completed": [
       "JOY TO THE WORLD",
-      "AWAY IN A MANGER",
-      "O COME ALL YE FAITHFUL"
+      "O COME ALL YE FAITHFUL",
+      "AWAY IN A MANGER"
     ],
     "seconds": 30,
     "choices": [
       "JOY TO THE WORLD",
-      "AWAY IN A MANGER",
-      "O COME ALL YE FAITHFUL"
+      "O COME ALL YE FAITHFUL",
+      "AWAY IN A MANGER"
     ]
   },
   {
@@ -338,20 +338,20 @@
     "prompt": "In which country did Christmas caroling (singing) originate?",
     "words": [
       "AUSTRIA",
-      "POLAND",
-      "GERMANY"
+      "GERMANY",
+      "POLAND"
     ],
     "answer": "AUSTRIA",
     "completed": [
       "AUSTRIA",
-      "POLAND",
-      "GERMANY"
+      "GERMANY",
+      "POLAND"
     ],
     "seconds": 30,
     "choices": [
       "AUSTRIA",
-      "POLAND",
-      "GERMANY"
+      "GERMANY",
+      "POLAND"
     ]
   },
   {
@@ -361,20 +361,20 @@
     "prompt": "How many reindeer does Santa famously have?",
     "words": [
       "NINE",
-      "SEVEN",
-      "EIGHT"
+      "EIGHT",
+      "SEVEN"
     ],
     "answer": "NINE",
     "completed": [
       "NINE",
-      "SEVEN",
-      "EIGHT"
+      "EIGHT",
+      "SEVEN"
     ],
     "seconds": 30,
     "choices": [
       "NINE",
-      "SEVEN",
-      "EIGHT"
+      "EIGHT",
+      "SEVEN"
     ]
   },
   {
