@@ -452,3 +452,39 @@ body.screen-mode .view-screen .ppt-stage .question-copy{
  .test-manual-add{grid-template-columns:minmax(0,1fr) auto}
  .demo-setup{padding:10px}
 }
+
+/* THE CHRISTMAS QUIZ: palette and background taken from supplied PowerPoint.
+   Original slide positions, shapes, animation, mobile views and controls remain. */
+:root{background:#7fcbd0}
+body{background:#a4d8d7}
+header{background:#006D5B;border-bottom-color:#E97132}
+.brand{color:#ffffff}
+button,.button{background:#0C918B}
+nav button,.secondary{background:#E97132;color:#102820}
+.ppt-stage{
+ background-color:#84ced1!important;
+ background-image:url('/christmas-bg.webp')!important;
+ background-position:center!important;
+ background-repeat:no-repeat!important;
+ background-size:cover!important;
+ box-shadow:none!important;
+}
+.title-hex::before{background:#E97132!important}
+.intro-slide .title-hex::before{background:#006D5B!important}
+.intro-slide .title-hex span{color:white!important}
+.section-slide .title-hex span{color:#172925!important}
+.ppt-prompt::before{background:#006D5B!important}
+.ppt-hex{background:#006D5B!important;color:#fff!important}
+.ppt-hex.revealed{background:#E97131!important;color:#17251c!important}
+.ppt-stage.choice-slide .ppt-hex{background:#E97131!important;color:#17251c!important;font-size:clamp(13px,2.3vw,28px)!important;white-space:normal}
+.ppt-stage.choice-slide.results-stage .ppt-hex.correct-choice{background:#006D5B!important;color:white!important}
+.ppt-stage.choice-slide.results-stage .ppt-hex.incorrect-choice{background:#E97131!important;color:#17251c!important}
+.ppt-answer{background:#E97131!important;color:#17251c!important}
+.ppt-fast{background:#006D5B!important}
+.ppt-outcome{color:#006D5B!important;text-shadow:0 1px 2px #fff,0 0 6px #fff}
+.ppt-stage .question-copy{color:#fff}
+.ppt-count .timer{color:#006D5B;text-shadow:0 1px 3px white}
+.finale-stage .ppt-final{color:#006D5B!important;text-shadow:0 1px 3px #fff}
+.winner-team,.winner-team-name,.winner-member-names{color:#006D5B}
+.final-tally-title{color:#006D5B!important;text-shadow:0 1px 2px #fff}
+.mobile-category{background:#006D5B;border-color:#0C918B}
