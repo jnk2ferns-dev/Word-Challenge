@@ -559,3 +559,50 @@ body.review-mode.review-minimal .review-slide-frame .ppt-stage{width:min(100vw,c
  .review-toolbar .review-hide{display:none}
  .review-progress{min-width:100px}
 }
+
+/* PPTM visual corrections: 2026-11-23.
+   The existing banner and question SHAPES keep their original geometry. */
+/* Six typographic points = eight CSS pixels; grow both lines of each top ribbon. */
+.ppt-stage .ribbon-caption span:first-child,
+.ppt-stage .ppt-banner-label span:first-child{
+ font-size:clamp(27px,calc(2.65vw + 8px),40px)!important;
+ line-height:1.02!important;
+}
+.ppt-stage .ribbon-caption span:last-child,
+.ppt-stage .ppt-banner-label span:last-child{
+ font-size:clamp(23px,calc(2.1vw + 8px),33px)!important;
+ line-height:1.02!important;
+}
+/* Identical typography alignment, spacing and font style on all 36 question
+   and reveal slides. Text may only reduce in size if it would overflow. */
+.ppt-stage .ppt-prompt .question-copy{
+ font-family:Arial,Helvetica,sans-serif!important;
+ font-weight:400!important;
+ text-align:center!important;
+ text-wrap:balance;
+ line-height:1.08!important;
+ letter-spacing:0!important;
+ word-spacing:normal!important;
+ overflow-wrap:break-word!important;
+}
+/* PPTM: categories 1 and 4 reveal orange, category 3 reveals green. */
+.ppt-stage.results-stage .ppt-answer.answer-green{
+ background:#016D5B!important;color:#ffffff!important;
+}
+.ppt-stage.results-stage .ppt-answer.answer-orange{
+ background:#E97131!important;color:#17251c!important;
+}
+/* PPTM category 2: answer choices start orange, the correct one reveals green.
+   Repeat that answer in a separate, legible band UNDER the three choices. */
+.ppt-stage.choice-slide.results-stage .ppt-hex.correct-choice{
+ background:#016D5B!important;color:#ffffff!important;
+}
+.ppt-stage.choice-slide.results-stage .ppt-answer.answer-mcq{
+ background:#016D5B!important;color:#ffffff!important;
+ left:26%!important;width:48%!important;
+ font-size:clamp(16px,2vw,24px)!important;
+ line-height:1.08!important;
+ white-space:normal!important;
+ overflow-wrap:break-word!important;
+ padding:4px 12px!important;
+}
