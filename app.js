@@ -259,6 +259,8 @@ function reviewGo(position){
  }
 }
 function reviewStep(direction){reviewGo(reviewPosition+direction)}
+let reviewIgnoreTapUntil=0;
+function reviewTapSlide(){if(Date.now()>=reviewIgnoreTapUntil)reviewStep(1)}
 function reviewToggleControls(){reviewControlsHidden=!reviewControlsHidden;document.body.classList.toggle('review-minimal',reviewControlsHidden);renderReview()}
 function reviewSlideHTML(slide){
  if(slide.type==='answer'){
@@ -291,21 +293,21 @@ function renderReview(){
   +'<button onclick="launchSlideshow()">⛶ Full Screen</button>'
   +'<button class="review-hide" onclick="reviewToggleControls()">Hide Controls</button>'
   +'</div>';
- el.innerHTML='<div class="view-review"><div class="review-slide-frame" title="Tap slide for next" onclick="reviewStep(1)">'+reviewSlideHTML(slide)+'</div>'
+ el.innerHTML='<div class="view-review"><div class="review-slide-frame" title="Tap slide for next" onclick="reviewTapSlide()">'+reviewSlideHTML(slide)+'</div>'
   +(reviewControlsHidden?'<button class="review-restore" onclick="reviewToggleControls()">Show Controls</button>':controls)
   +'</div>';
  document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));
  fitQuestionText();startGlow();tick();
 }
 document.addEventListener('keydown',e=>{
- if(!reviewMode||!reviewSlides.length||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
+ if(!reviewMode||!reviewSlides.length||/INPUT|TEXTAREA|SELECT|BUTTON/.test(e.target.tagName))return;
  if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();reviewStep(1)}
  if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();reviewStep(-1)}
  if(e.key.toLowerCase()==='h')reviewToggleControls();
 });
 let reviewTouchX=null,reviewTouchY=null;
 document.addEventListener('touchstart',e=>{if(!reviewMode||!e.touches.length||e.target.closest('.review-toolbar'))return;reviewTouchX=e.touches[0].clientX;reviewTouchY=e.touches[0].clientY},{passive:true});
-document.addEventListener('touchend',e=>{if(!reviewMode||reviewTouchX===null||!e.changedTouches.length)return;const dx=e.changedTouches[0].clientX-reviewTouchX,dy=e.changedTouches[0].clientY-reviewTouchY;reviewTouchX=null;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.5)reviewStep(dx<0?1:-1)},{passive:true});
+document.addEventListener('touchend',e=>{if(!reviewMode||reviewTouchX===null||!e.changedTouches.length)return;const dx=e.changedTouches[0].clientX-reviewTouchX,dy=e.changedTouches[0].clientY-reviewTouchY;reviewTouchX=null;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.5){reviewIgnoreTapUntil=Date.now()+900;reviewStep(dx<0?1:-1)}},{passive:true});
 function render(){if(reviewMode){renderReview();return}if(!state&&!hostPreviewMode)return;
 const presentationControls=view==='screen'&&!document.fullscreenElement
 ?'<div class="slideshow-toolbar"><button class="launch-slideshow" onclick="launchSlideshow()">⛶ Full Screen Slideshow</button>'+(!soundEnabled?'<button class="screen-audio-btn" onclick="enableSound()">🔊 Enable Sound</button>':'')+'<div id="slideshow-help" class="slideshow-help hidden">This browser does not allow websites to hide its tabs or address bar. Use a browser with fullscreen support or open this screen from your TV browser in fullscreen mode.</div></div>'
