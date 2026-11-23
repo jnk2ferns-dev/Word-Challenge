@@ -4,6 +4,9 @@ const PORT=Number(process.env.PORT||3000);
 const HOST_KEY=process.env.HOST_KEY;
 if(!HOST_KEY||HOST_KEY.length<20){console.error('HOST_KEY must be set to a secure 20+ character secret');process.exit(1)}
 const allQuestions=JSON.parse(fs.readFileSync(path.join(__dirname,'questions.json'),'utf8'));
+// Render the supplied Christmas border artwork from bundled base64 WebP parts.
+let christmasBackground=null;
+try{const encoded=['christmas-part0.b64','christmas-part1.b64','christmas-part2.b64'].map(f=>fs.readFileSync(path.join(__dirname,f),'utf8').trim()).join('');christmasBackground=Buffer.from(encoded,'base64')}catch(e){console.warn('Christmas background is not yet installed:',e.message)}
 // Full edition: all nine questions in each of the four Word Challenge categories.
 const questions=allQuestions;
 function createGame(questions,capacity,testMode=false){
@@ -94,6 +97,7 @@ http.createServer((req,res)=>{
  const game=test?testGame:mainGame;
  const resource=test?pathname.slice(5):pathname;
  if(req.method==='GET'&&resource==='/health')return send(res,200,{ok:true});
+ if(req.method==='GET'&&resource==='/christmas-bg.webp'){if(!christmasBackground)return send(res,404,{error:'Background unavailable'});res.writeHead(200,{'Content-Type':'image/webp','Content-Length':christmasBackground.length,'Cache-Control':'public, max-age=3600'});return res.end(christmasBackground)}
  if(req.method==='GET'&&resource==='/events'){
   res.writeHead(200,{'Content-Type':'text/event-stream','Cache-Control':'no-cache, no-transform','Connection':'keep-alive','X-Accel-Buffering':'no'});
   res.write('data: '+JSON.stringify(game.snapshot())+'\n\n');
@@ -108,6 +112,6 @@ http.createServer((req,res)=>{
  if(req.method!=='GET'||!allowed.has(filename))return send(res,404,{error:'Not found'});
  res.writeHead(200,{'Content-Type':filename.endsWith('.js')?'application/javascript':filename.endsWith('.css')?'text/css':filename.endsWith('.svg')?'image/svg+xml':filename.endsWith('.b64')?'text/plain':filename.endsWith('.mp3')?'audio/mpeg':'text/html','Cache-Control':'no-cache'});
  fs.createReadStream(path.join(__dirname,filename)).pipe(res);
-}).listen(PORT,'0.0.0.0',()=>console.log('Word Challenge server on '+PORT));
+}).listen(PORT,'0.0.0.0',()=>console.log('The Christmas Quiz server on '+PORT));
 setInterval(()=>{for(const game of [mainGame,testGame])if(game.state.phase==='question'&&Date.now()>=game.state.endsAt)game.finish()},250);
 setInterval(()=>{for(const game of [mainGame,testGame])for(const client of game.clients)try{client.write(': ping\n\n')}catch{game.clients.delete(client)}},15000);
