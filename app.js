@@ -8,15 +8,17 @@ const el=document.getElementById('app');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function setView(v){if(v==='player'){stopAllQuizAudio()}view=v;history.replaceState(null,'','?view='+v+(testMode?'&test=1':''));document.body.classList.toggle('screen-mode',v==='screen');document.body.classList.toggle('player-mode',v==='player');render()}
 async function launchSlideshow(){
- // Fullscreen requires a direct tap/click in supported browsers.
+ // Browsers such as Safari on iPad may not provide document fullscreen.
+ // Even there, the Review can still show an unobstructed, slide-only layout.
+ if(reviewMode){reviewControlsHidden=true;document.body.classList.add('review-minimal')}
  try{
   unlockAudio();
   if(document.documentElement.requestFullscreen){await document.documentElement.requestFullscreen({navigationUI:'hide'});}
   else if(document.documentElement.webkitRequestFullscreen){document.documentElement.webkitRequestFullscreen();}
-  else{document.getElementById('slideshow-help')?.classList.remove('hidden');return}
+  else if(!reviewMode){document.getElementById('slideshow-help')?.classList.remove('hidden');return}
   document.body.classList.add('slideshow-playing');
  }catch(e){
-  document.getElementById('slideshow-help')?.classList.remove('hidden');
+  if(!reviewMode)document.getElementById('slideshow-help')?.classList.remove('hidden');
  }
  render();
 }
