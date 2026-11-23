@@ -3,17 +3,17 @@
     "id": 1,
     "round": 1,
     "type": "text",
-    "prompt": "What is the word that completes all three words below?",
+    "prompt": "What word comes after all three words below?",
     "words": [
-      "BODY",
-      "LIFE",
-      "MUD"
+      "CANDLE",
+      "STAR",
+      "FIRE"
     ],
-    "answer": "GUARD",
+    "answer": "LIGHT",
     "completed": [
-      "BODYGUARD",
-      "LIFEGUARD",
-      "MUDGUARD"
+      "CANDLELIGHT",
+      "STARLIGHT",
+      "FIRELIGHT"
     ],
     "seconds": 30,
     "choices": []
@@ -22,17 +22,17 @@
     "id": 2,
     "round": 1,
     "type": "text",
-    "prompt": "What is the word that completes all three words below?",
+    "prompt": "What word comes after all three words below?",
     "words": [
-      "MEANING",
-      "HOPE",
-      "MIND"
+      "CHEESE",
+      "PLUM",
+      "FRUIT"
     ],
-    "answer": "LESS",
+    "answer": "CAKE",
     "completed": [
-      "MEANINGLESS",
-      "HOPELESS",
-      "MINDLESS"
+      "CHEESECAKE",
+      "PLUMCAKE",
+      "FRUITCAKE"
     ],
     "seconds": 30,
     "choices": []
@@ -41,17 +41,17 @@
     "id": 3,
     "round": 1,
     "type": "text",
-    "prompt": "What is the word that completes all three words below?",
+    "prompt": "What word comes after all three words below?",
     "words": [
-      "SHORT",
-      "PAPER",
-      "HAIR"
+      "CHEST",
+      "HAZEL",
+      "COCO"
     ],
-    "answer": "CUT",
+    "answer": "NUT",
     "completed": [
-      "SHORTCUT",
-      "PAPERCUT",
-      "HAIRCUT"
+      "CHESTNUT",
+      "HAZELNUT",
+      "COCONUT"
     ],
     "seconds": 30,
     "choices": []
@@ -60,17 +60,17 @@
     "id": 4,
     "round": 1,
     "type": "text",
-    "prompt": "What is the word that completes all three words below?",
+    "prompt": "What word comes after all three words below?",
     "words": [
-      "GRID",
-      "PAD",
-      "DEAD"
+      "CORN",
+      "SHORT",
+      "GINGER"
     ],
-    "answer": "LOCK",
+    "answer": "BREAD",
     "completed": [
-      "GRIDLOCK",
-      "PADLOCK",
-      "DEADLOCK"
+      "CORNBREAD",
+      "SHORTBREAD",
+      "GINGERBREAD"
     ],
     "seconds": 30,
     "choices": []
@@ -79,17 +79,17 @@
     "id": 5,
     "round": 1,
     "type": "text",
-    "prompt": "What is the word that completes all three words below?",
+    "prompt": "What word comes after all three words below?",
     "words": [
-      "NET",
-      "HOME",
-      "FRAME"
+      "GLITTER",
+      "WINTER",
+      "SNOW"
     ],
-    "answer": "WORK",
+    "answer": "BALL",
     "completed": [
-      "NETWORK",
-      "HOMEWORK",
-      "FRAMEWORK"
+      "GLITTERBALL",
+      "WINTERBALL",
+      "SNOWBALL"
     ],
     "seconds": 30,
     "choices": []
@@ -98,17 +98,17 @@
     "id": 6,
     "round": 1,
     "type": "text",
-    "prompt": "What is the word that completes all three words below?",
+    "prompt": "What word comes after all three words below?",
     "words": [
-      "CUP",
-      "CHEESE",
-      "PAN"
+      "BAKE",
+      "SNOW",
+      "CARD"
     ],
-    "answer": "CAKE",
+    "answer": "BOARD",
     "completed": [
-      "CUPCAKE",
-      "CHEESECAKE",
-      "PANCAKE"
+      "BAKEBOARD",
+      "SNOWBOARD",
+      "CARDBOARD"
     ],
     "seconds": 30,
     "choices": []
@@ -117,17 +117,17 @@
     "id": 7,
     "round": 1,
     "type": "text",
-    "prompt": "What is the word that completes all three words below?",
+    "prompt": "What word comes after all three words below?",
     "words": [
-      "WATER",
-      "DOWN",
-      "FREE"
+      "CLERGY",
+      "SNOW",
+      "POST"
     ],
-    "answer": "FALL",
+    "answer": "MAN",
     "completed": [
-      "WATERFALL",
-      "DOWNFALL",
-      "FREEFALL"
+      "CLERGYMAN",
+      "SNOWMAN",
+      "POSTMAN"
     ],
     "seconds": 30,
     "choices": []
@@ -136,17 +136,17 @@
     "id": 8,
     "round": 1,
     "type": "text",
-    "prompt": "What is the word that completes all three words below?",
+    "prompt": "What word comes after all three words below?",
     "words": [
-      "BOOK",
-      "WATER",
-      "TRADE"
+      "CHRISTMAS",
+      "YULE",
+      "WINTER"
     ],
-    "answer": "MARK",
+    "answer": "TIDE",
     "completed": [
-      "BOOKMARK",
-      "WATERMARK",
-      "TRADEMARK"
+      "CHRISTMASTIDE",
+      "YULETIDE",
+      "WINTERTIDE"
     ],
     "seconds": 30,
     "choices": []
@@ -155,17 +155,17 @@
     "id": 9,
     "round": 1,
     "type": "text",
-    "prompt": "What is the word that completes all three words below?",
+    "prompt": "What word comes after all three words below?",
     "words": [
-      "FOOT",
-      "BASE",
-      "BASKET"
+      "GIFT",
+      "UN",
+      "SHRINK"
     ],
-    "answer": "BALL",
+    "answer": "WRAP",
     "completed": [
-      "FOOTBALL",
-      "BASEBALL",
-      "BASKETBALL"
+      "GIFTWRAP",
+      "UNWRAP",
+      "SHRINKWRAP"
     ],
     "seconds": 30,
     "choices": []
@@ -173,181 +173,217 @@
   {
     "id": 10,
     "round": 2,
-    "type": "text",
-    "prompt": "What is the word that comes before all three words below?",
+    "type": "choice",
+    "prompt": "Which of Santa's reindeer has a name that comes from an old word for 'lightning'?",
     "words": [
-      "FLOWER",
-      "LIGHT",
-      "RISE"
+      "COMET",
+      "BLITZEN",
+      "DANCER"
     ],
-    "answer": "SUN",
+    "answer": "BLITZEN",
     "completed": [
-      "SUNFLOWER",
-      "SUNLIGHT",
-      "SUNRISE"
+      "COMET",
+      "BLITZEN",
+      "DANCER"
     ],
     "seconds": 30,
-    "choices": []
+    "choices": [
+      "COMET",
+      "BLITZEN",
+      "DANCER"
+    ]
   },
   {
     "id": 11,
     "round": 2,
-    "type": "text",
-    "prompt": "What is the word that comes before all three words below?",
+    "type": "choice",
+    "prompt": "In the carol 'Rudolph the Red-Nosed Reindeer,' what kind of weather makes Santa ask Rudolph to guide his sleigh?",
     "words": [
-      "DUST",
-      "LIGHT",
-      "FISH"
+      "A BLIZZARD",
+      "HEAVY RAIN",
+      "FOG"
     ],
-    "answer": "STAR",
+    "answer": "FOG",
     "completed": [
-      "STARDUST",
-      "STARLIGHT",
-      "STARFISH"
+      "A BLIZZARD",
+      "HEAVY RAIN",
+      "FOG"
     ],
     "seconds": 30,
-    "choices": []
+    "choices": [
+      "A BLIZZARD",
+      "HEAVY RAIN",
+      "FOG"
+    ]
   },
   {
     "id": 12,
     "round": 2,
-    "type": "text",
-    "prompt": "What is the word that comes before all three words below?",
+    "type": "choice",
+    "prompt": "In the carol 'The Twelve Days of Christmas,' which bird sits in a pear tree on the first day?",
     "words": [
-      "ACT",
-      "VIEW",
-      "CHANGE"
+      "A DOVE",
+      "A PARTRIDGE",
+      "A ROBIN"
     ],
-    "answer": "INTER",
+    "answer": "A PARTRIDGE",
     "completed": [
-      "INTERACT",
-      "INTERVIEW",
-      "INTERCHANGE"
+      "A DOVE",
+      "A PARTRIDGE",
+      "A ROBIN"
     ],
     "seconds": 30,
-    "choices": []
+    "choices": [
+      "A DOVE",
+      "A PARTRIDGE",
+      "A ROBIN"
+    ]
   },
   {
     "id": 13,
     "round": 2,
-    "type": "text",
-    "prompt": "What is the word that comes before all three words below?",
+    "type": "choice",
+    "prompt": "According to the Gospels of Matthew and Luke, in which town was Jesus born?",
     "words": [
-      "FLY",
-      "WORKS",
-      "PLACE"
+      "NAZARETH",
+      "JERUSALEM",
+      "BETHLEHEM"
     ],
-    "answer": "FIRE",
+    "answer": "BETHLEHEM",
     "completed": [
-      "FIREFLY",
-      "FIREWORKS",
-      "FIREPLACE"
+      "NAZARETH",
+      "JERUSALEM",
+      "BETHLEHEM"
     ],
     "seconds": 30,
-    "choices": []
+    "choices": [
+      "NAZARETH",
+      "JERUSALEM",
+      "BETHLEHEM"
+    ]
   },
   {
     "id": 14,
     "round": 2,
-    "type": "text",
-    "prompt": "What is the word that comes before all three words below?",
+    "type": "choice",
+    "prompt": "Myrrh, one of the Magi's three gifts in the Gospel of Matthew, is what kind of substance?",
     "words": [
-      "BAG",
-      "SHAKE",
-      "BOOK"
+      "A TREE RESIN",
+      "A MINERAL SALT",
+      "A PRESSED FLOWER OIL"
     ],
-    "answer": "HAND",
+    "answer": "A TREE RESIN",
     "completed": [
-      "HANDBAG",
-      "HANDSHAKE",
-      "HANDBOOK"
+      "A TREE RESIN",
+      "A MINERAL SALT",
+      "A PRESSED FLOWER OIL"
     ],
     "seconds": 30,
-    "choices": []
+    "choices": [
+      "A TREE RESIN",
+      "A MINERAL SALT",
+      "A PRESSED FLOWER OIL"
+    ]
   },
   {
     "id": 15,
     "round": 2,
-    "type": "text",
-    "prompt": "What is the word that comes before all three words below?",
+    "type": "choice",
+    "prompt": "According to the Bible what mode of transportation does Mary and Joseph take to travel to Bethlehem?",
     "words": [
-      "BOW",
-      "DROP",
-      "COAT"
+      "CAMEL",
+      "IT DOES NOT STATE",
+      "DONKEY"
     ],
-    "answer": "RAIN",
+    "answer": "IT DOES NOT STATE",
     "completed": [
-      "RAINBOW",
-      "RAINDROP",
-      "RAINCOAT"
+      "CAMEL",
+      "IT DOES NOT STATE",
+      "DONKEY"
     ],
     "seconds": 30,
-    "choices": []
+    "choices": [
+      "CAMEL",
+      "IT DOES NOT STATE",
+      "DONKEY"
+    ]
   },
   {
     "id": 16,
     "round": 2,
-    "type": "text",
-    "prompt": "What is the word that comes before all three words below?",
+    "type": "choice",
+    "prompt": "Which carol is also known by the Latin title “Adeste Fideles”?",
     "words": [
-      "BEARER",
-      "CAKE",
-      "BOARD"
+      "JOY TO THE WORLD",
+      "AWAY IN A MANGER",
+      "O COME ALL YE FAITHFUL"
     ],
-    "answer": "CUP",
+    "answer": "O COME ALL YE FAITHFUL",
     "completed": [
-      "CUPBEARER",
-      "CUPCAKE",
-      "CUPBOARD"
+      "JOY TO THE WORLD",
+      "AWAY IN A MANGER",
+      "O COME ALL YE FAITHFUL"
     ],
     "seconds": 30,
-    "choices": []
+    "choices": [
+      "JOY TO THE WORLD",
+      "AWAY IN A MANGER",
+      "O COME ALL YE FAITHFUL"
+    ]
   },
   {
     "id": 17,
     "round": 2,
-    "type": "text",
-    "prompt": "What is the word that comes before all three words below?",
+    "type": "choice",
+    "prompt": "In which country did Christmas caroling (singing) originate?",
     "words": [
-      "BALL",
-      "STORM",
-      "MAN"
+      "AUSTRIA",
+      "POLAND",
+      "GERMANY"
     ],
-    "answer": "SNOW",
+    "answer": "AUSTRIA",
     "completed": [
-      "SNOWBALL",
-      "SNOWSTORM",
-      "SNOWMAN"
+      "AUSTRIA",
+      "POLAND",
+      "GERMANY"
     ],
     "seconds": 30,
-    "choices": []
+    "choices": [
+      "AUSTRIA",
+      "POLAND",
+      "GERMANY"
+    ]
   },
   {
     "id": 18,
     "round": 2,
-    "type": "text",
-    "prompt": "What is the word that comes before all three words below?",
+    "type": "choice",
+    "prompt": "How many reindeer does Santa famously have?",
     "words": [
-      "MADE",
-      "TOWN",
-      "SICK"
+      "NINE",
+      "SEVEN",
+      "EIGHT"
     ],
-    "answer": "HOME",
+    "answer": "NINE",
     "completed": [
-      "HOMEMADE",
-      "HOMETOWN",
-      "HOMESICK"
+      "NINE",
+      "SEVEN",
+      "EIGHT"
     ],
     "seconds": 30,
-    "choices": []
+    "choices": [
+      "NINE",
+      "SEVEN",
+      "EIGHT"
+    ]
   },
   {
     "id": 19,
     "round": 3,
     "type": "text",
-    "prompt": "What do we call a nation with its own land, people and government?",
+    "prompt": "What do we call the act of transforming an ordinary space into something visually attractive using ornaments, lights and other embellishments?",
     "words": [],
-    "answer": "COUNTRY",
+    "answer": "DECORATE",
     "completed": [],
     "seconds": 30,
     "choices": []
@@ -356,9 +392,9 @@
     "id": 20,
     "round": 3,
     "type": "text",
-    "prompt": "What do we call an artistic literature that often uses language, sound and rhyme to stir the reader’s or listener’s imagination?",
+    "prompt": "In Christian belief, what word describes taking on human form, as understood in the birth of Jesus Christ?",
     "words": [],
-    "answer": "POETRY",
+    "answer": "INCARNATE",
     "completed": [],
     "seconds": 30,
     "choices": []
@@ -367,9 +403,9 @@
     "id": 21,
     "round": 3,
     "type": "text",
-    "prompt": "What do we call at place where birds are domesticated for their meat or eggs?",
+    "prompt": "What word describes producing a lasting emotional response, as a meaningful Christmas carol might do?",
     "words": [],
-    "answer": "POULTRY",
+    "answer": "RESONATE",
     "completed": [],
     "seconds": 30,
     "choices": []
@@ -378,9 +414,9 @@
     "id": 22,
     "round": 3,
     "type": "text",
-    "prompt": "What do we call a cupboard or small room used  to store food?",
+    "prompt": "What word means to mark a special occasion with festivities, gatherings or activities that express happiness and gratitude?",
     "words": [],
-    "answer": "PANTRY",
+    "answer": "CELEBRATE",
     "completed": [],
     "seconds": 30,
     "choices": []
@@ -389,9 +425,9 @@
     "id": 23,
     "round": 3,
     "type": "text",
-    "prompt": "What do we call a category of similar businesses that make products or provide services?",
+    "prompt": "What word means to formally dedicate something to a sacred purpose, often through prayer or religious ceremony?",
     "words": [],
-    "answer": "INDUSTRY",
+    "answer": "CONSECRATE",
     "completed": [],
     "seconds": 30,
     "choices": []
@@ -400,9 +436,9 @@
     "id": 24,
     "round": 3,
     "type": "text",
-    "prompt": "What is the study of substances and how they react?",
+    "prompt": "What word describes people gathering together in one place, as worshippers might do for a Christmas service?",
     "words": [],
-    "answer": "CHEMISTRY",
+    "answer": "CONGREGATE",
     "completed": [],
     "seconds": 30,
     "choices": []
@@ -411,9 +447,9 @@
     "id": 25,
     "round": 3,
     "type": "text",
-    "prompt": "What is the study of shapes, sizes and measurements?",
+    "prompt": "During the season of goodwill, what word describes responding to another person's kindness with a similar gesture?",
     "words": [],
-    "answer": "GEOMETRY",
+    "answer": "RECIPROCATE",
     "completed": [],
     "seconds": 30,
     "choices": []
@@ -422,9 +458,9 @@
     "id": 26,
     "round": 3,
     "type": "text",
-    "prompt": "What is the profession of caring for teeth and gums?",
+    "prompt": "As more presents are placed beneath the Christmas tree, what word describes their gradual increase in number or quantity?",
     "words": [],
-    "answer": "DENTISTRY",
+    "answer": "ACCUMULATE",
     "completed": [],
     "seconds": 30,
     "choices": []
@@ -433,9 +469,9 @@
     "id": 27,
     "round": 3,
     "type": "text",
-    "prompt": "What do you call a government department responsible for managing a particular area of public services?",
+    "prompt": "When two relatives both want the last slice of Christmas pudding, what word describes discussing terms to reach an agreement?",
     "words": [],
-    "answer": "MINISTRY",
+    "answer": "NEGOTIATE",
     "completed": [],
     "seconds": 30,
     "choices": []
@@ -444,9 +480,9 @@
     "id": 28,
     "round": 4,
     "type": "text",
-    "prompt": "What is the name of a sea animal and also means to close something securely?",
+    "prompt": "This item is hung at Christmas to hold small gifts and is also an item with a close-fitting, knitted covering for the foot?",
     "words": [],
-    "answer": "SEAL",
+    "answer": "STOCKING",
     "completed": [],
     "seconds": 30,
     "choices": []
@@ -455,9 +491,9 @@
     "id": 29,
     "round": 4,
     "type": "text",
-    "prompt": "What do you call a measuring tool and is also a title for someone who governs a place?",
+    "prompt": "This item is usually placed beneath a Christmas tree and also refers to what is happening right now.",
     "words": [],
-    "answer": "RULER",
+    "answer": "PRESENT",
     "completed": [],
     "seconds": 30,
     "choices": []
@@ -466,9 +502,9 @@
     "id": 30,
     "round": 4,
     "type": "text",
-    "prompt": "What is the word for feeling well or in good health and also a term used for money paid as a penalty for breaking  a rule or law?",
+    "prompt": "What appears as a thin layer of ice crystals during cold weather, and also means to cover a cake with a sweet decorative coating.",
     "words": [],
-    "answer": "FINE",
+    "answer": "FROST",
     "completed": [],
     "seconds": 30,
     "choices": []
@@ -477,9 +513,9 @@
     "id": 31,
     "round": 4,
     "type": "text",
-    "prompt": "What is the term for proper, satisfactory or excellent manner and also called a place where one draws water from?",
+    "prompt": "What is a religious service celebrated at Christmas, and it can also refer to a large amount, lump, or group of people?",
     "words": [],
-    "answer": "WELL",
+    "answer": "MASS",
     "completed": [],
     "seconds": 30,
     "choices": []
@@ -488,9 +524,9 @@
     "id": 32,
     "round": 4,
     "type": "text",
-    "prompt": "What is a small piece of paper attached to a letter and also a term used to put your foot down heavily on the ground?",
+    "prompt": "This season comes before Christmas or can also mean the general arrival or beginning of something important.",
     "words": [],
-    "answer": "STAMP",
+    "answer": "ADVENT",
     "completed": [],
     "seconds": 30,
     "choices": []
@@ -499,9 +535,9 @@
     "id": 33,
     "round": 4,
     "type": "text",
-    "prompt": "What is the term used for treating everyone equally and also a term used for an event such as an exhibition ?",
+    "prompt": "What is sung during Christmas celebrations and is also a girl's name?",
     "words": [],
-    "answer": "FAIR",
+    "answer": "CAROL",
     "completed": [],
     "seconds": 30,
     "choices": []
@@ -510,9 +546,9 @@
     "id": 34,
     "round": 4,
     "type": "text",
-    "prompt": "What do you call a group of people with shared interests and is also called a heavy stick used for hitting?",
+    "prompt": "This refers to a building associated with the Nativity story, and also means firmly fixed, steady, or unlikely to change.",
     "words": [],
-    "answer": "CLUB",
+    "answer": "STABLE",
     "completed": [],
     "seconds": 30,
     "choices": []
@@ -521,9 +557,9 @@
     "id": 35,
     "round": 4,
     "type": "text",
-    "prompt": "What do you call an area where sports are played and also a term for how high or low a sound is?",
+    "prompt": "This term is used for three consecutive strikes in a single bowling game and also a dish cooked and eaten at Christmas.",
     "words": [],
-    "answer": "PITCH",
+    "answer": "TURKEY",
     "completed": [],
     "seconds": 30,
     "choices": []
@@ -532,9 +568,9 @@
     "id": 36,
     "round": 4,
     "type": "text",
-    "prompt": "What is the name of a tree found in warm climates and also the inner part of your hand?",
+    "prompt": "This term has come to mean the entire nativity scene and also refers to grumble, whine, gripe or complain.",
     "words": [],
-    "answer": "PALM",
+    "answer": "CRIB",
     "completed": [],
     "seconds": 30,
     "choices": []
