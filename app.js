@@ -120,18 +120,45 @@ function animateGlow(timestamp){
 }
 function startGlow(){if((view==='screen'||reviewMode)&&!glowFrame&&typeof requestAnimationFrame==='function')glowFrame=requestAnimationFrame(animateGlow)}
 function questionFontSize(prompt){const len=String(prompt||'').length;return len>185?19:len>145?21:len>110?23:len>82?25:29}
-function fitQuestionText(){document.querySelectorAll('.question-copy').forEach(n=>{
- const holder=n.closest('.ppt-prompt');if(!holder)return;
- // Shared typography scale for all Christmas questions and answer reveals.
- // Keep each question inside its original PowerPoint slide shape.
- let size=48;
- const floor=19,maxHeight=Math.max(0,holder.clientHeight-16);
- n.style.fontSize=size+'px';n.style.lineHeight='1.08';
- while(size>floor&&(n.scrollHeight>maxHeight||n.scrollWidth>n.clientWidth+2)){size--;n.style.fontSize=size+'px'}
-})}
+function fitQuestionText(){
+ // Fixed, consistent font on every question and answer slide. Scale only
+ // with the overall stage (iPad, TV, laptop), never with question length.
+ const slides=document.querySelectorAll('.ppt-stage');
+ slides.forEach(stage=>{
+  const scale=Math.max(.1,stage.clientWidth/1100);
+  const size=31*scale;
+  stage.querySelectorAll('.question-copy').forEach(n=>{
+   n.style.fontSize=size.toFixed(2)+'px';
+   n.style.lineHeight='1.08';
+   n.style.textAlign='center';
+  });
+ });
+}
+function fitRibbonCaptions(){
+ // Keep the full PPTM banner wording visible with the requested larger font.
+ // Narrow the lettering only as needed; retain ribbon shape and positioning.
+ document.querySelectorAll('.ppt-ribbon .ribbon-caption span').forEach(n=>{
+  const parent=n.parentElement;
+  n.style.transform='none';
+  if(!parent||!parent.clientWidth)return;
+  const natural=n.getBoundingClientRect().width;
+  const available=Math.max(1,parent.clientWidth-10);
+  const factor=natural>available?available/natural:1;
+  n.style.transform='scaleX('+factor.toFixed(4)+')';
+  n.style.transformOrigin='center center';
+ });
+}
 function fitHostQuestion(){document.querySelectorAll('[data-fit-host]').forEach(n=>{let size=testMode?56:48;n.style.fontSize=size+'px';const parent=n.closest('.host-content');const allowance=parent?Math.max(105,parent.clientHeight*.52):280;while(size>22&&(n.scrollHeight>allowance||n.scrollWidth>n.clientWidth+2)){size-=2;n.style.fontSize=size+'px'}})}
 function confetti(){let pieces='';const colors=['#f1792c','#fff','#ffd54b','#086b59','#ed3434','#1878ff'];for(let i=0;i<76;i++){const x=(i*37.37)%100,delay=((i*13)%35)/10,duration=3+((i*7)%24)/10;pieces+='<i style="--x:'+x+'%;--delay:'+delay+'s;--speed:'+duration+'s;--c:'+colors[i%colors.length]+';--spin:'+(i%2?'720deg':'-540deg')+'"></i>'}return '<div class="confetti" aria-hidden="true">'+pieces+'</div>'}
-function challengeLabel(r){return 'Christmas Trivia - '+r}
+function challengeLabel(r){
+ const labels={
+  1:'Christmas Trivia 1: What Word Comes After',
+  2:'Christmas Trivia 2: MCQs',
+  3:'Christmas Trivia 3: What Word Ends with “ATE”',
+  4:'Christmas Trivia 4: 2 Meanings 1 Word'
+ };
+ return labels[r]||'Christmas Trivia '+r;
+}
 function scores(){return '<div class="ppt-scores">'+['A','B'].map(t=>'<div class="ppt-score team-'+t.toLowerCase()+' '+(state.results?.roundWinner===t?'highlight':'')+'"><span>TEAM-'+t+'</span><strong>'+state.scores[t]+'</strong><small>POINTS'+(state.results?' · +'+state.results.round[t]+' this question':'')+'</small>'+(state.results?.roundWinner===t?'<em>WINNER</em>':'')+'</div>').join('')+'</div>'}
 function banner(round){const label=challengeLabel(round);return '<div class="ppt-ribbon"><svg class="ribbon-art" viewBox="0 0 1100 130" preserveAspectRatio="none" aria-hidden="true"><path d="M14 32 L283 20 L284 104 L14 121 L149 77 Z" fill="#E97132" stroke="white" stroke-width="2.5"/><path d="M1086 32 L817 20 L816 104 L1086 121 L951 77 Z" fill="#E97132" stroke="white" stroke-width="2.5"/><path d="M282 10 L818 10 L818 106 L282 106 Z" fill="#E97132" stroke="white" stroke-width="2.5"/><path d="M306 106 L415 122 L415 106 M685 106 L685 122 L794 106" fill="none" stroke="white" stroke-width="2"/></svg><div class="ribbon-caption"><span>The Christmas Quiz:</span><span>'+label+'</span></div></div>'}
 function questionPanel(q){return '<div class="question-track"><div class="ppt-prompt"><span class="question-copy" data-target-size="'+questionFontSize(q.prompt)+'">'+esc(q.prompt)+'</span></div></div>'}
@@ -299,7 +326,7 @@ function renderReview(){
   +(reviewControlsHidden?'<button class="review-restore" onclick="reviewToggleControls()">Show Controls</button>':controls)
   +'</div>';
  document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));
- fitQuestionText();startGlow();tick();
+ fitQuestionText();fitRibbonCaptions();startGlow();tick();
 }
 document.addEventListener('keydown',e=>{
  if(!reviewMode||!reviewSlides.length||/INPUT|TEXTAREA|SELECT|BUTTON/.test(e.target.tagName))return;
@@ -316,7 +343,7 @@ const presentationControls=view==='screen'&&!document.fullscreenElement
 :'';
 const otherSound=(view==='screen'||view==='player')?'':soundControl();
 el.innerHTML='<div class="view-'+view+'">'+(hostPreviewMode?'':presentationControls+otherSound)+(hostPreviewMode?hostFontPreview():view==='host'?hostView():view==='screen'?screen():playerView())+'</div>';
-document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));fitQuestionText();fitHostQuestion();startGlow();tick()}
+document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));fitQuestionText();fitRibbonCaptions();fitHostQuestion();startGlow();tick()}
 function tick(){if(!state?.endsAt||state.phase!=='question')return;if(Date.now()>=state.endsAt){stopSuspense();return;}const secs=Math.max(0,Math.ceil((state.endsAt-Date.now())/1000)),n=document.getElementById('clock');if(n)n.textContent=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0');const key=state.index+':'+secs;if(secs>=1&&key!==lastTickKey){lastTickKey=key;if(secs<=10)playTick(secs)}}
 function applyQuizState(incoming){
  const old=state;
@@ -353,3 +380,4 @@ if(!reviewMode){
 setInterval(tick,250);
 if(hostPreviewMode)render();
 if(reviewMode){if(hostKey)loadReviewQuestions();else renderReview()}
+window.addEventListener('resize',()=>{fitRibbonCaptions();fitQuestionText()});
