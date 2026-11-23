@@ -1,4 +1,5 @@
 const testMode=new URLSearchParams(location.search).get('test')==='1';
+const reviewMode=new URLSearchParams(location.search).get('view')==='review';
 const sessionSuffix=testMode?'_test':'';
 const endpointPrefix=testMode?'/test':'';
 let view=new URLSearchParams(location.search).get('view')||'host';
@@ -22,6 +23,7 @@ async function launchSlideshow(){
 function exitSlideshow(){if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen();document.body.classList.remove('slideshow-playing');render()}
 document.body.classList.toggle('screen-mode',view==='screen');
 document.body.classList.toggle('player-mode',view==='player');
+document.body.classList.toggle('review-mode',reviewMode);
 document.body.classList.toggle('test-big-screen',testMode&&view==='screen');
 document.addEventListener('fullscreenchange',()=>{document.body.classList.toggle('slideshow-playing',!!document.fullscreenElement);if(state)render()});
 
@@ -114,11 +116,11 @@ function animateGlow(timestamp){
  }
  glowFrame=requestAnimationFrame(animateGlow);
 }
-function startGlow(){if(view==='screen'&&!glowFrame&&typeof requestAnimationFrame==='function')glowFrame=requestAnimationFrame(animateGlow)}
+function startGlow(){if((view==='screen'||reviewMode)&&!glowFrame&&typeof requestAnimationFrame==='function')glowFrame=requestAnimationFrame(animateGlow)}
 function questionFontSize(prompt){const len=String(prompt||'').length;return len>185?19:len>145?21:len>110?23:len>82?25:29}
 function fitQuestionText(){document.querySelectorAll('.question-copy').forEach(n=>{
  const holder=n.closest('.ppt-prompt');if(!holder)return;
- const enlarged=view==='screen';
+ const enlarged=view==='screen'||reviewMode;
  let size=questionFontSize(n.textContent)+(enlarged?21.333:0);
  const floor=17;
  const maxHeight=holder.clientHeight-12;
@@ -151,7 +153,7 @@ if(hostPreviewMode)return hostFontPreview();
 if(!hostKey)return '<div class="panel"><h2>Host login</h2><p>Enter the private host password set in Render.</p><input id="hostkey" type="password" placeholder="Host password"><button onclick="hostKey=document.getElementById(\'hostkey\').value;sessionStorage.setItem(\'qm_host\',hostKey);render()">Open dashboard</button></div>';
 const active=state.phase!=='lobby';
 const header=active
-?'<div class="host-topbar"><div class="host-heading"><b>'+ (testMode?'ONE-QUESTION LIVE TEST':'HOST CONTROL') +'</b><small>Christmas Trivia '+state.sectionRound+' · '+(state.phase==='finished'?'Complete':'Question '+(state.index+1)+' / '+state.total)+'</small></div><span class="host-info">PIN <strong>'+state.pin+'</strong></span><span class="host-info">Players <strong>'+state.players.length+' / '+state.capacity+'</strong></span><a class="host-screen-link" href="/?view=screen'+(testMode?'&test=1':'')+'" target="_blank">Presentation ↗</a><a class="host-preview-link" href="/?view=host&preview=longest" target="_blank">Font Preview ↗</a></div>'
+?'<div class="host-topbar"><div class="host-heading"><b>'+ (testMode?'ONE-QUESTION LIVE TEST':'HOST CONTROL') +'</b><small>Christmas Trivia '+state.sectionRound+' · '+(state.phase==='finished'?'Complete':'Question '+(state.index+1)+' / '+state.total)+'</small></div><span class="host-info">PIN <strong>'+state.pin+'</strong></span><span class="host-info">Players <strong>'+state.players.length+' / '+state.capacity+'</strong></span><a class="host-screen-link" href="/?view=screen'+(testMode?'&test=1':'')+'" target="_blank">Presentation ↗</a><a class="host-preview-link" href="/?view=review" target="_blank">Review All 78 Slides ↗</a><a class="host-preview-link" href="/?view=host&preview=longest" target="_blank">Font Preview ↗</a></div>'
 :'<div class="host-topbar"><div class="host-heading"><b>HOST DASHBOARD</b><small>Registration and team assignments</small></div><span class="host-info">Game PIN <strong>'+state.pin+'</strong></span><span class="host-info">Registered <strong>'+state.players.length+' / '+state.capacity+'</strong></span><a class="host-screen-link" href="/?view=screen'+(testMode?'&test=1':'')+'" target="_blank">Presentation ↗</a><a class="host-preview-link" href="/?view=host&preview=longest" target="_blank">Font Preview ↗</a></div>';
 if(!active){
 const demoSetup=testMode?'<div class="demo-setup"><strong>Christmas Trivia 4 — Question 30</strong><span>Enter both player names below, one for each team. Each player then joins using the same name and Game PIN on their own device.</span><div class="test-manual-add"><input id="testPlayerA" maxlength="50" placeholder="Team A player name" aria-label="Team A player name"><button onclick="host(\'addTestPlayer\',{name:document.getElementById(\'testPlayerA\').value,team:\'A\'})">Add to Team A</button><input id="testPlayerB" maxlength="50" placeholder="Team B player name" aria-label="Team B player name"><button onclick="host(\'addTestPlayer\',{name:document.getElementById(\'testPlayerB\').value,team:\'B\'})">Add to Team B</button></div><a class="host-screen-link" href="/?view=player&test=1" target="_blank">Player registration ↗</a></div>':'';
@@ -197,7 +199,114 @@ return '<div class="player-app">'+head+'<div class="mobile-card"><div class="mob
 function choose(i){selected=state.question.choices[i];render()}
 async function join(){try{const r=await api({op:'join',name:document.getElementById('name').value,phone:document.getElementById('phone')?.value||'',pin:document.getElementById('pin').value});playerId=r.id;playerToken=r.token;localStorage.setItem('qm_player'+sessionSuffix,playerId);localStorage.setItem('qm_token'+sessionSuffix,playerToken);render()}catch(e){alert(e.message)}}
 async function submitAnswer(){if(!selected.trim())return alert('Enter or select an answer');try{await api({op:'answer',id:playerId,token:playerToken,answer:selected});submittedFor=state.index;render()}catch(e){alert(e.message)}}
-function render(){if(!state&&!hostPreviewMode)return;
+/* Independent, host-authenticated slide review. The live quiz is never started or changed. */
+let reviewQuestions=[],reviewSlides=[],reviewPosition=0,reviewError='',reviewLoading=false,reviewControlsHidden=false;
+function makeReviewSlides(questions){
+ const slides=[{type:'intro',label:'Christmas Quiz opening'}];
+ for(let round=1;round<=4;round++){
+  slides.push({type:'section',round,label:'Christmas Trivia '+round});
+  for(const q of questions.filter(q=>q.round===round)){
+   slides.push({type:'question',round,question:q,label:'Trivia '+round+' · Question '+q.id});
+   slides.push({type:'answer',round,question:q,label:'Trivia '+round+' · Answer '+q.id});
+  }
+ }
+ slides.push({type:'final',label:'Final congratulations'});
+ return slides;
+}
+function reviewStateFor(slide){
+ const q=slide.question||reviewQuestions.find(x=>x.round===slide.round)||reviewQuestions[0];
+ const phase=slide.type==='intro'?'lobby':slide.type==='section'?'section':slide.type==='question'?'question':slide.type==='answer'?'results':'finished';
+ const now=Date.now();
+ return {pin:'REVIEW',phase,index:q.id-1,sectionRound:slide.round||q.round,total:reviewQuestions.length,
+ question:q,duration:q.seconds||30,started:now,endsAt:phase==='question'?now+(q.seconds||30)*1000:null,
+ players:[],answered:0,capacity:200,scores:{A:0,B:0},
+ results:phase==='results'?{correct:q.answer,completed:q.completed||[],round:{A:0,B:0},roundWinner:'draw',fast:null}:null};
+}
+async function loadReviewQuestions(){
+ if(!hostKey)return renderReview();
+ reviewLoading=true;reviewError='';renderReview();
+ try{
+  const r=await api({op:'reviewQuestions',hostKey});
+  if(!Array.isArray(r.questions)||r.questions.length!==36)throw Error('The full 36-question review is unavailable');
+  reviewQuestions=r.questions;reviewSlides=makeReviewSlides(reviewQuestions);reviewPosition=0;
+  state=reviewStateFor(reviewSlides[0]);
+  reviewLoading=false;renderReview();
+ }catch(e){
+  reviewLoading=false;reviewError=e.message;
+  if(e.message==='Incorrect host key'){sessionStorage.removeItem('qm_host');hostKey=''}
+  renderReview();
+ }
+}
+function reviewLogin(){
+ hostKey=document.getElementById('reviewKey')?.value.trim()||'';
+ if(!hostKey){reviewError='Please enter your Host password';renderReview();return}
+ sessionStorage.setItem('qm_host',hostKey);
+ loadReviewQuestions();
+}
+function reviewGo(position){
+ if(!reviewSlides.length)return;
+ const next=Math.max(0,Math.min(reviewSlides.length-1,position));
+ if(next===reviewPosition&&state)return;
+ stopSuspense();
+ reviewPosition=next;lastTickKey='';victoryPlayedFor=null;
+ const slide=reviewSlides[reviewPosition];
+ state=reviewStateFor(slide);
+ renderReview();
+ if(soundEnabled){
+  if(slide.type==='question')startSuspense();
+  else if(slide.type==='answer')playCorrectAnswer();
+  else if(slide.type==='final')playVictoryOnce();
+ }
+}
+function reviewStep(direction){reviewGo(reviewPosition+direction)}
+function reviewToggleControls(){reviewControlsHidden=!reviewControlsHidden;document.body.classList.toggle('review-minimal',reviewControlsHidden);renderReview()}
+function reviewSlideHTML(slide){
+ if(slide.type==='answer'){
+  // Reuse the exact live answer slide layout and highlight colours; exclude invented player results.
+  return results().replace('ROUND DRAW — EQUAL POINTS','ANSWER REVEAL — PREVIEW ONLY')
+    .replace('⚡ FASTEST CORRECT: No correct answer submitted','⚡ FASTEST CORRECT: Displayed during live gameplay');
+ }
+ if(slide.type==='final'){
+  return finale().replace("IT'S A TIE! CONGRATULATIONS TO BOTH TEAMS!",'CONGRATULATIONS TO BOTH TEAMS!').replace('FINAL SCORES','FINAL SCORE DISPLAY — PREVIEW');
+ }
+ return screen();
+}
+function renderReview(){
+ if(!reviewSlides.length){
+  let message=reviewLoading?'<p>Loading all Christmas Quiz slides...</p>':reviewError?'<p class="review-error">'+esc(reviewError)+'</p>':'<p>Enter the Christmas Quiz Host password to review all questions and answers without running a game.</p>';
+  el.innerHTML='<div class="review-access"><div class="review-access-card"><h1>The Christmas Quiz</h1><h2>Presentation Review</h2>'+message
+   +(reviewLoading?'':'<form onsubmit="event.preventDefault();reviewLogin()"><input type="password" id="reviewKey" placeholder="Host password" aria-label="Host password" autocomplete="current-password"><button type="submit">Open Slide Review</button></form>')
+   +'<p class="muted">This review does not register players, start the live quiz or change scores.</p></div></div>';
+  return;
+ }
+ const slide=reviewSlides[reviewPosition],title=esc(slide.label);
+ const jumpOptions=[{position:0,name:'Opening'},{position:reviewSlides.findIndex(s=>s.type==='section'&&s.round===1),name:'Trivia 1'},{position:reviewSlides.findIndex(s=>s.type==='section'&&s.round===2),name:'Trivia 2'},{position:reviewSlides.findIndex(s=>s.type==='section'&&s.round===3),name:'Trivia 3'},{position:reviewSlides.findIndex(s=>s.type==='section'&&s.round===4),name:'Trivia 4'},{position:reviewSlides.length-1,name:'Final slide'}];
+ const chooser='<select aria-label="Jump to category" onchange="reviewGo(Number(this.value))"><option value="" selected disabled>Jump to...</option>'+jumpOptions.map(o=>'<option value="'+o.position+'">'+o.name+'</option>').join('')+'</select>';
+ const controls='<div class="review-toolbar" role="toolbar" aria-label="Presentation review controls">'
+  +'<button onclick="reviewStep(-1)" '+(reviewPosition===0?'disabled':'')+'>◀ Previous</button>'
+  +'<div class="review-progress"><strong>Slide '+(reviewPosition+1)+' / '+reviewSlides.length+'</strong><span>'+title+'</span></div>'
+  +'<button onclick="reviewStep(1)" '+(reviewPosition===reviewSlides.length-1?'disabled':'')+'>Next ▶</button>'
+  +chooser
+  +(!soundEnabled?'<button onclick="enableSound()">🔊 Sound On</button>':'<button onclick="stopAllQuizAudio();renderReview()">🔇 Mute</button>')
+  +'<button onclick="launchSlideshow()">⛶ Full Screen</button>'
+  +'<button class="review-hide" onclick="reviewToggleControls()">Hide Controls</button>'
+  +'</div>';
+ el.innerHTML='<div class="view-review"><div class="review-slide-frame" title="Tap slide for next" onclick="reviewStep(1)">'+reviewSlideHTML(slide)+'</div>'
+  +(reviewControlsHidden?'<button class="review-restore" onclick="reviewToggleControls()">Show Controls</button>':controls)
+  +'</div>';
+ document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));
+ fitQuestionText();startGlow();tick();
+}
+document.addEventListener('keydown',e=>{
+ if(!reviewMode||!reviewSlides.length||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
+ if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();reviewStep(1)}
+ if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();reviewStep(-1)}
+ if(e.key.toLowerCase()==='h')reviewToggleControls();
+});
+let reviewTouchX=null,reviewTouchY=null;
+document.addEventListener('touchstart',e=>{if(!reviewMode||!e.touches.length||e.target.closest('.review-toolbar'))return;reviewTouchX=e.touches[0].clientX;reviewTouchY=e.touches[0].clientY},{passive:true});
+document.addEventListener('touchend',e=>{if(!reviewMode||reviewTouchX===null||!e.changedTouches.length)return;const dx=e.changedTouches[0].clientX-reviewTouchX,dy=e.changedTouches[0].clientY-reviewTouchY;reviewTouchX=null;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.5)reviewStep(dx<0?1:-1)},{passive:true});
+function render(){if(reviewMode){renderReview();return}if(!state&&!hostPreviewMode)return;
 const presentationControls=view==='screen'&&!document.fullscreenElement
 ?'<div class="slideshow-toolbar"><button class="launch-slideshow" onclick="launchSlideshow()">⛶ Full Screen Slideshow</button>'+(!soundEnabled?'<button class="screen-audio-btn" onclick="enableSound()">🔊 Enable Sound</button>':'')+'<div id="slideshow-help" class="slideshow-help hidden">This browser does not allow websites to hide its tabs or address bar. Use a browser with fullscreen support or open this screen from your TV browser in fullscreen mode.</div></div>'
 :'';
@@ -229,10 +338,14 @@ async function refreshQuizState(){
   if(!state||connection.readyState!==EventSource.OPEN)applyQuizState(incoming);
  }catch(e){console.warn('Quiz connection issue:',e);showConnectionProblem()}
 }
-const connection=new EventSource(endpointPrefix+'/events');
-connection.onerror=()=>{refreshQuizState()};
-connection.onmessage=e=>{try{applyQuizState(JSON.parse(e.data))}catch(error){console.error('Quiz update error:',error);showConnectionProblem()}};
-refreshQuizState();
-setInterval(()=>{if(connection.readyState!==EventSource.OPEN)refreshQuizState()},4000);
+let connection=null;
+if(!reviewMode){
+ connection=new EventSource(endpointPrefix+'/events');
+ connection.onerror=()=>{refreshQuizState()};
+ connection.onmessage=e=>{try{applyQuizState(JSON.parse(e.data))}catch(error){console.error('Quiz update error:',error);showConnectionProblem()}};
+ refreshQuizState();
+ setInterval(()=>{if(connection.readyState!==EventSource.OPEN)refreshQuizState()},4000);
+}
 setInterval(tick,250);
 if(hostPreviewMode)render();
+if(reviewMode){if(hostKey)loadReviewQuestions();else renderReview()}
