@@ -618,16 +618,15 @@ body.review-mode.review-minimal .review-slide-frame .ppt-stage{width:min(100vw,c
  background-size:cover,cover!important;
  background-position:center,center!important;
 }
-/* Increase BOTH ribbon title lines a further two typographic points (2.667px).
-   For long exact PowerPoint subtitles, fitRibbonCaptions scales the letter
-   width if required; the banner itself is never enlarged or repositioned. */
+/* Reduce BOTH banner text lines by two typographic points (2.667 CSS px).
+   Keep the complete PPTM wording and existing ribbon shapes/positions. */
 .ppt-stage .ribbon-caption span:first-child,
 .ppt-stage .ppt-banner-label span:first-child{
- font-size:clamp(29.667px,calc(2.65vw + 10.667px),42.667px)!important;
+ font-size:clamp(27px,calc(2.65vw + 8px),40px)!important;
 }
 .ppt-stage .ribbon-caption span:last-child,
 .ppt-stage .ppt-banner-label span:last-child{
- font-size:clamp(25.667px,calc(2.1vw + 10.667px),35.667px)!important;
+ font-size:clamp(23px,calc(2.1vw + 8px),33px)!important;
 }
 .ppt-stage .ribbon-caption span{
  white-space:nowrap!important;
