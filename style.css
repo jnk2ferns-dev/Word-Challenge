@@ -617,15 +617,15 @@ body.review-mode.review-minimal .review-slide-frame .ppt-stage{width:min(100vw,c
  background-position:center!important;
  background-repeat:no-repeat!important;
 }
-/* Reduce BOTH banner text lines by two typographic points (2.667 CSS px).
-   Keep the complete PPTM wording and existing ribbon shapes/positions. */
+/* Further reduce both Christmas Quiz banner text lines by 2pt (2.667 CSS px).
+   Keep exact full title wording and original ribbon geometry. */
 .ppt-stage .ribbon-caption span:first-child,
 .ppt-stage .ppt-banner-label span:first-child{
- font-size:clamp(27px,calc(2.65vw + 8px),40px)!important;
+ font-size:clamp(24.333px,calc(2.65vw + 5.333px),37.333px)!important;
 }
 .ppt-stage .ribbon-caption span:last-child,
 .ppt-stage .ppt-banner-label span:last-child{
- font-size:clamp(23px,calc(2.1vw + 8px),33px)!important;
+ font-size:clamp(20.333px,calc(2.1vw + 5.333px),30.333px)!important;
 }
 .ppt-stage .ribbon-caption span{
  white-space:nowrap!important;
