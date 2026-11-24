@@ -625,7 +625,7 @@ body.review-mode.review-minimal .review-slide-frame .ppt-stage{width:min(100vw,c
 }
 .ppt-stage .ribbon-caption span:last-child,
 .ppt-stage .ppt-banner-label span:last-child{
- font-size:clamp(20.333px,calc(2.1vw + 5.333px),30.333px)!important;
+ font-size:clamp(17.666px,calc(2.1vw + 2.666px),27.666px)!important;
 }
 .ppt-stage .ribbon-caption span{
  white-space:nowrap!important;
@@ -653,3 +653,8 @@ body.review-mode.review-minimal .review-slide-frame .ppt-stage{width:min(100vw,c
  overflow-wrap:break-word!important;
  white-space:normal!important;
 }
+
+/* Christmas Quiz: raise the entire two-line ribbon, including its filled
+   folds, while leaving a visible margin below the top of the projected slide.
+   Opening/section centre shapes and participant final mobile layout unchanged. */
+.ppt-stage .ppt-ribbon{top:0.75%!important}
