@@ -658,3 +658,15 @@ body.review-mode.review-minimal .review-slide-frame .ppt-stage{width:min(100vw,c
    folds, while leaving a visible margin below the top of the projected slide.
    Opening/section centre shapes and participant final mobile layout unchanged. */
 .ppt-stage .ppt-ribbon{top:0.75%!important}
+
+/* Trivia 3 & 4 answer reveals: center the answer box at the exact location
+   of the countdown timer on the corresponding question slide (top 60%).
+   Only these two categories change; round winner, fastest and scores
+   remain beneath with their existing spacing. */
+.ppt-stage.definition-slide.results-stage.category-3 .ppt-answer,
+.ppt-stage.definition-slide.results-stage.category-4 .ppt-answer{
+ top:60%!important;
+ left:36%!important;
+ width:28%!important;
+ height:8%!important;
+}
