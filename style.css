@@ -799,7 +799,7 @@ body.player-mode .participant-preview .ppt-hex.participant-pick{
  touch-action:manipulation
 }
 body.player-mode .participant-preview .ppt-hex.participant-pick.selected{
- filter:drop-shadow(0 0 5px #ffe263);outline:3px solid #ffe263;
+ filter:none;outline:0;
  outline-offset:-3px
 }
 body.player-mode .participant-preview .ppt-hex.participant-pick:focus-visible{
@@ -1253,7 +1253,7 @@ body.player-mode .participant-preview.category-2:not(.participant-revealed)
  background:#050505!important;
  background-color:#050505!important;
  color:#fff!important;
- outline:3px solid #ffe57b!important;
+ outline:0!important;
  outline-offset:-3px!important;
  filter:none!important;
 }
@@ -1399,3 +1399,24 @@ body.player-mode .player-game .participant-preview>.participant-question-track{d
 body.player-mode .player-game .participant-preview .ppt-prompt{margin:0 auto!important;align-self:center!important;justify-self:center!important;}
 body.player-mode .participant-preview.participant-intro .title-hex{align-self:center!important;margin-inline:auto!important;}
 .ppt-stage .ppt-prompt{left:17.5%;align-items:center!important;justify-content:center!important;}
+
+/* Trivia 2 instruction: directly above the category shape, never on presentation screen. */
+.trivia-two-note{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#a40000;background:#fff9f1;border-radius:5px;padding:4px 8px;font-size:clamp(10px,1.5vw,16px);font-weight:800;line-height:1.15;text-align:center;width:max-content;max-width:100%;box-sizing:border-box;}
+.trivia-two-note span{display:block;}
+body.player-mode .participant-preview.participant-intro:has(.trivia-two-note){display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;gap:8px!important;min-height:0!important;padding:12px 8px!important;}
+body.player-mode .participant-preview.participant-intro .trivia-two-note{font-size:clamp(9px,1.65vw,15px);}
+@media(max-width:450px){body.player-mode .participant-preview.participant-intro .trivia-two-note{font-size:clamp(8px,2.35vw,10px);padding-inline:2px;}}
+/* Selected choices: override even the more-specific category rule. */
+body.player-mode .participant-preview.category-2:not(.participant-revealed) .ppt-hex.participant-pick.selected,
+body.player-mode .participant-preview.category-2:not(.participant-revealed) .ppt-hex.participant-pick.selected:focus-visible{background:#000!important;color:#fff!important;border:0!important;outline:0!important;box-shadow:none!important;filter:none!important;}
+body.player-mode .participant-preview.category-2:not(.participant-revealed) .ppt-hex.participant-pick.selected *{color:#fff!important;}
+/* Same question band on all presentation question and answer slides. */
+.ppt-stage:not(.opening-stage):not(.finale-stage) .ppt-prompt{top:23.5%!important;height:23%!important;}
+/* Stable responsive question band independent of reveal rows or category. */
+body.player-mode .player-game .participant-preview:not(.participant-revealed):has(.participant-options){grid-template-rows:minmax(0,1fr) var(--stable-question-row) minmax(0,1fr) minmax(0,.75fr)!important;}
+body.player-mode .player-game .participant-preview:not(.participant-revealed):not(:has(.participant-options)){grid-template-rows:minmax(0,1fr) var(--stable-question-row) minmax(0,.75fr)!important;}
+body.player-mode .player-game .participant-preview.participant-revealed:has(.participant-options){grid-template-rows:minmax(0,.9fr) var(--stable-question-row) minmax(0,.9fr) minmax(0,.65fr) minmax(0,.6fr) minmax(0,.7fr) minmax(0,.7fr)!important;}
+body.player-mode .player-game .participant-preview.participant-revealed:not(:has(.participant-options)){grid-template-rows:minmax(0,.9fr) var(--stable-question-row) minmax(0,.65fr) minmax(0,.55fr) minmax(0,.65fr) minmax(0,.7fr)!important;}
+body.player-mode .player-game .participant-preview{--stable-question-row:clamp(65px,23dvh,150px);}
+body.player-mode .player-game .participant-preview .question-copy{font-size:calc(clamp(11px,min(4.5vw,2.8dvh),21px) + 3pt)!important;}
+@media(max-height:550px) and (orientation:landscape){body.player-mode .player-game .participant-preview{--stable-question-row:clamp(48px,22dvh,105px);}body.player-mode .player-game .participant-preview .question-copy{font-size:calc(clamp(10px,2.9dvh,13px) + 3pt)!important;}}
