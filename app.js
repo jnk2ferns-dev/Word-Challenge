@@ -127,7 +127,7 @@ function fitQuestionText(){
  const slides=document.querySelectorAll('.ppt-stage');
  slides.forEach(stage=>{
   const scale=Math.max(.1,stage.clientWidth/1100);
-  const size=31*scale;
+  const size=(31-4/3)*scale;
   stage.querySelectorAll('.question-copy').forEach(n=>{
    n.style.fontSize=size.toFixed(2)+'px';
    n.style.lineHeight='1.08';
@@ -188,10 +188,11 @@ function hostFontPreview(){
  return '<div class="single-question-preview"><div class="single-question-inner"><div class="single-question-category">CHRISTMAS TRIVIA · LONGEST QUESTION</div><div class="single-question-text" style="font-size:'+hostPreviewFont+'px">'+esc(hostPreviewQuestion)+'</div></div><div class="single-question-toolbar"><span>'+hostPreviewFont+' px</span><button onclick="adjustHostPreview(-2)" aria-label="Reduce font size">A−</button><button onclick="adjustHostPreview(2)" aria-label="Increase font size">A+</button><button onclick="previewFullscreen()">⛶ Full Screen</button></div></div>'
 }
 async function previewFullscreen(){try{if(document.fullscreenElement){await document.exitFullscreen()}else if(document.documentElement.requestFullscreen){await document.documentElement.requestFullscreen({navigationUI:'hide'})}else if(document.documentElement.webkitRequestFullscreen){document.documentElement.webkitRequestFullscreen()}else{alert('This browser does not support website fullscreen. Try a desktop browser.') }}catch(e){alert('Fullscreen is not available in this browser. You can still view the question on this page.')}}
+function triviaTwoReminder(){return state.phase==='section'&&state.sectionRound===2?'<div class="trivia-two-note"><span>FOR THIS SECTION ONLY, DO NOT TYPE YOUR ANSWER.</span><span>SELECT YOUR OPTION FROM THE CHOICES PROVIDED.</span></div>':''}
 function hostFlashLabel(){
  if(!state)return '';
  const label=state.phase==='lobby'?'The Christmas Quiz':state.phase==='section'?'Christmas Trivia '+state.sectionRound:state.phase==='question'||state.phase==='results'?'QUESTION '+(state.index+1):'QUIZ COMPLETE';
- return '<div class="host-glow-shape"><span>'+esc(label)+'</span></div>';
+ return triviaTwoReminder()+'<div class="host-glow-shape"><span>'+esc(label)+'</span></div>';
 }
 function hostView(){
 if(hostPreviewMode)return hostFontPreview();
@@ -251,7 +252,7 @@ function participantSlide(q,revealed=false){
  </section>`;
 }
 function participantIntro(label){
- return `<section class="participant-preview participant-intro ${state.phase==='lobby'?'participant-opening':'participant-category'}"><div class="title-hex"><span>${esc(label)}</span>${animatedBorder(true)}</div></section>`;
+ return `<section class="participant-preview participant-intro ${state.phase==='lobby'?'participant-opening':'participant-category'}">${triviaTwoReminder()}<div class="title-hex"><span>${esc(label)}</span>${animatedBorder(true)}</div></section>`;
 }
 function playerView(){
  const p=state.players.find(x=>x.id===playerId);
@@ -264,8 +265,7 @@ function playerView(){
  if(state.phase==='lobby')return `<div class="player-app">${head}${participantIntro(quizTitle())}<div class="mobile-card centered"><h2>Ready to play?</h2><p>${p.team?'You are in '+teamLabel(p.team):'The Host will assign your team'}</p><p class="muted">Waiting for the Host to start.</p></div></div>`;
  if(state.phase==='section'){
   const name=quizTitle()==='The Christmas Quiz'?'Christmas Trivia - '+state.sectionRound:'Word Challenge '+state.sectionRound;
-  const mcqReminder=quizTitle()==='The Christmas Quiz'&&state.sectionRound===2?'<p class="participant-mcq-instruction">FOR THIS SECTION ONLY, DO NOT TYPE YOUR ANSWER. SELECT YOUR OPTION FROM THE CHOICES PROVIDED.</p>':'';
-  return `<div class="player-app">${head}${participantIntro(name)}<div class="mobile-card centered"><p class="eyebrow">NEXT CATEGORY</p>${mcqReminder}<p class="muted">The Host will begin the next question.</p></div></div>`;
+  return `<div class="player-app">${head}${participantIntro(name)}<div class="mobile-card centered"><p class="eyebrow">NEXT CATEGORY</p><p class="muted">The Host will begin the next question.</p></div></div>`;
  }
  if(state.phase==='finished')return `<div class="player-app player-finale">${finale()}</div>`;
  const q=state.question,revealed=state.phase==='results',done=submittedFor===state.index;
