@@ -382,13 +382,42 @@ document.addEventListener('keydown',e=>{
 let reviewTouchX=null,reviewTouchY=null;
 document.addEventListener('touchstart',e=>{if(!reviewMode||!e.touches.length||e.target.closest('.review-toolbar'))return;reviewTouchX=e.touches[0].clientX;reviewTouchY=e.touches[0].clientY},{passive:true});
 document.addEventListener('touchend',e=>{if(!reviewMode||reviewTouchX===null||!e.changedTouches.length)return;const dx=e.changedTouches[0].clientX-reviewTouchX,dy=e.changedTouches[0].clientY-reviewTouchY;reviewTouchX=null;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.5){reviewIgnoreTapUntil=Date.now()+900;reviewStep(dx<0?1:-1)}},{passive:true});
+
+// Fit actual rendered text after viewport grid sizing, without changing the
+// Host or Big Screen question font. Important for long clues on iPad landscape.
+function fitParticipantText(){
+ if(view!=='player'||!state||!['question','results'].includes(state.phase))return;
+ const panel=document.querySelector('.player-game .participant-preview');
+ if(!panel)return;
+ const reduce=(node,limit,minSize)=>{
+  if(!node||!limit||limit<1)return;
+  node.style.removeProperty('font-size');
+  let px=parseFloat(window.getComputedStyle(node).fontSize)||16;
+  let count=0;
+  while(px>minSize&&count++<40&&
+        (node.scrollHeight>limit+2||node.scrollWidth>node.clientWidth+2)){
+   px=Math.max(minSize,px-.6);
+   node.style.setProperty('font-size',px.toFixed(1)+'px','important');
+  }
+ };
+ const question=panel.querySelector('.question-copy');
+ const shape=panel.querySelector('.ppt-prompt');
+ if(question&&shape)reduce(question,Math.max(20,shape.clientHeight-9),9);
+ panel.querySelectorAll('.ppt-hex').forEach(n=>reduce(n,n.clientHeight,9));
+ panel.querySelectorAll('.participant-answer,.participant-outcome,.participant-fast').forEach(n=>reduce(n,n.clientHeight,9));
+ panel.querySelectorAll('.participant-score').forEach(n=>{
+  const name=n.querySelector('span');if(name)reduce(name,Math.max(20,n.clientHeight-5),9)
+ });
+}
+window.addEventListener('resize',()=>{if(view==='player')requestAnimationFrame(fitParticipantText)});
+if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>{if(view==='player')requestAnimationFrame(fitParticipantText)});
 function render(){if(reviewMode){renderReview();return}if(!state&&!hostPreviewMode)return;
 const presentationControls=view==='screen'&&!document.fullscreenElement
 ?'<div class="slideshow-toolbar"><button class="launch-slideshow" onclick="launchSlideshow()">⛶ Full Screen Slideshow</button>'+(!soundEnabled?'<button class="screen-audio-btn" onclick="enableSound()">🔊 Enable Sound</button>':'')+'<div id="slideshow-help" class="slideshow-help hidden">This browser does not allow websites to hide its tabs or address bar. Use a browser with fullscreen support or open this screen from your TV browser in fullscreen mode.</div></div>'
 :'';
 const otherSound=(view==='screen'||view==='player')?'':soundControl();
 el.innerHTML='<div class="view-'+view+'">'+(hostPreviewMode?'':presentationControls+otherSound)+(hostPreviewMode?hostFontPreview():view==='host'?hostView():view==='screen'?screen():playerView())+'</div>';
-document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));fitQuestionText();fitRibbonCaptions();fitHostQuestion();startGlow();tick()}
+document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));fitQuestionText();fitRibbonCaptions();fitHostQuestion();startGlow();tick();if(view==='player')requestAnimationFrame(fitParticipantText)}
 function tick(){if(!state?.endsAt||state.phase!=='question')return;if(Date.now()>=state.endsAt){stopSuspense();return;}const secs=Math.max(0,Math.ceil((state.endsAt-Date.now())/1000)),n=document.getElementById('clock');if(n)n.textContent=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0');const key=state.index+':'+secs;if(secs>=1&&key!==lastTickKey){lastTickKey=key;if(secs<=10)playTick(secs)}}
 function applyQuizState(incoming){
  const old=state;
