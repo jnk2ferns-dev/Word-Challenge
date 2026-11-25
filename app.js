@@ -118,7 +118,7 @@ function animateGlow(timestamp){
  }
  glowFrame=requestAnimationFrame(animateGlow);
 }
-function startGlow(){if((view==='screen'||view==='player'||reviewMode)&&!glowFrame&&typeof requestAnimationFrame==='function')glowFrame=requestAnimationFrame(animateGlow)}
+function startGlow(){if(document.querySelector('.travel-outline')&&!glowFrame&&typeof requestAnimationFrame==='function')glowFrame=requestAnimationFrame(animateGlow)}
 function questionFontSize(prompt){const len=String(prompt||'').length;return len>185?19:len>145?21:len>110?23:len>82?25:29}
 function fitQuestionText(){
  // Fixed, consistent font on every question and answer slide. Scale only
@@ -392,7 +392,7 @@ function renderReview(){
  el.innerHTML='<div class="view-review"><div class="review-slide-frame" title="Tap slide for next" onclick="reviewTapSlide()">'+reviewSlideHTML(slide)+'</div>'
   +(reviewControlsHidden?'<button class="review-restore" onclick="reviewToggleControls()">Show Controls</button>':controls)
   +'</div>';
- document.querySelectorAll('.ppt-prompt,.title-hex,.ppt-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder(node.classList.contains('ppt-hex'))));
+ document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>{if(!node.querySelector(':scope > .travel-outline'))node.insertAdjacentHTML('beforeend',animatedBorder())});
  fitQuestionText();fitRibbonCaptions();startGlow();tick();
 }
 document.addEventListener('keydown',e=>{
@@ -450,7 +450,8 @@ function fitParticipantText(){
 }
 window.addEventListener('resize',()=>{if(view==='player')requestAnimationFrame(()=>{fitParticipantText();syncParticipantGuides()})});
 if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>{if(view==='player')requestAnimationFrame(()=>{fitParticipantText();syncParticipantGuides()})});
-function syncParticipantGuides(){
+function syncParticipantGuides(){return;
+
  document.querySelectorAll('.quiz-full-bleed-guide').forEach(n=>n.remove());
  if(view!=='player'||!state||!['question','results'].includes(state.phase))return;
  const stage=document.querySelector('.participant-preview');if(!stage)return;
@@ -476,7 +477,7 @@ const presentationControls=view==='screen'&&!document.fullscreenElement
 :'';
 const otherSound=view==='screen'&&!soundEnabled?'<button class="screen-enable-audio" onclick="enableSound()">🔊 Enable finale sound</button>':view==='player'||view==='screen'?'':soundControl();
 document.querySelectorAll('.quiz-full-bleed-guide').forEach(n=>n.remove());el.innerHTML='<div class="view-'+view+'">'+(hostPreviewMode?'':presentationControls+otherSound)+(hostPreviewMode?hostFontPreview():view==='host'?hostView():view==='screen'?screen():playerView())+'</div>';
-if(view!=='player')document.querySelectorAll('.ppt-prompt,.title-hex,.ppt-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder(node.classList.contains('ppt-hex'))));fitQuestionText();fitRibbonCaptions();fitHostQuestion();startGlow();tick();if(view==='player')requestAnimationFrame(()=>{fitParticipantText();syncParticipantGuides()})}
+if(view!=='player')document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>{if(!node.querySelector(':scope > .travel-outline'))node.insertAdjacentHTML('beforeend',animatedBorder())});fitQuestionText();fitRibbonCaptions();fitHostQuestion();startGlow();tick();if(view==='player')requestAnimationFrame(()=>{fitParticipantText();syncParticipantGuides()})}
 function tick(){if(!state?.endsAt||state.phase!=='question')return;if(Date.now()>=state.endsAt){stopSuspense();return;}const secs=Math.max(0,Math.ceil((state.endsAt-Date.now())/1000)),n=document.getElementById('clock');if(n)n.textContent=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0');const key=state.index+':'+secs;if(secs>=1&&key!==lastTickKey){lastTickKey=key;if(secs<=10)playTick(secs)}}
 function applyQuizState(incoming){
  const old=state;
