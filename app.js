@@ -2,7 +2,7 @@ const testMode=new URLSearchParams(location.search).get('test')==='1';
 const sessionSuffix=testMode?'_test':'';
 const endpointPrefix=testMode?'/test':'';
 let view=new URLSearchParams(location.search).get('view')||'host';
-let state=null,playerId=localStorage.getItem('qm_player'+sessionSuffix)||'',playerToken=localStorage.getItem('qm_token'+sessionSuffix)||'',hostKey=sessionStorage.getItem('qm_host')||'',selected='',submittedFor=-1,lastResult=-1;
+let state=null,playerId=localStorage.getItem('qm_player'+sessionSuffix)||'',playerToken=localStorage.getItem('qm_token'+sessionSuffix)||'',hostKey=sessionStorage.getItem('qm_host')||'',selected='',submittedFor=-1,lastResult=-1,submittingAnswer=false;
 const el=document.getElementById('app');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function setView(v){if(v==='player'){stopAllQuizAudio()}view=v;history.replaceState(null,'','?view='+v+(testMode?'&test=1':''));document.body.classList.toggle('screen-mode',v==='screen');document.body.classList.toggle('player-mode',v==='player');render()}
@@ -198,8 +198,8 @@ function participantSlide(q,revealed=false){
  const isChoice=q.type==='choice';
  const shapes=values.length?`<div class="ppt-words participant-options">${values.map((word,i)=>{
   let className='ppt-hex'+(revealed?' revealed':'')+(isChoice&&revealed?(word===r.correct?' correct-choice':' incorrect-choice'):'');
-  if(isChoice&&!revealed)return `<button type="button" class="${className} participant-pick ${selected===word?'selected':''}" onclick="choose(${i})" aria-pressed="${selected===word}">${esc(word)}</button>`;
-  return `<div class="${className}">${esc(word)}</div>`;
+  if(isChoice&&!revealed)return `<button type="button" class="${className} participant-pick ${selected===word?'selected':''}" onclick="choose(${i})" aria-pressed="${selected===word}"><span class="participant-option-label">${esc(word)}</span></button>`;
+  return `<div class="${className}"><span class="participant-option-label">${esc(word)}</span></div>`;
  }).join('')}</div>`:'';
  const answerClass=q.round===3?'answer-green':q.round===2?'answer-mcq':'answer-orange';
  const info=revealed?`
@@ -227,7 +227,8 @@ function playerView(){
  if(state.phase==='lobby')return `<div class="player-app">${head}${participantIntro(quizTitle())}<div class="mobile-card centered"><h2>Ready to play?</h2><p>${p.team?'You are in '+teamLabel(p.team):'The Host will assign your team'}</p><p class="muted">Waiting for the Host to start.</p></div></div>`;
  if(state.phase==='section'){
   const name=quizTitle()==='The Christmas Quiz'?'Christmas Trivia - '+state.sectionRound:'Word Challenge '+state.sectionRound;
-  return `<div class="player-app">${head}${participantIntro(name)}<div class="mobile-card centered"><p class="eyebrow">NEXT CATEGORY</p><p class="muted">The Host will begin the next question.</p></div></div>`;
+  const mcqReminder=quizTitle()==='The Christmas Quiz'&&state.sectionRound===2?'<p class="participant-mcq-instruction">FOR THIS SECTION ONLY, DO NOT TYPE YOUR ANSWER. SELECT YOUR OPTION FROM THE CHOICES PROVIDED.</p>':'';
+  return `<div class="player-app">${head}${participantIntro(name)}<div class="mobile-card centered"><p class="eyebrow">NEXT CATEGORY</p>${mcqReminder}<p class="muted">The Host will begin the next question.</p></div></div>`;
  }
  if(state.phase==='finished')return `<div class="player-app player-finale">${finale()}</div>`;
  const q=state.question,revealed=state.phase==='results',done=submittedFor===state.index;
@@ -236,12 +237,33 @@ function playerView(){
  if(revealed)controls=''; // Results, fastest player and both scores now share the one visible presentation, with no redundant waiting panel.
  else if(done)controls=`<div class="mobile-card participant-entry"><div class="mobile-success">✓ Your answer has been submitted.</div><p class="muted">Waiting for the results.</p></div>`;
  else if(q.type==='choice')controls=`<div class="mobile-card participant-entry"><h2>Submit your answer</h2><p class="input-note">Select one of the three answer shapes on the presentation, then submit.</p><div class="participant-selected">Your selection: <strong>${selected?esc(selected):'None selected'}</strong></div><button class="submit-button" onclick="submitAnswer()" ${selected?'':'disabled'}>Submit answer</button></div>`;
- else controls=`<div class="mobile-card participant-entry"><label class="answer-label" for="textanswer">Your answer</label><input id="textanswer" maxlength="75" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Type your answer" value="${esc(selected)}" oninput="this.value=this.value.replace(/[^a-zA-Z ]/g,'').slice(0,75);selected=this.value"><p class="input-note">Letters and spaces only, maximum 75 characters.</p><button class="submit-button" onclick="selected=document.getElementById('textanswer').value;submitAnswer()">Submit answer</button></div>`;
+ else controls=`<form class="mobile-card participant-entry participant-answer-form" onsubmit="event.preventDefault();submitAnswer()"><label class="answer-label" for="textanswer">Your answer</label><input id="textanswer" maxlength="75" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" placeholder="Type your answer" value="${esc(selected)}" oninput="this.value=this.value.replace(/[^a-zA-Z ]/g,'').slice(0,75);selected=this.value"><p class="input-note">Letters and spaces only, maximum 75 characters.</p><button type="submit" class="submit-button">Submit answer</button></form>`;
  return `<div class="player-app player-game ${revealed?'player-results':'player-question'}">${head}<div class="participant-game-layout"><div class="participant-display">${bar}${participantSlide(q,revealed)}</div>${controls}</div></div>`;
 }
 function choose(i){selected=state.question.choices[i];render()}
 async function join(){try{const r=await api({op:'join',name:document.getElementById('name').value,phone:document.getElementById('phone')?.value||'',pin:document.getElementById('pin').value});playerId=r.id;playerToken=r.token;localStorage.setItem('qm_player'+sessionSuffix,playerId);localStorage.setItem('qm_token'+sessionSuffix,playerToken);render()}catch(e){alert(e.message)}}
-async function submitAnswer(){if(!selected.trim())return alert('Enter or select an answer');try{await api({op:'answer',id:playerId,token:playerToken,answer:selected});submittedFor=state.index;render()}catch(e){alert(e.message)}}
+async function submitAnswer(){
+ if(submittingAnswer||!state||state.phase!=='question'||submittedFor===state.index)return;
+ // Read the latest value directly from the input: mobile Safari may not have
+ // committed its last input event before the first Submit tap.
+ const field=document.getElementById('textanswer');
+ const answer=(state.question?.type==='choice'?selected:(field?.value??selected)).trim();
+ if(!answer)return alert('Enter or select an answer');
+ if(state.question.type!=='choice'&&!/^[a-zA-Z ]{1,75}$/.test(answer))
+  return alert('Letters and spaces only, maximum 75 characters');
+ submittingAnswer=true;
+ const submitButton=document.querySelector('.participant-entry .submit-button');
+ if(submitButton){submitButton.disabled=true;submitButton.textContent='Submitting…'}
+ try{
+  await api({op:'answer',id:playerId,token:playerToken,answer});
+  selected=answer;submittedFor=state.index;
+  if(field)field.blur();
+  render();
+ }catch(e){
+  if(e.message==='Already answered'){submittedFor=state.index;render()}
+  else{if(submitButton){submitButton.disabled=false;submitButton.textContent='Submit answer'}alert(e.message)}
+ }finally{submittingAnswer=false}
+}
 
 // Fit actual rendered text after viewport grid sizing, without changing the
 // Host or Big Screen question font. Important for long clues on iPad landscape.
@@ -285,8 +307,8 @@ function applyQuizState(incoming){
  if(old?.phase==='question'&&state.phase!=='question')stopSuspense();
  if(old?.phase==='question'&&state.phase==='results'&&lastResult!==state.index){lastResult=state.index;playCorrectAnswer()}
  if(old&&old.phase!=='finished'&&state.phase==='finished')playVictoryOnce();
- if(old?.index!==state.index){selected='';submittedFor=-1}
- const preserveTyping=view==='player'&&old?.phase==='question'&&state.phase==='question'&&old.index===state.index&&document.activeElement?.id==='textanswer';
+ if(old?.index!==state.index){selected='';submittedFor=-1;submittingAnswer=false}
+ const preserveTyping=view==='player'&&old?.phase==='question'&&state.phase==='question'&&old.index===state.index&&(!!document.getElementById('textanswer')||submittingAnswer);
  const preserveProjection=view==='screen'&&old&&old.phase===state.phase&&old.index===state.index&&old.sectionRound===state.sectionRound;
  if(!preserveTyping&&!preserveProjection)render();else tick();
  if(state.phase==='question')startSuspense();
