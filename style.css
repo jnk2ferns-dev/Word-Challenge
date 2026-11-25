@@ -1125,3 +1125,17 @@ body.player-mode .participant-preview .title-hex::before{z-index:0}
 body.player-mode .participant-preview .question-copy,
 body.player-mode .participant-preview .title-hex>span{z-index:2!important}
 @media(max-height:700px){.host-glow-shape{height:62px;min-height:62px;margin:0 auto}}
+
+/* Participant flash is embedded in the main six-point shapes rather than
+   injected after rendering. Native SVG motion works independently of RAF. */
+body.player-mode .participant-preview .ppt-prompt>.travel-outline.participant-glow,
+body.player-mode .participant-preview .title-hex>.travel-outline.participant-glow{
+ display:block!important;visibility:visible!important;opacity:1!important;
+ position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+ z-index:20!important;pointer-events:none!important;overflow:visible!important;
+ clip-path:none!important;transform:none!important;
+}
+body.player-mode .participant-preview .participant-glow .orbit-dot{
+ display:block!important;visibility:visible!important;opacity:1!important;
+}
+body.player-mode .participant-preview .participant-options .travel-outline{display:none!important}
