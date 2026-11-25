@@ -103,18 +103,19 @@ async function startSuspense(){
  suspenseTimer=setInterval(()=>{if(state?.phase!=='question'||Date.now()>=state.endsAt)stopSuspense();else scheduleSoundtrack()},140);
 }
 function soundControl(){return !soundEnabled?'<button class="soundbutton" onclick="enableSound()">🔊 Enable quiz sounds (tap once)</button>':'<button class="soundbutton sound-on" onclick="playCorrectAnswer()">🔊 Test correct-answer sound</button>'}
-function animatedBorder(mobile=false){return '<svg class="travel-outline'+(mobile?' participant-glow':'')+'" viewBox="0 0 1000 240" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path class="orbit-path" d="M100 3 L900 3 Q908 3 914 10 L992 112 Q997 120 992 128 L914 230 Q908 237 900 237 L100 237 Q92 237 86 230 L8 128 Q3 120 8 112 L86 10 Q92 3 100 3 Z" fill="none" stroke="none"/><g class="orbit-dot"><circle r="8" fill="#c8ffed" opacity=".19"/><circle r="3.5" fill="#dffff6" opacity=".45"/><circle r="1.6" fill="#ffffff" opacity=".86"/>'+(mobile?'<animateMotion dur="5s" calcMode="paced" repeatCount="indefinite" rotate="0" path="M100 3 L900 3 Q908 3 914 10 L992 112 Q997 120 992 128 L914 230 Q908 237 900 237 L100 237 Q92 237 86 230 L8 128 Q3 120 8 112 L86 10 Q92 3 100 3 Z"/>':'')+'</g></svg>'}
+let glowId=0;
+function animatedBorder(mobile=false){const id='dotSoftGlow-'+(++glowId);return '<svg class="travel-outline'+(mobile?' participant-glow':'')+'" viewBox="0 0 1000 240" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><radialGradient id="'+id+'"><stop offset="0%" stop-color="#f5fffa" stop-opacity=".98"/><stop offset="28%" stop-color="#c9fff4" stop-opacity=".83"/><stop offset="65%" stop-color="#a1f8e8" stop-opacity=".32"/><stop offset="100%" stop-color="#a1f8e8" stop-opacity="0"/></radialGradient></defs><path class="orbit-path" d="M100 3 L900 3 L997 120 L900 237 L100 237 L3 120 Z" fill="none" stroke="none"/><g class="orbit-dot"><circle r="26" fill="url(#'+id+')"/><circle r="5" fill="#f7fffb"/></g></svg>'}
 let glowFrame=0,glowStart=0;
 function animateGlow(timestamp){
  if(!glowStart)glowStart=timestamp;
  const dots=document.querySelectorAll('.travel-outline');
  if(dots.length){
   const fraction=((timestamp-glowStart)%5000)/5000;
-  dots.forEach(svg=>{if(svg.classList.contains('participant-glow'))return;try{const path=svg.querySelector('.orbit-path'),dot=svg.querySelector('.orbit-dot');if(!path||!dot)return;const length=path.getTotalLength(),pt=path.getPointAtLength(fraction*length);dot.setAttribute('transform','translate('+pt.x.toFixed(3)+' '+pt.y.toFixed(3)+')')}catch(e){/* Keep animation alive if mobile Safari cannot measure one SVG */}});
+  dots.forEach(svg=>{try{const path=svg.querySelector('.orbit-path'),dot=svg.querySelector('.orbit-dot');if(!path||!dot)return;const length=path.getTotalLength(),pt=path.getPointAtLength(fraction*length);dot.setAttribute('transform','translate('+pt.x.toFixed(3)+' '+pt.y.toFixed(3)+')')}catch(e){/* keep the shared animation running */}});
  }
  glowFrame=requestAnimationFrame(animateGlow);
 }
-function startGlow(){if(document.querySelector('.travel-outline')&&!glowFrame&&typeof requestAnimationFrame==='function')glowFrame=requestAnimationFrame(animateGlow)}
+function startGlow(){if(!glowFrame&&typeof requestAnimationFrame==='function')glowFrame=requestAnimationFrame(animateGlow)}
 function questionFontSize(prompt){const len=String(prompt||'').length;return len>185?19:len>145?21:len>110?23:len>82?25:29}
 function fitQuestionText(){document.querySelectorAll('.question-copy').forEach(n=>{
  const holder=n.closest('.ppt-prompt');if(!holder)return;
