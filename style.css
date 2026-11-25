@@ -1307,3 +1307,9 @@ body.player-mode .participant-preview .participant-question-track::before,body.p
 .host-winner-group strong{display:block;margin-bottom:3px}
 body.screen-mode .screen-enable-audio{position:fixed!important;right:12px;bottom:12px;z-index:2000!important;background:#f1a03a;color:#171717;border:2px solid #fff;border-radius:8px;padding:9px 13px;font-weight:bold;cursor:pointer}
 @media(prefers-reduced-motion:reduce){.finale-stage .confetti i,.host-completion .confetti i{display:block!important;animation:confettiBurst var(--speed) ease-in var(--delay) infinite!important}}
+
+/* The selected option remains completely black; transition glow stops on it. */
+body.player-mode .participant-preview .ppt-hex.participant-pick.selected>.travel-outline{display:none!important}
+/* Show confetti in front of the host panel background but behind completion text. */
+.host-completion>.confetti{z-index:1!important}
+.host-completion>.host-section-title,.host-completion>.host-muted,.host-completion>.host-winner-members{position:relative;z-index:2}
