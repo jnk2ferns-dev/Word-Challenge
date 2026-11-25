@@ -248,7 +248,7 @@ const presentationControls=view==='screen'&&!document.fullscreenElement
 :'';
 const otherSound=(view==='screen'||view==='player')?'':soundControl();
 el.innerHTML='<div class="view-'+view+'">'+(hostPreviewMode?'':presentationControls+otherSound)+(hostPreviewMode?hostFontPreview():view==='host'?hostView():view==='screen'?screen():playerView())+'</div>';
-document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));fitQuestionText();fitHostQuestion();startGlow();tick()}
+if(view!=='player')document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));fitQuestionText();fitHostQuestion();startGlow();tick()}
 function tick(){if(!state?.endsAt||state.phase!=='question')return;if(Date.now()>=state.endsAt){stopSuspense();return;}const secs=Math.max(0,Math.ceil((state.endsAt-Date.now())/1000)),n=document.getElementById('clock');if(n)n.textContent=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0');const key=state.index+':'+secs;if(secs>=1&&key!==lastTickKey){lastTickKey=key;if(secs<=10)playTick(secs)}}
 function applyQuizState(incoming){
  const old=state;
