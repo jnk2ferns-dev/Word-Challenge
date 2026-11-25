@@ -1087,3 +1087,7 @@ body.player-mode .participant-preview .ppt-hex.participant-pick.selected>.travel
 /* Show confetti in front of the host panel background but behind completion text. */
 .host-completion>.confetti{z-index:1!important}
 .host-completion>.host-section-title,.host-completion>.host-muted,.host-completion>.host-winner-members{position:relative;z-index:2}
+
+/* Glowing flash travels exclusively around title/category and question hexagons. */
+.ppt-hex>.travel-outline,.participant-options .travel-outline{display:none!important}
+.ppt-prompt>.travel-outline,.title-hex>.travel-outline{display:block!important;pointer-events:none!important;z-index:3!important}
