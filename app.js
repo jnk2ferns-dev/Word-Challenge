@@ -111,7 +111,7 @@ function animateGlow(timestamp){
  const dots=document.querySelectorAll('.travel-outline');
  if(dots.length){
   const fraction=((timestamp-glowStart)%5000)/5000;
-  dots.forEach(svg=>{try{const path=svg.querySelector('.orbit-path'),dot=svg.querySelector('.orbit-dot');if(!path||!dot)return;const length=path.getTotalLength(),pt=path.getPointAtLength(fraction*length);dot.setAttribute('transform','translate('+pt.x.toFixed(3)+' '+pt.y.toFixed(3)+')')}catch(e){/* keep the shared animation running */}});
+  dots.forEach(svg=>{try{const path=svg.querySelector('.orbit-path'),dot=svg.querySelector('.orbit-dot');if(!path||!dot)return;const length=path.getTotalLength(),pt=path.getPointAtLength(fraction*length);let scale='';if(svg.classList.contains('participant-glow')){const w=svg.clientWidth,h=svg.clientHeight;if(w>0&&h>0){const unit=w/1000;const pixelRadius=Math.min(10,26*unit);const radiusScale=pixelRadius/26;scale=' scale('+(radiusScale*1000/w).toFixed(5)+' '+(radiusScale*240/h).toFixed(5)+')'}}dot.setAttribute('transform','translate('+pt.x.toFixed(3)+' '+pt.y.toFixed(3)+')'+scale)}catch(e){/* keep the shared animation running */}});
  }
  glowFrame=requestAnimationFrame(animateGlow);
 }
