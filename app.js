@@ -120,13 +120,13 @@ function questionFontSize(prompt){const len=String(prompt||'').length;return len
 function fitQuestionText(){document.querySelectorAll('.question-copy').forEach(n=>{
  const holder=n.closest('.ppt-prompt');if(!holder)return;
  const enlarged=view==='screen';
- let size=questionFontSize(n.textContent)+(enlarged?21.333:0);
+ let size=questionFontSize(n.textContent)+(enlarged?21.333:0)+16/3;
  const floor=17;
  const maxHeight=holder.clientHeight-12;
  n.style.fontSize=size+'px';
  while(size>floor&&(n.scrollHeight>maxHeight||n.scrollWidth>n.clientWidth+2)){size--;n.style.fontSize=size+'px'}
 })}
-function fitHostQuestion(){document.querySelectorAll('[data-fit-host]').forEach(n=>{let size=testMode?56:48;n.style.fontSize=size+'px';const parent=n.closest('.host-content');const allowance=parent?Math.max(105,parent.clientHeight*.52):280;while(size>22&&(n.scrollHeight>allowance||n.scrollWidth>n.clientWidth+2)){size-=2;n.style.fontSize=size+'px'}})}
+function fitHostQuestion(){document.querySelectorAll('[data-fit-host]').forEach(n=>{let size=(testMode?56:48)+16/3;n.style.fontSize=size+'px';const parent=n.closest('.host-content');const allowance=parent?Math.max(105,parent.clientHeight*.52):280;while(size>22&&(n.scrollHeight>allowance||n.scrollWidth>n.clientWidth+2)){size-=2;n.style.fontSize=size+'px'}})}
 function confetti(){let pieces='';const colors=['#f1792c','#fff','#ffd54b','#086b59','#ed3434','#1878ff'];for(let i=0;i<76;i++){const x=(i*37.37)%100,delay=((i*13)%35)/10,duration=3+((i*7)%24)/10;pieces+='<i style="--x:'+x+'%;--delay:'+delay+'s;--speed:'+duration+'s;--c:'+colors[i%colors.length]+';--spin:'+(i%2?'720deg':'-540deg')+'"></i>'}return '<div class="confetti" aria-hidden="true">'+pieces+'</div>'}
 function challengeLabel(r){return r===1?'What Word Comes After':r===2?'What Word Comes Before':r===3?'What Word Ends with &ldquo;TRY&rdquo;':'2 Meanings 1 Word'}
 function teamLabel(t){return esc(state?.teamNames?.[t]||'TEAM '+t)}
@@ -281,6 +281,7 @@ function fitParticipantText(){
   if(!node||!limit||limit<1)return;
   node.style.removeProperty('font-size');
   let px=parseFloat(window.getComputedStyle(node).fontSize)||16;
+  if(node.classList.contains('question-copy')){px+=16/3;node.style.setProperty('font-size',px.toFixed(3)+'px','important');}
   let count=0;
   while(px>minSize&&count++<40&&
         (node.scrollHeight>limit+2||node.scrollWidth>node.clientWidth+2)){
@@ -316,25 +317,7 @@ function fitParticipantText(){
 }
 window.addEventListener('resize',()=>{if(view==='player')requestAnimationFrame(()=>{fitParticipantText();syncParticipantGuides()})});
 if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>{if(view==='player')requestAnimationFrame(()=>{fitParticipantText();syncParticipantGuides()})});
-function syncParticipantGuides(){
- document.querySelectorAll('.quiz-full-bleed-guide').forEach(n=>n.remove());
- if(view!=='player'||!state||!['question','results'].includes(state.phase))return;
- const stage=document.querySelector('.participant-preview');if(!stage)return;
- const lanes=[[stage.querySelector('.participant-question-track'),[stage.querySelector('.participant-question-track .ppt-prompt')]],
- [stage.querySelector('.participant-options'),Array.from(stage.querySelectorAll('.participant-options>.ppt-hex'))]];
- for(const [lane,shapes] of lanes){
-  if(!lane||!shapes.length)continue;
-  const lr=lane.getBoundingClientRect();if(lr.height<1)continue;
-  const y=lr.top+lr.height/2;
-  const boxes=shapes.filter(Boolean).map(n=>n.getBoundingClientRect()).sort((a,b)=>a.left-b.left);
-  let start=0;
-  for(const box of [...boxes,{left:window.innerWidth,right:window.innerWidth}]){
-   const end=Math.min(window.innerWidth,Math.max(0,box.left));
-   if(end-start>1){const line=document.createElement('div');line.className='quiz-full-bleed-guide';line.style.cssText='top:'+y+'px;left:'+start+'px;width:'+(end-start)+'px';document.body.appendChild(line)}
-   start=Math.max(start,Math.min(window.innerWidth,box.right));
-  }
- }
-}
+function syncParticipantGuides(){document.querySelectorAll('.quiz-full-bleed-guide').forEach(n=>n.remove());}
 window.addEventListener('scroll',()=>{if(view==='player')requestAnimationFrame(syncParticipantGuides)},{passive:true});
 function render(){if(!state&&!hostPreviewMode)return;
 const presentationControls=view==='screen'&&!document.fullscreenElement
