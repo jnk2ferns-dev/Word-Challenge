@@ -370,7 +370,7 @@ function renderReview(){
  el.innerHTML='<div class="view-review"><div class="review-slide-frame" title="Tap slide for next" onclick="reviewTapSlide()">'+reviewSlideHTML(slide)+'</div>'
   +(reviewControlsHidden?'<button class="review-restore" onclick="reviewToggleControls()">Show Controls</button>':controls)
   +'</div>';
- document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));
+ if(view!=='player')document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));
  fitQuestionText();fitRibbonCaptions();startGlow();tick();
 }
 document.addEventListener('keydown',e=>{
