@@ -286,6 +286,23 @@ function fitParticipantText(){
  const shape=panel.querySelector('.ppt-prompt');
  if(question&&shape)reduce(question,Math.max(20,shape.clientHeight-9),9);
  panel.querySelectorAll('.ppt-hex').forEach(n=>reduce(n,n.clientHeight,9));
+ // A single compound word must remain on one line inside its hexagon.
+ // Measure the actual rendered label and reduce it rather than splitting
+ // trailing letters across lines on narrow portrait phones.
+ panel.querySelectorAll('.participant-option-label').forEach(label=>{
+  const single=!/\s/.test(label.textContent||'');
+  label.classList.toggle('one-word',single);
+  const box=label.closest('.ppt-hex');
+  const maximum=Math.max(12,(box?.clientHeight||label.clientHeight)-4);
+  reduce(label,maximum,7.5);
+  if(single&&label.clientWidth>0&&label.scrollWidth>label.clientWidth){
+   const scale=Math.max(.62,Math.min(1,(label.clientWidth-2)/label.scrollWidth));
+   label.style.transform='scaleX('+scale.toFixed(3)+')';
+   label.style.transformOrigin='center';
+  }else{
+   label.style.transform='';
+  }
+ });
  panel.querySelectorAll('.participant-answer,.participant-outcome,.participant-fast').forEach(n=>reduce(n,n.clientHeight,9));
  panel.querySelectorAll('.participant-score').forEach(n=>{
   const name=n.querySelector('span');if(name)reduce(name,Math.max(20,n.clientHeight-5),9)
