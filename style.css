@@ -670,3 +670,265 @@ body.review-mode.review-minimal .review-slide-frame .ppt-stage{width:min(100vw,c
  width:28%!important;
  height:8%!important;
 }
+
+
+/* Responsive presentation-matched participant experience; never overlay inputs. */
+body.player-mode .view-player{max-width:1220px!important;width:100%;margin:0 auto}
+body.player-mode .player-app:not(.player-game):not(.player-finale)>.mobile-card{max-width:620px;margin:18px auto}
+body.player-mode .participant-game-layout{
+ display:grid;grid-template-columns:minmax(0,1.5fr) minmax(285px,.8fr);
+ align-items:start;gap:16px;width:100%
+}
+body.player-mode .participant-display{min-width:0;width:100%}
+body.player-mode .participant-timer-bar{
+ display:flex;justify-content:space-between;align-items:center;
+ gap:12px;min-height:48px;padding:8px 15px;margin-bottom:8px;
+ font-weight:800;font-size:clamp(12px,1.7vw,17px);
+ background:#134b42;color:#fff;border:1px solid #74aa98;
+ border-radius:11px;position:sticky;top:5px;z-index:6
+}
+body.player-mode .participant-timer-bar .timer{
+ font-size:clamp(19px,2.6vw,28px);font-weight:800;
+ color:#ffe08c;text-align:right;min-width:65px
+}
+body.player-mode .participant-preview{
+ --participant-ribbon:#E97132;
+ --participant-green:#016D5B;
+ --participant-orange:#E97131;
+ display:flex;flex-direction:column;position:relative;isolation:isolate;
+ align-items:stretch;gap:12px;padding:14px 15px 16px;
+ background:url('/christmas-bg.webp') center/cover no-repeat;
+ background-color:#84ced1;
+ border:1px solid #79b6a4;border-radius:15px;
+ overflow:hidden;box-shadow:0 10px 24px #0004;min-width:0
+}
+body.player-mode .participant-preview.participant-intro{
+ min-height:clamp(210px,38vw,350px);justify-content:center;
+ align-items:center;margin:10px auto 14px;max-width:860px
+}
+body.player-mode .participant-preview.participant-intro .title-hex{
+ position:relative;inset:auto;left:auto;top:auto;
+ width:min(90%,680px);height:auto;min-height:110px;
+ padding:30px 8%;display:flex;align-items:center;justify-content:center
+}
+body.player-mode .participant-preview.participant-intro .title-hex span{
+ white-space:normal;font-size:clamp(20px,4.5vw,42px);line-height:1.16;overflow-wrap:anywhere
+}
+body.player-mode .participant-preview .ppt-ribbon{
+ position:relative!important;inset:auto!important;top:auto!important;
+ left:auto!important;width:100%!important;
+ height:clamp(76px,10vw,128px)!important;flex:0 0 auto;
+ margin:0!important;padding:0;background:none!important;z-index:3
+}
+body.player-mode .participant-preview .ribbon-caption{
+ position:absolute!important;left:25%!important;top:10%!important;
+ width:50%!important;height:77%!important;
+ display:flex;align-items:center;justify-content:center;
+ gap:1px;flex-direction:column;overflow:visible
+}
+body.player-mode .participant-preview .ribbon-caption span{
+ display:block;max-width:100%;white-space:normal!important;
+ overflow-wrap:anywhere;text-align:center!important;
+ font-weight:500!important;transform:none!important;
+ line-height:1.04!important;letter-spacing:0!important;
+ color:#1b2922!important
+}
+body.player-mode .participant-preview .ribbon-caption span:first-child{
+ font-size:clamp(12px,1.9vw,21px)!important
+}
+body.player-mode .participant-preview .ribbon-caption span:last-child{
+ font-size:clamp(11px,1.6vw,18px)!important
+}
+body.player-mode .participant-preview .participant-question-track{
+ position:relative;width:100%;display:flex;align-items:center;
+ justify-content:center;min-height:clamp(128px,17vw,178px)
+}
+body.player-mode .participant-preview .participant-question-track::before{
+ content:"";position:absolute;top:50%;left:-15px;right:-15px;height:2px;
+ background:#f0f0ef;z-index:0
+}
+body.player-mode .participant-preview .ppt-prompt{
+ position:relative!important;top:auto!important;left:auto!important;
+ width:min(100%,720px)!important;height:auto!important;
+ min-height:clamp(126px,17vw,174px)!important;
+ max-height:none!important;padding:18px 3%!important;display:flex!important;
+ align-items:center!important;justify-content:center!important;
+ background:transparent!important;overflow:visible
+}
+body.player-mode .participant-preview .ppt-prompt::before{
+ background:var(--participant-green)!important
+}
+body.player-mode .participant-preview .question-copy{
+ position:relative!important;z-index:2;
+ display:block!important;width:80%!important;max-width:80%!important;
+ font-family:Arial,Helvetica,sans-serif!important;font-weight:500!important;
+ font-size:clamp(16px,2.1vw,24px)!important;line-height:1.15!important;
+ overflow-wrap:break-word!important;white-space:normal!important;
+ text-wrap:balance!important;text-align:center!important;
+ color:#fff!important;margin:0!important
+}
+body.player-mode .participant-preview .ppt-words{
+ position:relative!important;inset:auto!important;
+ top:auto!important;left:auto!important;
+ width:100%!important;height:auto!important;
+ display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ gap:8px!important;padding:0!important;margin:3px 0 6px!important
+}
+body.player-mode .participant-preview .ppt-hex{
+ display:flex;align-items:center;justify-content:center;
+ width:100%;min-height:clamp(64px,9vw,94px);height:auto;
+ background:var(--participant-green)!important;color:#fff!important;
+ font:600 clamp(12px,1.8vw,20px)/1.14 Arial,Helvetica,sans-serif!important;
+ white-space:normal!important;overflow-wrap:anywhere;
+ word-break:normal;text-align:center;
+ padding:12px 12%!important;letter-spacing:0;border:0;
+ box-shadow:none;margin:0;border-radius:0;
+ clip-path:polygon(16% 0,84% 0,100% 50%,84% 100%,16% 100%,0 50%)
+}
+body.player-mode .participant-preview .ppt-hex.revealed{
+ background:var(--participant-orange)!important;color:#16291e!important
+}
+body.player-mode .participant-preview.category-2 .ppt-hex{
+ background:var(--participant-orange)!important;color:#16291e!important
+}
+body.player-mode .participant-preview.category-2 .ppt-hex.correct-choice{
+ background:var(--participant-green)!important;color:white!important
+}
+body.player-mode .participant-preview .ppt-hex.participant-pick{
+ cursor:pointer;transition:filter .15s ease,outline .15s ease;
+ touch-action:manipulation
+}
+body.player-mode .participant-preview .ppt-hex.participant-pick.selected{
+ filter:drop-shadow(0 0 5px #ffe263);outline:3px solid #ffe263;
+ outline-offset:-3px
+}
+body.player-mode .participant-preview .ppt-hex.participant-pick:focus-visible{
+ outline:3px solid #ffe263;outline-offset:-3px
+}
+body.player-mode .participant-preview .ppt-answer.participant-answer{
+ display:flex!important;position:relative!important;inset:auto!important;
+ left:auto!important;top:auto!important;width:min(70%,420px)!important;
+ height:auto!important;min-height:56px;margin:5px auto 0!important;
+ padding:10px 18px!important;background:var(--participant-orange)!important;
+ border-radius:9px;text-align:center;font-size:clamp(17px,2.3vw,25px)!important;
+ font-weight:700;line-height:1.12;color:#19261f!important;
+ overflow-wrap:break-word
+}
+body.player-mode .participant-preview .ppt-answer.participant-answer.answer-green,
+body.player-mode .participant-preview .ppt-answer.participant-answer.answer-mcq{
+ background:var(--participant-green)!important;color:white!important
+}
+body.player-mode .participant-preview .ppt-outcome.participant-outcome{
+ display:block!important;position:relative!important;inset:auto!important;
+ width:100%!important;height:auto!important;min-height:0;
+ margin:2px 0 0!important;padding:5px 8px!important;
+ color:#ffe18a!important;text-shadow:0 2px 2px #123e33!important;
+ font-size:clamp(15px,2.2vw,23px)!important;
+ line-height:1.24!important;text-align:center;font-weight:800
+}
+body.player-mode .participant-preview .ppt-fast.participant-fast{
+ display:block!important;position:relative!important;inset:auto!important;
+ width:100%!important;height:auto!important;min-height:42px;
+ margin:0!important;padding:10px 12px!important;border-radius:8px;
+ background:var(--participant-green)!important;color:#fff!important;
+ text-align:center;font-size:clamp(12px,1.8vw,18px)!important;
+ line-height:1.22!important;overflow-wrap:anywhere
+}
+body.player-mode .participant-scoreboard{
+ width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+ margin-top:6px
+}
+body.player-mode .participant-score{
+ display:flex;align-items:center;justify-content:space-between;gap:8px;
+ flex-wrap:wrap;border:1px solid #ffffff73;border-radius:10px;
+ color:#fff;font-weight:800;padding:10px 14px;min-width:0;
+ font-size:clamp(13px,1.65vw,18px)
+}
+body.player-mode .participant-score span{overflow-wrap:anywhere;flex:1;min-width:0}
+body.player-mode .participant-score strong{
+ color:#ffe479;font-size:clamp(20px,2.8vw,30px)
+}
+body.player-mode .participant-score small{flex-basis:100%;text-align:right;font-size:12px}
+body.player-mode .participant-score.team-a{background:#133de3}
+body.player-mode .participant-score.team-b{background:#d62727}
+body.player-mode .participant-score.highlight{outline:3px solid #ffe45a}
+body.player-mode .participant-entry{
+ position:sticky;top:8px;z-index:4;padding:20px 22px;margin:0;
+ border:2px solid #d8c7aa;
+ box-shadow:0 8px 24px #0004;
+ background:#f7f7f3;color:#20352e;overflow:visible;
+ width:100%;min-width:0
+}
+body.player-mode .participant-entry h2{
+ font-size:clamp(19px,2.3vw,25px)!important;text-align:left!important
+}
+body.player-mode .participant-entry input{
+ display:block!important;position:relative!important;z-index:2!important;
+ width:100%!important;max-width:100%!important;min-height:54px;
+ border:2px solid #6c988c;border-radius:8px;background:white!important;
+ color:#142d26!important;font-size:18px!important
+}
+body.player-mode .participant-entry .submit-button{
+ display:block!important;width:100%!important;position:relative!important;
+ z-index:3!important;min-height:54px;touch-action:manipulation;
+ margin-top:14px!important
+}
+body.player-mode .participant-selected{
+ background:#e4eee8;padding:14px;color:#113e31;border-radius:9px;
+ overflow-wrap:anywhere;margin:14px 0
+}
+body.player-mode .participant-entry .submit-button:disabled{
+ opacity:.5;cursor:not-allowed
+}
+body.player-mode .host-team-naming{background:#223d36;color:#fff}
+.host-team-naming{background:#173e37;border:1px solid #68a48d;border-radius:11px;padding:12px 14px;margin:10px 0}
+.team-editor-title{font-weight:800;color:#fff;margin:0 0 8px}
+.team-editor-title small{display:block;font-weight:400;color:#c7dfd5;margin-top:3px;font-size:12px}
+.team-editor-grid{display:grid;grid-template-columns:70px minmax(0,1fr);gap:8px;align-items:center}
+.team-editor-grid label{color:#fff;font-size:13px;white-space:nowrap}
+.team-editor-grid input{width:100%;min-width:0;max-width:100%;margin:0;padding:8px 10px;font-size:15px;height:40px}
+.team-editor-grid .team-save-btn{grid-column:1 / -1;font-size:13px;padding:10px 12px;margin:4px 0 0}
+.host-team-rename-details{margin-top:10px;font-size:13px}
+.host-team-rename-details summary{cursor:pointer;color:#ffe3aa;font-weight:800}
+.host-team-rename-details .host-team-naming{padding:8px;margin:7px 0}
+.host-team-rename-details .team-editor-grid{grid-template-columns:1fr}
+.host-team-rename-details .team-editor-grid label{white-space:normal}
+.host-lobby>.host-team-naming{max-width:660px;margin:12px auto}
+@media(max-width:900px){
+ body.player-mode .participant-game-layout{grid-template-columns:1fr}
+ body.player-mode .participant-entry{position:relative;top:auto}
+ body.player-mode .participant-preview{max-width:900px;margin:0 auto}
+}
+@media(max-width:600px){
+ body.player-mode main{padding:4px!important;margin:4px auto!important}
+ body.player-mode .player-app{padding:3px 0 24px}
+ body.player-mode .mobile-head{padding:9px 12px;margin-bottom:9px}
+ body.player-mode .mobile-head strong{font-size:16px}
+ body.player-mode .team-chip{font-size:12px;max-width:55%;white-space:normal;overflow-wrap:anywhere;text-align:center}
+ body.player-mode .participant-timer-bar{min-height:43px;padding:7px 11px;font-size:12px;top:0}
+ body.player-mode .participant-preview{padding:8px 8px 12px;gap:8px;border-radius:10px}
+ body.player-mode .participant-preview .ppt-ribbon{height:76px!important}
+ body.player-mode .participant-preview .ribbon-caption span:first-child{font-size:12px!important}
+ body.player-mode .participant-preview .ribbon-caption span:last-child{font-size:10px!important}
+ body.player-mode .participant-preview .participant-question-track{min-height:126px}
+ body.player-mode .participant-preview .ppt-prompt{min-height:126px!important;padding:12px 1%!important}
+ body.player-mode .participant-preview .question-copy{font-size:clamp(14px,3.6vw,17px)!important;line-height:1.13!important;width:80%!important}
+ body.player-mode .participant-preview .ppt-words{gap:5px!important}
+ body.player-mode .participant-preview .ppt-hex{
+  min-height:64px;font-size:clamp(10px,2.7vw,13px)!important;padding:9px 10%!important
+ }
+ body.player-mode .participant-scoreboard{gap:6px;margin-top:4px}
+ body.player-mode .participant-score{padding:8px 7px;gap:4px;font-size:12px}
+ body.player-mode .participant-score strong{font-size:18px}
+ body.player-mode .participant-entry{padding:14px 15px;margin:0}
+ body.player-mode .participant-preview .ppt-answer.participant-answer{
+  min-height:45px!important;padding:8px 10px!important;font-size:16px!important;
+  width:80%!important
+ }
+ body.player-mode .participant-preview .ppt-outcome.participant-outcome{
+  font-size:15px!important
+ }
+}
+@media(min-width:601px) and (max-width:900px){
+ body.player-mode .participant-preview .ppt-ribbon{height:110px!important}
+}
