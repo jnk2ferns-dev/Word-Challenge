@@ -103,14 +103,14 @@ async function startSuspense(){
  suspenseTimer=setInterval(()=>{if(state?.phase!=='question'||Date.now()>=state.endsAt)stopSuspense();else scheduleSoundtrack()},140);
 }
 function soundControl(){return !soundEnabled?'<button class="soundbutton" onclick="enableSound()">🔊 Enable quiz sounds (tap once)</button>':'<button class="soundbutton sound-on" onclick="playCorrectAnswer()">🔊 Test correct-answer sound</button>'}
-function animatedBorder(){return '<svg class="travel-outline" viewBox="0 0 1000 240" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path class="orbit-path" d="M100 3 L900 3 L997 120 L900 237 L100 237 L3 120 Z" fill="none" stroke="none"/><g class="orbit-dot"><circle r="22" fill="#d7fff4" opacity=".55"/><circle r="11" fill="#e8fff9" opacity=".8"/><circle r="5" fill="#ffffff"/></g></svg>'}
+function animatedBorder(mobile=false){return '<svg class="travel-outline'+(mobile?' participant-glow':'')+'" viewBox="0 0 1000 240" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path class="orbit-path" d="M100 3 L900 3 L997 120 L900 237 L100 237 L3 120 Z" fill="none" stroke="none"/><g class="orbit-dot"><circle r="22" fill="#d7fff4" opacity=".55"/><circle r="11" fill="#e8fff9" opacity=".8"/><circle r="5" fill="#ffffff"/>'+(mobile?'<animateMotion dur="5s" repeatCount="indefinite" rotate="0" path="M100 3 L900 3 L997 120 L900 237 L100 237 L3 120 Z"/>':'')+'</g></svg>'}
 let glowFrame=0,glowStart=0;
 function animateGlow(timestamp){
  if(!glowStart)glowStart=timestamp;
  const dots=document.querySelectorAll('.travel-outline');
  if(dots.length){
   const fraction=((timestamp-glowStart)%5000)/5000;
-  dots.forEach(svg=>{try{const path=svg.querySelector('.orbit-path'),dot=svg.querySelector('.orbit-dot');if(!path||!dot)return;const length=path.getTotalLength(),pt=path.getPointAtLength(fraction*length);dot.setAttribute('transform','translate('+pt.x.toFixed(3)+' '+pt.y.toFixed(3)+')')}catch(e){/* Keep animation alive if mobile Safari cannot measure one SVG */}});
+  dots.forEach(svg=>{if(svg.classList.contains('participant-glow'))return;try{const path=svg.querySelector('.orbit-path'),dot=svg.querySelector('.orbit-dot');if(!path||!dot)return;const length=path.getTotalLength(),pt=path.getPointAtLength(fraction*length);dot.setAttribute('transform','translate('+pt.x.toFixed(3)+' '+pt.y.toFixed(3)+')')}catch(e){/* Keep animation alive if mobile Safari cannot measure one SVG */}});
  }
  glowFrame=requestAnimationFrame(animateGlow);
 }
@@ -214,12 +214,12 @@ function participantSlide(q,revealed=false){
  const scores=`<div class="participant-scoreboard">${['A','B'].map(t=>`<div class="participant-score team-${t.toLowerCase()} ${r?.roundWinner===t?'highlight':''}"><span>${teamLabel(t)}</span><strong>${state.scores[t]}</strong>${revealed?`<small>+${r.round[t]} this question</small>`:''}</div>`).join('')}</div>`;
  return `<section class="participant-preview ${revealed?'participant-revealed':''} category-${q.round}">
   ${banner(q.round)}
-  <div class="participant-question-track"><div class="ppt-prompt"><span class="question-copy">${esc(q.prompt)}</span></div></div>
+  <div class="participant-question-track"><div class="ppt-prompt"><span class="question-copy">${esc(q.prompt)}</span>${animatedBorder(true)}</div></div>
   ${shapes}${info}${scores}
  </section>`;
 }
 function participantIntro(label){
- return `<section class="participant-preview participant-intro ${state.phase==='lobby'?'participant-opening':'participant-category'}"><div class="title-hex"><span>${esc(label)}</span></div></section>`;
+ return `<section class="participant-preview participant-intro ${state.phase==='lobby'?'participant-opening':'participant-category'}"><div class="title-hex"><span>${esc(label)}</span>${animatedBorder(true)}</div></section>`;
 }
 function playerView(){
  const p=state.players.find(x=>x.id===playerId);
