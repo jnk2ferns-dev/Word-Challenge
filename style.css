@@ -932,3 +932,22 @@ body.player-mode .host-team-naming{background:#223d36;color:#fff}
 @media(min-width:601px) and (max-width:900px){
  body.player-mode .participant-preview .ppt-ribbon{height:110px!important}
 }
+
+/* Use the exact intro/title colour scheme for this quiz. */
+body.player-mode .participant-preview.participant-opening .title-hex::before{
+ background:#016D5B!important;
+}
+body.player-mode .participant-preview.participant-opening .title-hex span{
+ color:#FFFFFF!important;
+}
+body.player-mode .participant-preview.participant-category .title-hex::before{
+ background:var(--participant-ribbon)!important;
+}
+body.player-mode .participant-preview.participant-category .title-hex span{
+ color:#15231f!important;
+}
+/* Team names may be longer than the defaults without crowding Host controls. */
+.host-team-score>span,.ppt-score>span,.final-tally-team>span{
+ overflow-wrap:anywhere;
+ min-width:0;
+}
