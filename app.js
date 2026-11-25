@@ -245,7 +245,7 @@ function participantSlide(q,revealed=false){
  </section>`;
 }
 function participantIntro(label){
- return `<section class="participant-preview participant-intro"><div class="title-hex"><span>${esc(label)}</span></div></section>`;
+ return `<section class="participant-preview participant-intro ${state.phase==='lobby'?'participant-opening':'participant-category'}"><div class="title-hex"><span>${esc(label)}</span></div></section>`;
 }
 function playerView(){
  const p=state.players.find(x=>x.id===playerId);
