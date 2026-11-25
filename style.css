@@ -1410,8 +1410,6 @@ body.player-mode .participant-preview.participant-intro .trivia-two-note{font-si
 body.player-mode .participant-preview.category-2:not(.participant-revealed) .ppt-hex.participant-pick.selected,
 body.player-mode .participant-preview.category-2:not(.participant-revealed) .ppt-hex.participant-pick.selected:focus-visible{background:#000!important;color:#fff!important;border:0!important;outline:0!important;box-shadow:none!important;filter:none!important;}
 body.player-mode .participant-preview.category-2:not(.participant-revealed) .ppt-hex.participant-pick.selected *{color:#fff!important;}
-/* Same question band on all presentation question and answer slides. */
-.ppt-stage:not(.opening-stage):not(.finale-stage) .ppt-prompt{top:23.5%!important;height:23%!important;}
 /* Stable responsive question band independent of reveal rows or category. */
 body.player-mode .player-game .participant-preview:not(.participant-revealed):has(.participant-options){grid-template-rows:minmax(0,1fr) var(--stable-question-row) minmax(0,1fr) minmax(0,.75fr)!important;}
 body.player-mode .player-game .participant-preview:not(.participant-revealed):not(:has(.participant-options)){grid-template-rows:minmax(0,1fr) var(--stable-question-row) minmax(0,.75fr)!important;}
