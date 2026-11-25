@@ -75,8 +75,8 @@ if(testMode&&b.op==='demoAnswer'){
 if(b.op==='teamNames'){
  const names=b.names||{},next={};
  for(const t of ['A','B']){
-  const val=String(names[t]??'').trim().replace(/\\s+/g,' ');
-  if(!val||val.length>24||/[<>\\x00-\\x1F]/.test(val))return send(res,400,{error:'Enter a team name of 1–24 characters'});
+  const val=String(names[t]??'').trim().replace(/\s+/g,' ');
+  if(!val||val.length>24||/[<>\x00-\x1F]/.test(val))return send(res,400,{error:'Enter a team name of 1–24 characters'});
   next[t]=val;
  }
  if(next.A.toLocaleLowerCase()===next.B.toLocaleLowerCase())return send(res,400,{error:'Team names must be different'});
