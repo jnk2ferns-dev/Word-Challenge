@@ -1418,3 +1418,18 @@ body.player-mode .player-game .participant-preview.participant-revealed:not(:has
 body.player-mode .player-game .participant-preview{--stable-question-row:clamp(65px,23dvh,150px);}
 body.player-mode .player-game .participant-preview .question-copy{font-size:calc(clamp(11px,min(4.5vw,2.8dvh),21px) + 3pt)!important;}
 @media(max-height:550px) and (orientation:landscape){body.player-mode .player-game .participant-preview{--stable-question-row:clamp(48px,22dvh,105px);}body.player-mode .player-game .participant-preview .question-copy{font-size:calc(clamp(10px,2.9dvh,13px) + 3pt)!important;}}
+
+/* Curved-up ribbon, based on the PPTM ellipseRibbon2 profile, with 70.611% central panel. */
+.ppt-stage .ribbon-caption,.ppt-stage .ppt-banner-label,body.player-mode .participant-preview .ribbon-caption{left:15%!important;width:70%!important;top:5%!important;height:72%!important;overflow:visible!important;}
+.ppt-stage .ribbon-caption span,.ppt-stage .ppt-banner-label span,body.player-mode .participant-preview .ribbon-caption span{transform:none!important;white-space:normal!important;overflow-wrap:normal!important;flex-shrink:0!important;max-width:100%!important;line-height:1.02!important;}
+.ppt-stage .ribbon-caption span:first-child,.ppt-stage .ppt-banner-label span:first-child{font-size:calc(clamp(24.333px,calc(2.65vw + 5.333px),37.333px) + 2pt)!important;}
+.ppt-stage .ribbon-caption span:last-child,.ppt-stage .ppt-banner-label span:last-child{font-size:calc(clamp(17.666px,calc(2.1vw + 2.666px),27.666px) + 2pt)!important;}
+body.player-mode .player-game .participant-preview .ribbon-caption span:first-child{font-size:calc(clamp(10px,2.0dvh,20px) + 2pt)!important;}
+body.player-mode .player-game .participant-preview .ribbon-caption span:last-child{font-size:calc(clamp(9px,1.7dvh,16px) + 2pt)!important;}
+body.player-mode .player-game .participant-preview>.ppt-ribbon{overflow:visible!important;}
+body.player-mode .player-game .participant-preview.category-2 .ppt-hex.participant-pick{transition:background-color 160ms ease,color 160ms ease!important;animation:none!important;transform:none!important;filter:none!important;box-shadow:none!important;outline:none!important;-webkit-tap-highlight-color:transparent;}
+body.player-mode .player-game .participant-preview.category-2 .ppt-hex.participant-pick::before,body.player-mode .player-game .participant-preview.category-2 .ppt-hex.participant-pick::after{content:none!important;display:none!important;}
+.ppt-stage.choice-slide .ppt-hex{font-size:calc(clamp(13px,2.3vw,28px) - 1pt)!important;}
+.host-word-row.trivia-two-options span{font-size:calc(clamp(16px,1.9vw,24px) - 1pt)!important;}
+body.player-mode .player-game .participant-preview.category-2 .ppt-hex{font-size:calc(clamp(10px,min(3.3vw,2.5dvh),19px) - 1pt)!important;}
+@media(max-height:550px) and (orientation:landscape){body.player-mode .player-game .participant-preview.category-2 .ppt-hex{font-size:calc(clamp(9px,2.8dvh,12px) - 1pt)!important;}}
