@@ -127,7 +127,7 @@ function fitQuestionText(){
  const slides=document.querySelectorAll('.ppt-stage');
  slides.forEach(stage=>{
   const scale=Math.max(.1,stage.clientWidth/1100);
-  const size=(31-4/3)*scale;
+  const size=31*scale;
   stage.querySelectorAll('.question-copy').forEach(n=>{
    n.style.fontSize=size.toFixed(2)+'px';
    n.style.lineHeight='1.08';
