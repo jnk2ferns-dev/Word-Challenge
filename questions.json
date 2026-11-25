@@ -3,7 +3,7 @@
     "id": 1,
     "round": 1,
     "type": "text",
-    "prompt": "What is the Christmas word that completes all three words below?",
+    "prompt": "What is the word that comes after all three words below?",
     "words": [
       "CANDLE",
       "FIRE",
@@ -22,7 +22,7 @@
     "id": 2,
     "round": 1,
     "type": "text",
-    "prompt": "What is the Christmas word that completes all three words below?",
+    "prompt": "What is the word that comes after all three words below?",
     "words": [
       "CHEESE",
       "FRUIT",
@@ -41,7 +41,7 @@
     "id": 3,
     "round": 1,
     "type": "text",
-    "prompt": "What is the Christmas word that completes all three words below?",
+    "prompt": "What is the word that comes after all three words below?",
     "words": [
       "CHEST",
       "COCO",
@@ -60,7 +60,7 @@
     "id": 4,
     "round": 1,
     "type": "text",
-    "prompt": "What is the Christmas word that completes all three words below?",
+    "prompt": "What is the word that comes after all three words below?",
     "words": [
       "CORN",
       "GINGER",
@@ -79,7 +79,7 @@
     "id": 5,
     "round": 1,
     "type": "text",
-    "prompt": "What is the Christmas word that completes all three words below?",
+    "prompt": "What is the word that comes after all three words below?",
     "words": [
       "GLITTER",
       "SNOW",
@@ -98,7 +98,7 @@
     "id": 6,
     "round": 1,
     "type": "text",
-    "prompt": "What is the Christmas word that completes all three words below?",
+    "prompt": "What is the word that comes after all three words below?",
     "words": [
       "BAKE",
       "CARD",
@@ -117,7 +117,7 @@
     "id": 7,
     "round": 1,
     "type": "text",
-    "prompt": "What is the Christmas word that completes all three words below?",
+    "prompt": "What is the word that comes after all three words below?",
     "words": [
       "CLERGY",
       "POST",
@@ -136,7 +136,7 @@
     "id": 8,
     "round": 1,
     "type": "text",
-    "prompt": "What is the Christmas word that completes all three words below?",
+    "prompt": "What is the word that comes after all three words below?",
     "words": [
       "CHRISTMAS",
       "WINTER",
@@ -155,7 +155,7 @@
     "id": 9,
     "round": 1,
     "type": "text",
-    "prompt": "What is the Christmas word that completes all three words below?",
+    "prompt": "What is the word that comes after all three words below?",
     "words": [
       "GIFT",
       "SHRINK",
