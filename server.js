@@ -7,14 +7,14 @@ const allQuestions=JSON.parse(fs.readFileSync(path.join(__dirname,'questions.jso
 // Full edition: all nine questions in each of the four Word Challenge categories.
 const questions=allQuestions;
 function createGame(questions,capacity,testMode=false){
-const state={pin:String(crypto.randomInt(100000,1000000)),phase:'lobby',index:0,started:0,endsAt:null,duration:30,players:{},responses:{},scores:{A:0,B:0},results:null};
+const state={pin:String(crypto.randomInt(100000,1000000)),phase:'lobby',index:0,started:0,endsAt:null,duration:30,players:{},responses:{},scores:{A:0,B:0},teamNames:{A:'TEAM A',B:'TEAM B'},results:null};
 const clients=new Set();
 // Configured for large quiz events. This is a registration ceiling, not a guaranteed concurrent capacity.
 const MAX_PLAYERS=capacity;
 let pendingBroadcast=null;
 function normal(s){return String(s??'').trim().replace(/\s+/g,' ').toLowerCase()}
 function safePlayer(p){return {id:p.id,name:p.name,team:p.team}}
-function snapshot(){const q=questions[state.index];return {pin:state.pin,phase:state.phase,index:state.index,total:questions.length,question:state.phase==='question'?{id:q.id,round:q.round,prompt:q.prompt,words:q.words,type:q.type,choices:q.choices}:state.phase==='results'?{id:q.id,round:q.round,prompt:q.prompt,words:q.words,type:q.type,completed:q.completed}:null,endsAt:state.endsAt,duration:state.duration,sectionRound:q.round,players:Object.values(state.players).map(safePlayer),capacity:MAX_PLAYERS,scores:state.scores,results:state.results,answered:Object.keys(state.responses).length}}
+function snapshot(){const q=questions[state.index];return {pin:state.pin,phase:state.phase,index:state.index,total:questions.length,question:state.phase==='question'?{id:q.id,round:q.round,prompt:q.prompt,words:q.words,type:q.type,choices:q.choices}:state.phase==='results'?{id:q.id,round:q.round,prompt:q.prompt,words:q.words,type:q.type,completed:q.completed}:null,endsAt:state.endsAt,duration:state.duration,sectionRound:q.round,players:Object.values(state.players).map(safePlayer),capacity:MAX_PLAYERS,scores:state.scores,teamNames:state.teamNames,results:state.results,answered:Object.keys(state.responses).length}}
 function send(res,status,data){res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(data))}
 function push(){if(pendingBroadcast!==null)return;pendingBroadcast=setTimeout(()=>{pendingBroadcast=null;const data='data: '+JSON.stringify(snapshot())+'\n\n';for(const client of clients){try{client.write(data)}catch{clients.delete(client)}}},120)}
 function pushNow(){if(pendingBroadcast!==null){clearTimeout(pendingBroadcast);pendingBroadcast=null}const data='data: '+JSON.stringify(snapshot())+'\n\n';for(const client of clients){try{client.write(data)}catch{clients.delete(client)}}}
@@ -71,6 +71,17 @@ if(testMode&&b.op==='demoAnswer'){
  if(state.responses[player.id])return send(res,409,{error:'This test player has already answered'});
  state.responses[player.id]={answer:String(b.correct===false?'WRONG':questions[state.index].answer),at:Date.now()};
  pushNow();return send(res,200,{ok:true});
+}
+if(b.op==='teamNames'){
+ const names=b.names||{},next={};
+ for(const t of ['A','B']){
+  const val=String(names[t]??'').trim().replace(/\\s+/g,' ');
+  if(!val||val.length>24||/[<>\\x00-\\x1F]/.test(val))return send(res,400,{error:'Enter a team name of 1–24 characters'});
+  next[t]=val;
+ }
+ if(next.A.toLocaleLowerCase()===next.B.toLocaleLowerCase())return send(res,400,{error:'Team names must be different'});
+ state.teamNames=next;
+ pushNow();return send(res,200,{ok:true,teamNames:next});
 }
 if(b.op==='team'){if(state.phase!=='lobby')return send(res,409,{error:'Assign teams before the game'});if(!state.players[b.id]||!['A','B'].includes(b.team))return send(res,400,{error:'Invalid team'});state.players[b.id].team=b.team}
 else if(b.op==='duration'){if(!['lobby','section','results'].includes(state.phase))return send(res,409,{error:'Change timer before starting a question'});const v=Number(b.seconds);if(!Number.isInteger(v)||v<5||v>300)return send(res,400,{error:'Choose 5–300 seconds'});state.duration=v}
