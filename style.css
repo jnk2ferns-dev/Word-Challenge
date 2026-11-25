@@ -1159,3 +1159,11 @@ body.player-mode .player-game .participant-preview .ppt-prompt{
 body.player-mode .participant-preview .participant-glow{
  overflow:visible!important;z-index:20!important;pointer-events:none!important;
 }
+
+/* Word Challenge: no horizontal guide lines behind any slide shapes. */
+.ppt-stage::before,.participant-preview::before,
+body.player-mode .participant-preview .participant-question-track::before,
+body.player-mode .participant-preview .participant-options::before,
+body.player-mode .participant-preview .ppt-words::before,
+body.player-mode .participant-preview .question-track::before,
+.quiz-full-bleed-guide{content:none!important;display:none!important;background:none!important}
