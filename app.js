@@ -49,7 +49,7 @@ async function playVictoryOnce(){
  victoryPlayedFor=key;
  stopSuspense();
  if(correctSound){correctSound.pause();correctSound.currentTime=0}
- try{const audio=await loadVictoryAudio();if(!audio)return;audio.loop=false;audio.pause();audio.currentTime=0;await audio.play()}catch(e){console.warn('Victory sound blocked on this device',e)}
+ try{const audio=await loadVictoryAudio();if(!audio)throw Error('Victory audio unavailable');audio.loop=false;audio.pause();audio.currentTime=0;await audio.play()}catch(e){console.warn('Victory audio unavailable, playing fallback fanfare:',e);if(audioContext&&audioContext.state==='running'){const t=audioContext.currentTime+.03;[523,659,784,1047,784,1047,1319].forEach((f,i)=>note(f,t+i*.17,i===6?.72:.28,.09,'triangle'))}}
 }
 function playCorrectAnswer(){if(view==='player'||!soundEnabled)return;try{if(correctSound){correctSound.pause();correctSound.currentTime=0;correctSound.play().catch(e=>console.warn('Correct answer audio blocked:',e))}else if(audioContext){const t=audioContext.currentTime;[523,659,784,1047].forEach((f,i)=>note(f,t+i*.13,.24,.08))}}catch(e){console.warn(e)}}
 function playTick(sec){if(view==='player'||!soundEnabled||!audioContext)return;note(sec<=3?940:690,audioContext.currentTime+.01,sec===1?.2:.095,sec<=3?.08:.045)}
