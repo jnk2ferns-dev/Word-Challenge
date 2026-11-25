@@ -5,7 +5,7 @@ let view=new URLSearchParams(location.search).get('view')||'host';
 let state=null,playerId=localStorage.getItem('qm_player'+sessionSuffix)||'',playerToken=localStorage.getItem('qm_token'+sessionSuffix)||'',hostKey=sessionStorage.getItem('qm_host')||'',selected='',submittedFor=-1,lastResult=-1,submittingAnswer=false;
 const el=document.getElementById('app');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function setView(v){if(v==='player'){stopAllQuizAudio()}view=v;history.replaceState(null,'','?view='+v+(testMode?'&test=1':''));document.body.classList.toggle('screen-mode',v==='screen');document.body.classList.toggle('player-mode',v==='player');render()}
+function setView(v){document.querySelectorAll('.quiz-full-bleed-guide').forEach(n=>n.remove());if(v==='player'){stopAllQuizAudio()}view=v;history.replaceState(null,'','?view='+v+(testMode?'&test=1':''));document.body.classList.toggle('screen-mode',v==='screen');document.body.classList.toggle('player-mode',v==='player');render()}
 async function launchSlideshow(){
  // Fullscreen requires a direct tap/click in supported browsers.
  try{
@@ -30,7 +30,7 @@ async function host(op,extra={}){unlockAudio();try{await api({op,hostKey,...extr
 let audioContext=null,soundEnabled=false,lastTickKey='',suspenseTimer=null,correctSound=null,victorySound=null,victoryPlayedFor=null;
 fetch('/correct-answer.b64').then(r=>r.ok?r.text():Promise.reject(Error('Missing sound file'))).then(b64=>{correctSound=new Audio('data:audio/mpeg;base64,'+b64.trim());correctSound.preload='auto';correctSound.volume=.9}).catch(e=>console.warn('Unable to load uploaded audio:',e));
 function unlockAudio(){if(view==='player')return false;try{audioContext=audioContext||new(window.AudioContext||window.webkitAudioContext)();const p=audioContext.resume();if(p?.catch)p.catch(()=>{});soundEnabled=true;loadVictoryAudio();return true}catch(e){return false}}
-function enableSound(){if(view==='player')return;if(!unlockAudio()){alert('Sound unavailable on this device');return}playCorrectAnswer();render();if(state?.phase==='question')startSuspense()}
+function enableSound(){if(view==='player')return;if(!unlockAudio()){alert('Sound unavailable on this device');return}if(state?.phase==='finished')playVictoryOnce();else playCorrectAnswer();render();if(state?.phase==='question')startSuspense()}
 function note(freq,t,dur,gain=.035,type='sine'){if(view==='player'||!soundEnabled||!audioContext||audioContext.state!=='running')return;const c=audioContext,o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(gain,t+.015);g.gain.setValueAtTime(gain,t+Math.max(.03,dur-.06));g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g).connect(c.destination);o.start(t);o.stop(t+dur+.01)}
 let victoryAudioPromise=null;
 function loadVictoryAudio(){
@@ -103,7 +103,7 @@ async function startSuspense(){
  suspenseTimer=setInterval(()=>{if(state?.phase!=='question'||Date.now()>=state.endsAt)stopSuspense();else scheduleSoundtrack()},140);
 }
 function soundControl(){return !soundEnabled?'<button class="soundbutton" onclick="enableSound()">🔊 Enable quiz sounds (tap once)</button>':'<button class="soundbutton sound-on" onclick="playCorrectAnswer()">🔊 Test correct-answer sound</button>'}
-function animatedBorder(){return '<svg class="travel-outline" viewBox="0 0 1000 240" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><radialGradient id="dotSoftGlow"><stop offset="0%" stop-color="#f5fffa" stop-opacity=".98"/><stop offset="28%" stop-color="#c9fff4" stop-opacity=".83"/><stop offset="65%" stop-color="#a1f8e8" stop-opacity=".32"/><stop offset="100%" stop-color="#a1f8e8" stop-opacity="0"/></radialGradient></defs><path class="orbit-path" d="M100 3 L900 3 L997 120 L900 237 L100 237 L3 120 Z" fill="none" stroke="none"/><g class="orbit-dot"><circle r="26" fill="url(#dotSoftGlow)"/><circle r="5" fill="#f7fffb"/></g></svg>'}
+function animatedBorder(small=false){return '<svg class="travel-outline" viewBox="0 0 1000 240" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><radialGradient id="dotSoftGlow"><stop offset="0%" stop-color="#f5fffa" stop-opacity=".98"/><stop offset="28%" stop-color="#c9fff4" stop-opacity=".83"/><stop offset="65%" stop-color="#a1f8e8" stop-opacity=".32"/><stop offset="100%" stop-color="#a1f8e8" stop-opacity="0"/></radialGradient></defs><path class="orbit-path" d="'+(small?'M160 3 L840 3 L997 120 L840 237 L160 237 L3 120 Z':'M100 3 L900 3 L997 120 L900 237 L100 237 L3 120 Z')+'" fill="none" stroke="none"/><g class="orbit-dot"><circle r="26" fill="url(#dotSoftGlow)"/><circle r="5" fill="#f7fffb"/></g></svg>'}
 let glowFrame=0,glowStart=0;
 function animateGlow(timestamp){
  if(!glowStart)glowStart=timestamp;
@@ -114,7 +114,7 @@ function animateGlow(timestamp){
  }
  glowFrame=requestAnimationFrame(animateGlow);
 }
-function startGlow(){if(view==='screen'&&!glowFrame&&typeof requestAnimationFrame==='function')glowFrame=requestAnimationFrame(animateGlow)}
+function startGlow(){if(view==='screen'||view==='player'&&!glowFrame&&typeof requestAnimationFrame==='function')glowFrame=requestAnimationFrame(animateGlow)}
 function questionFontSize(prompt){const len=String(prompt||'').length;return len>185?19:len>145?21:len>110?23:len>82?25:29}
 function fitQuestionText(){document.querySelectorAll('.question-copy').forEach(n=>{
  const holder=n.closest('.ppt-prompt');if(!holder)return;
@@ -185,7 +185,7 @@ action='<button class="host-primary" onclick="host(\'next\')">'+(state.index+1==
 }else{
 title='Quiz Complete';
 const winner=state.scores.A===state.scores.B?'Both Teams':state.scores.A>state.scores.B?teamLabel('A'):teamLabel('B');
-content='<div class="host-section-title">Congratulations '+winner+'!</div><p class="host-muted">Final scores</p>';
+const winningTeams=state.scores.A===state.scores.B?['A','B']:[state.scores.A>state.scores.B?'A':'B'];const memberSummary=winningTeams.map(t=>'<div class="host-winner-group"><strong>'+teamLabel(t)+'</strong><div>'+state.players.filter(p=>p.team===t).map(p=>esc(p.name)).join(', ')+'</div></div>').join('');content='<div class="host-completion">'+confetti()+'<div class="host-section-title">Congratulations '+winner+'!</div><p class="host-muted">Final scores</p><div class="host-winner-members"><h3>Winning team members</h3>'+memberSummary+'</div></div>';
 }
 const timerControl=['section','results'].includes(state.phase)?'<div class="host-timer-control"><label for="duration">Next timer</label><input id="duration" type="number" min="5" max="300" value="'+state.duration+'"><button class="secondary" onclick="host(\'duration\',{seconds:Number(document.getElementById(\'duration\').value)})">Save</button></div>':'';
 const reset='<button class="host-reset" onclick="if(confirm(\'Reset quiz and registered players?\')){host(\'reset\');localStorage.removeItem(\'qm_player\'+sessionSuffix);localStorage.removeItem(\'qm_token\'+sessionSuffix)}">Reset quiz</button>';
@@ -237,7 +237,7 @@ function playerView(){
  if(revealed)controls=''; // Results, fastest player and both scores now share the one visible presentation, with no redundant waiting panel.
  else if(done)controls=`<div class="mobile-card participant-entry"><div class="mobile-success">✓ Your answer has been submitted.</div><p class="muted">Waiting for the results.</p></div>`;
  else if(q.type==='choice')controls=`<div class="mobile-card participant-entry"><h2>Submit your answer</h2><p class="input-note">Select one of the three answer shapes on the presentation, then submit.</p><div class="participant-selected">Your selection: <strong>${selected?esc(selected):'None selected'}</strong></div><button class="submit-button" onclick="submitAnswer()" ${selected?'':'disabled'}>Submit answer</button></div>`;
- else controls=`<form class="mobile-card participant-entry participant-answer-form" onsubmit="event.preventDefault();submitAnswer()"><label class="answer-label" for="textanswer">Your answer</label><input id="textanswer" maxlength="75" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" placeholder="Type your answer" value="${esc(selected)}" oninput="this.value=this.value.replace(/[^a-zA-Z ]/g,'').slice(0,75);selected=this.value"><p class="input-note">Letters and spaces only, maximum 75 characters.</p><button type="submit" class="submit-button">Submit answer</button></form>`;
+ else controls=`<form class="mobile-card participant-entry participant-answer-form" onsubmit="event.preventDefault();submitAnswer()"><label class="answer-label" for="textanswer">Your answer</label><input id="textanswer" maxlength="75" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" placeholder="Type your answer" value="${esc(selected)}" oninput="this.value=this.value.replace(/[^a-zA-Z ]/g,'').slice(0,75);selected=this.value"><p class="input-note">Letters and spaces only, maximum 75 characters.</p><button type="submit" class="submit-button" ontouchstart="event.preventDefault();submitAnswer()">Submit answer</button></form>`;
  return `<div class="player-app player-game ${revealed?'player-results':'player-question'}">${head}<div class="participant-game-layout"><div class="participant-display">${bar}${participantSlide(q,revealed)}</div>${controls}</div></div>`;
 }
 function choose(i){selected=state.question.choices[i];render()}
@@ -308,15 +308,35 @@ function fitParticipantText(){
   const name=n.querySelector('span');if(name)reduce(name,Math.max(20,n.clientHeight-5),9)
  });
 }
-window.addEventListener('resize',()=>{if(view==='player')requestAnimationFrame(fitParticipantText)});
-if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>{if(view==='player')requestAnimationFrame(fitParticipantText)});
+window.addEventListener('resize',()=>{if(view==='player')requestAnimationFrame(()=>{fitParticipantText();syncParticipantGuides()})});
+if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>{if(view==='player')requestAnimationFrame(()=>{fitParticipantText();syncParticipantGuides()})});
+function syncParticipantGuides(){
+ document.querySelectorAll('.quiz-full-bleed-guide').forEach(n=>n.remove());
+ if(view!=='player'||!state||!['question','results'].includes(state.phase))return;
+ const stage=document.querySelector('.participant-preview');if(!stage)return;
+ const lanes=[[stage.querySelector('.participant-question-track'),[stage.querySelector('.participant-question-track .ppt-prompt')]],
+ [stage.querySelector('.participant-options'),Array.from(stage.querySelectorAll('.participant-options>.ppt-hex'))]];
+ for(const [lane,shapes] of lanes){
+  if(!lane||!shapes.length)continue;
+  const lr=lane.getBoundingClientRect();if(lr.height<1)continue;
+  const y=lr.top+lr.height/2;
+  const boxes=shapes.filter(Boolean).map(n=>n.getBoundingClientRect()).sort((a,b)=>a.left-b.left);
+  let start=0;
+  for(const box of [...boxes,{left:window.innerWidth,right:window.innerWidth}]){
+   const end=Math.min(window.innerWidth,Math.max(0,box.left));
+   if(end-start>1){const line=document.createElement('div');line.className='quiz-full-bleed-guide';line.style.cssText='top:'+y+'px;left:'+start+'px;width:'+(end-start)+'px';document.body.appendChild(line)}
+   start=Math.max(start,Math.min(window.innerWidth,box.right));
+  }
+ }
+}
+window.addEventListener('scroll',()=>{if(view==='player')requestAnimationFrame(syncParticipantGuides)},{passive:true});
 function render(){if(!state&&!hostPreviewMode)return;
 const presentationControls=view==='screen'&&!document.fullscreenElement
 ?'<div class="slideshow-toolbar"><button class="launch-slideshow" onclick="launchSlideshow()">⛶ Full Screen Slideshow</button>'+(!soundEnabled?'<button class="screen-audio-btn" onclick="enableSound()">🔊 Enable Sound</button>':'')+'<div id="slideshow-help" class="slideshow-help hidden">This browser does not allow websites to hide its tabs or address bar. Use a browser with fullscreen support or open this screen from your TV browser in fullscreen mode.</div></div>'
 :'';
-const otherSound=(view==='screen'||view==='player')?'':soundControl();
-el.innerHTML='<div class="view-'+view+'">'+(hostPreviewMode?'':presentationControls+otherSound)+(hostPreviewMode?hostFontPreview():view==='host'?hostView():view==='screen'?screen():playerView())+'</div>';
-if(view!=='player')document.querySelectorAll('.ppt-prompt,.title-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder()));fitQuestionText();fitHostQuestion();startGlow();tick();if(view==='player')requestAnimationFrame(fitParticipantText)}
+const otherSound=view==='screen'&&!soundEnabled?'<button class="screen-enable-audio" onclick="enableSound()">🔊 Enable finale sound</button>':view==='player'||view==='screen'?'':soundControl();
+document.querySelectorAll('.quiz-full-bleed-guide').forEach(n=>n.remove());el.innerHTML='<div class="view-'+view+'">'+(hostPreviewMode?'':presentationControls+otherSound)+(hostPreviewMode?hostFontPreview():view==='host'?hostView():view==='screen'?screen():playerView())+'</div>';
+if(view!=='player')document.querySelectorAll('.ppt-prompt,.title-hex,.ppt-hex').forEach(node=>node.insertAdjacentHTML('beforeend',animatedBorder(node.classList.contains('ppt-hex'))));fitQuestionText();fitHostQuestion();startGlow();tick();if(view==='player')requestAnimationFrame(()=>{fitParticipantText();syncParticipantGuides()})}
 function tick(){if(!state?.endsAt||state.phase!=='question')return;if(Date.now()>=state.endsAt){stopSuspense();return;}const secs=Math.max(0,Math.ceil((state.endsAt-Date.now())/1000)),n=document.getElementById('clock');if(n)n.textContent=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0');const key=state.index+':'+secs;if(secs>=1&&key!==lastTickKey){lastTickKey=key;if(secs<=10)playTick(secs)}}
 function applyQuizState(incoming){
  const old=state;
