@@ -222,18 +222,53 @@ const timerControl=['section','results'].includes(state.phase)?'<div class="host
 const reset='<button class="host-reset" onclick="if(confirm(\'Reset quiz and registered players?\')){host(\'reset\');localStorage.removeItem(\'qm_player\'+sessionSuffix);localStorage.removeItem(\'qm_token\'+sessionSuffix)}">Reset quiz</button>';
 return '<div class="host-console host-active">'+header+'<div class="host-main"><div class="host-content"><h2>'+title+'</h2>'+content+'</div><aside class="host-sidebar"><div class="host-side-title">CUMULATIVE SCORES</div><div class="host-team-score host-team-a"><span>'+teamLabel('A')+'</span><strong>'+state.scores.A+'</strong></div><div class="host-team-score host-team-b"><span>'+teamLabel('B')+'</span><strong>'+state.scores.B+'</strong></div><div class="host-side-note">'+state.players.length+' registered players</div><details class="host-team-rename-details"><summary>Rename Teams</summary>'+teamNameEditor()+'</details></aside></div><div class="host-controls">'+timerControl+action+reset+'</div></div>'
 }
+function quizTitle(){return "The Christmas Quiz"}
+function participantSlide(q,revealed=false){
+ const r=revealed?state.results:null;
+ const values=revealed?(r?.completed||[]):(q.words||[]);
+ const isChoice=q.type==='choice';
+ const shapes=values.length?`<div class="ppt-words participant-options">${values.map((word,i)=>{
+  let className='ppt-hex'+(revealed?' revealed':'')+(isChoice&&revealed?(word===r.correct?' correct-choice':' incorrect-choice'):'');
+  if(isChoice&&!revealed)return `<button type="button" class="${className} participant-pick ${selected===word?'selected':''}" onclick="choose(${i})" aria-pressed="${selected===word}">${esc(word)}</button>`;
+  return `<div class="${className}">${esc(word)}</div>`;
+ }).join('')}</div>`:'';
+ const answerClass=q.round===3?'answer-green':q.round===2?'answer-mcq':'answer-orange';
+ const info=revealed?`
+  <div class="ppt-answer participant-answer ${answerClass}">${q.round===2?'CORRECT ANSWER: ':''}${esc(r.correct)}</div>
+  <div class="ppt-outcome participant-outcome">${r.roundWinner==='draw'?'ROUND DRAW — EQUAL POINTS':teamLabel(r.roundWinner)+' WINS THIS QUESTION!'}</div>
+  <div class="ppt-fast participant-fast">⚡ FASTEST CORRECT: ${r.fast?esc(r.fast.name)+' ('+teamLabel(r.fast.team)+' · '+r.fast.seconds.toFixed(1)+'s)':'No correct answer submitted'}</div>`:'';
+ const scores=`<div class="participant-scoreboard">${['A','B'].map(t=>`<div class="participant-score team-${t.toLowerCase()} ${r?.roundWinner===t?'highlight':''}"><span>${teamLabel(t)}</span><strong>${state.scores[t]}</strong>${revealed?`<small>+${r.round[t]} this question</small>`:''}</div>`).join('')}</div>`;
+ return `<section class="participant-preview ${revealed?'participant-revealed':''} category-${q.round}">
+  ${banner(q.round)}
+  <div class="participant-question-track"><div class="ppt-prompt"><span class="question-copy">${esc(q.prompt)}</span></div></div>
+  ${shapes}${info}${scores}
+ </section>`;
+}
+function participantIntro(label){
+ return `<section class="participant-preview participant-intro"><div class="title-hex"><span>${esc(label)}</span></div></section>`;
+}
 function playerView(){
-const p=state.players.find(x=>x.id===playerId);
-if(!p||!playerToken)return '<div class="player-app"><div class="mobile-card"><p class="eyebrow">THE CHRISTMAS QUIZ</p><h2>'+(testMode?'Join Christmas Quiz test':'Join the game')+'</h2><label for="name">Your name</label><input id="name" maxlength="50" placeholder="'+(testMode?'Exactly as entered by Host':'Full name')+'">'+(testMode?'':'<label for="phone">Mobile number</label><input id="phone" inputmode="tel" placeholder="Use a test number">')+'<label for="pin">Game PIN</label><input id="pin" inputmode="numeric" maxlength="6" placeholder="6-digit PIN"><button class="submit-button" onclick="join()">Join quiz</button><p class="muted">'+(testMode?'The Host must add your name first. Enter the same spelling and the PIN shown on the Host screen.':'For testing, use a test number rather than your real mobile number.')+'</p></div></div>';
-const head='<div class="mobile-head"><div><small>THE CHRISTMAS QUIZ</small><strong>'+esc(p.name)+'</strong></div><span class="team-chip team-chip-'+(p.team||'waiting')+'">'+(p.team?'Team '+p.team:'Unassigned')+'</span></div>';
-if(state.phase==='lobby')return '<div class="player-app">'+head+'<div class="mobile-card centered"><h2>Ready to play?</h2><p>'+(p.team?'You are in Team '+p.team:'The host will assign your team')+'</p><p class="muted">Waiting for the host to start.</p></div></div>';
-if(state.phase==='section')return '<div class="player-app">'+head+'<div class="mobile-card centered"><p class="eyebrow">NEXT ROUND</p><h2>Christmas Trivia '+state.sectionRound+'</h2><p class="muted">The host will begin shortly.</p></div></div>';
-if(state.phase==='finished')return '<div class="player-app player-finale">'+finale()+'</div>';
-if(state.phase==='results'){
-const r=state.results;
-return '<div class="player-app">'+head+'<div class="mobile-card centered"><div class="mobile-category">'+challengeLabel(state.question.round)+'</div><p class="eyebrow">QUESTION RESULT</p><h2>'+esc(r.correct)+'</h2>'+(r.completed?.length?'<div class="mobile-reveals">'+r.completed.map(w=>'<span>'+esc(w)+'</span>').join('')+'</div>':'')+'<p class="mobile-winner">'+(r.roundWinner==='draw'?'Round draw':'Team '+r.roundWinner+' wins this question')+'</p><p class="mobile-fast">'+(r.fast?'Fastest correct: '+esc(r.fast.name)+' · Team '+r.fast.team+' · '+r.fast.seconds.toFixed(1)+'s':'No correct responses')+'</p><div class="mobile-scores"><span>Team A: '+state.scores.A+'</span><span>Team B: '+state.scores.B+'</span></div><p class="muted">Waiting for the next question.</p></div></div>'}
-const q=state.question,done=submittedFor===state.index;
-return '<div class="player-app">'+head+'<div class="mobile-card"><div class="mobile-progress"><span>Trivia '+q.round+' · Question '+(state.index+1)+' of '+state.total+'</span><span class="timer" id="clock"></span></div><div class="mobile-category">'+challengeLabel(q.round)+'</div><h2 class="mobile-question">'+esc(q.prompt)+'</h2>'+(q.words?.length&&q.type!=='choice'?'<div class="mobile-words">'+q.words.map(w=>'<span>'+esc(w)+'</span>').join('')+'</div>':'')+(done?'<div class="mobile-success">✓ Your answer has been submitted.</div>':q.type==='choice'?'<div class="mobile-choices">'+q.choices.map((c,i)=>'<button class="mobile-choice '+(selected===c?'selected':'')+'" onclick="choose('+i+')">'+esc(c)+'</button>').join('')+'</div><button class="submit-button" onclick="submitAnswer()">Submit answer</button>':'<label class="answer-label" for="textanswer">Your answer</label><input id="textanswer" maxlength="75" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Type your answer" value="'+esc(selected)+'" oninput="this.value=this.value.replace(/[^a-zA-Z ]/g,\'\').slice(0,75);selected=this.value"><p class="input-note">Letters and spaces only, maximum 75 characters.</p><button class="submit-button" onclick="selected=document.getElementById(\'textanswer\').value;submitAnswer()">Submit answer</button>')+'</div></div>'
+ const p=state.players.find(x=>x.id===playerId);
+ if(!p||!playerToken)return `<div class="player-app"><div class="mobile-card"><p class="eyebrow">${quizTitle().toUpperCase()}</p><h2>${testMode?'Join the one-question test':'Join the game'}</h2>
+  <label for="name">Your name</label><input id="name" maxlength="50" placeholder="${testMode?'Exactly as entered by Host':'Full name'}">
+  ${testMode?'':`<label for="phone">Mobile number</label><input id="phone" inputmode="tel" placeholder="Use a test number">`}
+  <label for="pin">Game PIN</label><input id="pin" inputmode="numeric" maxlength="6" placeholder="6-digit PIN">
+  <button class="submit-button" onclick="join()">Join quiz</button><p class="muted">${testMode?'The Host must add your name first. Enter the same spelling and PIN shown on the Host screen.':'For testing, use a test number rather than your real mobile number.'}</p></div></div>`;
+ const head=`<div class="mobile-head"><div><small>${quizTitle().toUpperCase()}</small><strong>${esc(p.name)}</strong></div><span class="team-chip team-chip-${p.team||'waiting'}">${p.team?teamLabel(p.team):'Unassigned'}</span></div>`;
+ if(state.phase==='lobby')return `<div class="player-app">${head}${participantIntro(quizTitle())}<div class="mobile-card centered"><h2>Ready to play?</h2><p>${p.team?'You are in '+teamLabel(p.team):'The Host will assign your team'}</p><p class="muted">Waiting for the Host to start.</p></div></div>`;
+ if(state.phase==='section'){
+  const name=quizTitle()==='The Christmas Quiz'?'Christmas Trivia - '+state.sectionRound:'Word Challenge '+state.sectionRound;
+  return `<div class="player-app">${head}${participantIntro(name)}<div class="mobile-card centered"><p class="eyebrow">NEXT CATEGORY</p><p class="muted">The Host will begin the next question.</p></div></div>`;
+ }
+ if(state.phase==='finished')return `<div class="player-app player-finale">${finale()}</div>`;
+ const q=state.question,revealed=state.phase==='results',done=submittedFor===state.index;
+ const bar=`<div class="participant-timer-bar"><span>${quizTitle()==='The Christmas Quiz'?'Trivia':'Challenge'} ${q.round} · Question ${state.index+1} of ${state.total}</span>${revealed?'<span>ANSWER REVEALED</span>':'<span class="timer" id="clock"></span>'}</div>`;
+ let controls='';
+ if(revealed)controls=`<div class="mobile-card participant-entry participant-waiting"><h2>Question complete</h2><p>Scores and the fastest correct answer appear on the presentation.</p><p class="muted">Waiting for the Host to display the next question.</p></div>`;
+ else if(done)controls=`<div class="mobile-card participant-entry"><div class="mobile-success">✓ Your answer has been submitted.</div><p class="muted">Waiting for the results.</p></div>`;
+ else if(q.type==='choice')controls=`<div class="mobile-card participant-entry"><h2>Submit your answer</h2><p class="input-note">Select one of the three answer shapes on the presentation, then submit.</p><div class="participant-selected">Your selection: <strong>${selected?esc(selected):'None selected'}</strong></div><button class="submit-button" onclick="submitAnswer()" ${selected?'':'disabled'}>Submit answer</button></div>`;
+ else controls=`<div class="mobile-card participant-entry"><label class="answer-label" for="textanswer">Your answer</label><input id="textanswer" maxlength="75" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Type your answer" value="${esc(selected)}" oninput="this.value=this.value.replace(/[^a-zA-Z ]/g,'').slice(0,75);selected=this.value"><p class="input-note">Letters and spaces only, maximum 75 characters.</p><button class="submit-button" onclick="selected=document.getElementById('textanswer').value;submitAnswer()">Submit answer</button></div>`;
+ return `<div class="player-app player-game">${head}<div class="participant-game-layout"><div class="participant-display">${bar}${participantSlide(q,revealed)}</div>${controls}</div></div>`;
 }
 function choose(i){selected=state.question.choices[i];render()}
 async function join(){try{const r=await api({op:'join',name:document.getElementById('name').value,phone:document.getElementById('phone')?.value||'',pin:document.getElementById('pin').value});playerId=r.id;playerToken=r.token;localStorage.setItem('qm_player'+sessionSuffix,playerId);localStorage.setItem('qm_token'+sessionSuffix,playerToken);render()}catch(e){alert(e.message)}}
