@@ -1313,3 +1313,15 @@ body.player-mode .participant-preview .ppt-hex.participant-pick.selected>.travel
 /* Show confetti in front of the host panel background but behind completion text. */
 .host-completion>.confetti{z-index:1!important}
 .host-completion>.host-section-title,.host-completion>.host-muted,.host-completion>.host-winner-members{position:relative;z-index:2}
+
+/* Christmas quiz: intentionally NO horizontal white guide lines anywhere. */
+.ppt-stage::before,.participant-preview::before,
+body.player-mode .participant-preview .participant-question-track::before,
+body.player-mode .participant-preview .participant-options::before,
+body.player-mode .participant-preview .ppt-words::before,
+body.player-mode .participant-preview .question-track::before,
+.quiz-full-bleed-guide{content:none!important;display:none!important;background:none!important}
+
+/* Glowing flash travels exclusively around title/category and question hexagons. */
+.ppt-hex>.travel-outline,.participant-options .travel-outline{display:none!important}
+.ppt-prompt>.travel-outline,.title-hex>.travel-outline{display:block!important;pointer-events:none!important;z-index:3!important}
