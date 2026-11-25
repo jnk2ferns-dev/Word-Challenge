@@ -1373,3 +1373,23 @@ body.player-mode .participant-preview .participant-glow .orbit-dot{
  display:block!important;visibility:visible!important;opacity:1!important;
 }
 body.player-mode .participant-preview .participant-options .travel-outline{display:none!important}
+
+/* Participant-only: reserve a narrow halo gutter, lift the main hexagon
+   above neighboring slide elements, and prevent clipping at its vertices. */
+body.player-mode .participant-preview .participant-question-track,
+body.player-mode .player-game .participant-preview>.participant-question-track{
+ overflow:visible!important;z-index:6!important;
+}
+body.player-mode .participant-preview .ppt-prompt,
+body.player-mode .player-game .participant-preview .ppt-prompt,
+body.player-mode .participant-preview.participant-intro .title-hex{
+ overflow:visible!important;clip-path:none!important;z-index:6!important;
+ box-sizing:border-box!important;
+}
+body.player-mode .player-game .participant-preview .ppt-prompt{
+ width:calc(100% - 24px)!important;max-width:720px!important;
+ height:calc(100% - 14px)!important;max-height:calc(100% - 14px)!important;
+}
+body.player-mode .participant-preview .participant-glow{
+ overflow:visible!important;z-index:20!important;pointer-events:none!important;
+}
