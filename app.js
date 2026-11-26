@@ -180,7 +180,7 @@ function triviaTwoReminder(){return state.phase==='section'&&state.sectionRound=
 function hostFlashLabel(){
  if(!state)return '';
  const label=state.phase==='lobby'?'The Christmas Quiz':state.phase==='section'?'Christmas Trivia '+state.sectionRound:state.phase==='question'||state.phase==='results'?'QUESTION '+(state.index+1):'QUIZ COMPLETE';
- return triviaTwoReminder()+'<div class="host-glow-shape '+(state.phase==='section'&&state.sectionRound===1?'trivia-one-section':'')+'"><span>'+esc(label)+'</span></div>';
+ return triviaTwoReminder()+'<div class="host-glow-shape '+(state.phase==='section'?'host-category-slide':'')+'"><span>'+esc(label)+'</span></div>';
 }
 function hostView(){
 if(hostPreviewMode)return hostFontPreview();
@@ -201,12 +201,12 @@ action='<button class="host-primary" onclick="host(\'next\')">Show Question '+(s
 }else if(state.phase==='question'){
 const q=state.question;
 title='Question '+(state.index+1)+' of '+state.total;
-content='<div class="host-question-label">CHRISTMAS TRIVIA '+q.round+'</div><div class="host-question-text" data-fit-host="true">'+esc(q.prompt)+'</div>'+(q.words?.length?'<div class="host-word-row '+(q.round===2?'trivia-two-options':'')+'">'+q.words.map(w=>'<span>'+esc(w)+'</span>').join('')+'</div>':'')+'<div class="host-answer-status"><span class="host-timer" id="clock"></span><span>'+state.answered+' / '+state.players.length+' answers received</span></div>';
+content='<div class="host-question-label host-category-cue">'+esc(challengeLabel(q.round).replace(/^Christmas Trivia (\d+):/,'CHRISTMAS TRIVIA $1:').replace(/[“”]/g,'"'))+'</div><div class="host-question-text" data-fit-host="true">'+esc(q.prompt)+'</div>'+(q.words?.length?'<div class="host-word-row '+(q.round===2?'trivia-two-options':'')+'">'+q.words.map(w=>'<span>'+esc(w)+'</span>').join('')+'</div>':'')+'<div class="host-answer-status"><span class="host-timer" id="clock"></span><span>'+state.answered+' / '+state.players.length+' answers received</span></div>';
 action='<button class="host-primary" onclick="host(\'reveal\')">Close Answers & Reveal Results</button>';
 }else if(state.phase==='results'){
 const r=state.results;
 title='Question '+(state.index+1)+' Results';
-content=(state.question?.round>=3?'<div class="host-answer-label">CORRECT ANSWER</div><div class="host-answer">'+esc(r.correct)+'</div>':'')+(r.completed?.length?'<div class="host-word-row '+(state.question?.round===2?'trivia-two-options':'')+'">'+r.completed.map(w=>'<span class="'+(state.question?.round===2&&w===r.correct?'host-correct-choice':'')+'">'+esc(w)+'</span>').join('')+'</div>':'')+'<div class="host-result-winner">'+(r.roundWinner==='draw'?'ROUND DRAW':(teamLabel(r.roundWinner)+' WINS THIS QUESTION'))+'</div><div class="host-fastest">⚡ '+(r.fast?'Fastest: '+esc(r.fast.name)+' · '+teamLabel(r.fast.team)+' · '+r.fast.seconds.toFixed(1)+'s':'No correct answers')+'</div><div class="host-round-points">This question: '+teamLabel('A')+' +'+r.round.A+' · '+teamLabel('B')+' +'+r.round.B+'</div>';
+content=(state.question?.round>=3?'<div class="host-answer-label">CORRECT ANSWER</div><div class="host-answer">'+esc(r.correct)+'</div>':'')+(r.completed?.length?'<div class="host-word-row '+(state.question?.round===2?'trivia-two-options':'')+'">'+r.completed.map(w=>'<span class="'+((state.question?.round===1||state.question?.round===2&&w===r.correct)?'host-correct-choice':'')+'">'+esc(w)+'</span>').join('')+'</div>':'')+'<div class="host-result-winner">'+(r.roundWinner==='draw'?'ROUND DRAW':(teamLabel(r.roundWinner)+' WINS THIS QUESTION'))+'</div><div class="host-fastest">⚡ '+(r.fast?'Fastest: '+esc(r.fast.name)+' · '+teamLabel(r.fast.team)+' · '+r.fast.seconds.toFixed(1)+'s':'No correct answers')+'</div><div class="host-round-points">This question: '+teamLabel('A')+' +'+r.round.A+' · '+teamLabel('B')+' +'+r.round.B+'</div>';
 action='<button class="host-primary" onclick="host(\'next\')">'+(state.index+1===state.total?'Finish Quiz':'Next Question →')+'</button>';
 }else{
 title='Quiz Complete';
