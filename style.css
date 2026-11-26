@@ -1480,3 +1480,8 @@ body.player-mode .player-game .participant-preview.participant-revealed.category
 .host-console .host-answer,.host-console .host-word-row .host-correct-choice{background:#E97132!important;color:#15231f!important;}
 /* Host question cue occupies the existing third line, below the question number. */
 .host-console .host-category-cue{color:#ff7777!important;font-size:clamp(13px,1.5vw,19px)!important;font-weight:800;letter-spacing:0!important;line-height:1.2;text-align:center;flex-shrink:0;}
+
+/* Christmas participant-only question font corrections. */
+body.player-mode .player-game .participant-preview.category-3 .question-copy{font-size:calc(clamp(11px,min(4.5vw,2.8dvh),21px) + 1pt)!important;}
+body.player-mode .player-game .participant-preview.category-4 .question-copy{font-size:calc(clamp(11px,min(4.5vw,2.8dvh),21px) + 2pt)!important;}
+@media(max-height:550px) and (orientation:landscape){body.player-mode .player-game .participant-preview.category-3 .question-copy{font-size:calc(clamp(10px,2.9dvh,13px) + 1pt)!important;}body.player-mode .player-game .participant-preview.category-4 .question-copy{font-size:calc(clamp(10px,2.9dvh,13px) + 2pt)!important;}}
