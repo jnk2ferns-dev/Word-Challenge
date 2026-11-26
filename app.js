@@ -56,7 +56,7 @@ async function playVictoryOnce(){
  try{const audio=await loadVictoryAudio();if(!audio)throw Error('Victory audio unavailable');audio.loop=false;audio.pause();audio.currentTime=0;await audio.play()}catch(e){console.warn('Victory audio unavailable, playing fallback fanfare:',e);if(audioContext&&audioContext.state==='running'){const t=audioContext.currentTime+.03;[523,659,784,1047,784,1047,1319].forEach((f,i)=>note(f,t+i*.17,i===6?.72:.28,.09,'triangle'))}}
 }
 function playCorrectAnswer(){if(view==='player'||!soundEnabled)return;try{if(correctSound){correctSound.pause();correctSound.currentTime=0;correctSound.play().catch(e=>console.warn('Correct answer audio blocked:',e))}else if(audioContext){const t=audioContext.currentTime;[523,659,784,1047].forEach((f,i)=>note(f,t+i*.13,.24,.08))}}catch(e){console.warn(e)}}
-function playTick(sec){if(view==='player'||!soundEnabled||!audioContext)return;note(sec<=3?940:690,audioContext.currentTime+.01,sec===1?.2:.095,sec<=3?.08:.045)}
+function playTick(sec){if(view!=='screen'||!soundEnabled||!audioContext||sec<1||sec>10)return;const t=audioContext.currentTime;if(suspenseMix){const g=suspenseMix.gain;g.cancelScheduledValues(t);g.setTargetAtTime(.18,t,.045)}note(sec<=3?1100:880,t+.01,sec===1?.26:.15,sec<=3?.23:.17,'triangle')}
 function suspensePulse(){if(view==='player')return;if(state?.phase!=='question'||!state.endsAt||Date.now()>=state.endsAt){stopSuspense();return}const remain=Math.ceil((state.endsAt-Date.now())/1000);if(remain<=10)return;if(!soundEnabled||!audioContext)return;const t=audioContext.currentTime+.01;note(164.8,t,.32,.012,'sine');note(196,t+.28,.25,.012,'triangle');note(220,t+.59,.22,.01,'sine')}
 // Seamless soundtrack playback: overlapping buffer instances with short cross-fades.
 let suspenseAudioBuffer=null,suspenseLoadPromise=null,suspenseMix=null,suspenseSources=[],suspenseNextAt=0,suspenseSequence=null;
@@ -101,7 +101,7 @@ async function startSuspense(){
  const buffer=await loadSuspenseAudio();
  if(state?.phase!=='question'||Date.now()>=state.endsAt||!soundEnabled||suspenseSequence!==sequence)return;
  if(!buffer){suspensePulse();suspenseTimer=setInterval(suspensePulse,1080);return}
- suspenseMix=audioContext.createGain();suspenseMix.gain.value=1;suspenseMix.connect(audioContext.destination);
+ suspenseMix=audioContext.createGain();suspenseMix.gain.value=Math.ceil((state.endsAt-Date.now())/1000)<=10?.18:1;suspenseMix.connect(audioContext.destination);
  suspenseNextAt=audioContext.currentTime+.04;
  scheduleSoundtrack();
  suspenseTimer=setInterval(()=>{if(state?.phase!=='question'||Date.now()>=state.endsAt)stopSuspense();else scheduleSoundtrack()},140);
