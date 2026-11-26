@@ -129,5 +129,6 @@ http.createServer((req,res)=>{
  res.writeHead(200,{'Content-Type':filename.endsWith('.js')?'application/javascript':filename.endsWith('.css')?'text/css':filename.endsWith('.svg')?'image/svg+xml':filename.endsWith('.b64')?'text/plain':filename.endsWith('.mp3')?'audio/mpeg':'text/html','Cache-Control':'no-cache'});
  fs.createReadStream(path.join(__dirname,filename)).pipe(res);
 }).listen(PORT,'0.0.0.0',()=>console.log('The Christmas Quiz server on '+PORT));
-// At zero, submissions close through the server deadline check; the host controls the reveal.
+// Restore automatic answer reveal at timeout; host can still reveal early.
+setInterval(()=>{for(const game of [mainGame,testGame])if(game.state.phase==='question'&&Date.now()>=game.state.endsAt)game.finish()},250);
 setInterval(()=>{for(const game of [mainGame,testGame])for(const client of game.clients)try{client.write(': ping\n\n')}catch{game.clients.delete(client)}},15000);
