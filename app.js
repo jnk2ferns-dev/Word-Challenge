@@ -111,7 +111,7 @@ function syncMusic(){
  loadChristmasTrack(wanted.file).then(buffer=>{
   if(generation!==musicGeneration||!soundEnabled||desiredMusic()?.key!==key)return;
   const ctx=audioContext,master=ctx.createGain(),t=ctx.currentTime;
-  master.connect(ctx.destination);master.gain.setValueAtTime(0,t);master.gain.linearRampToValueAtTime(musicLevel(),t+.3);
+  master.connect(ctx.destination);master.gain.setValueAtTime(0,t);master.gain.linearRampToValueAtTime(wanted.starter?musicLevel()*Math.pow(10,-2/20):musicLevel(),t+.3);
   const music={buffer,master,next:t+.03,sources:new Set(),timer:null,starter:!!wanted.starter,finale:!!wanted.finale,oneShot:!!wanted.oneShot,started:false};activeMusic=music;scheduleChristmasLoop(music);
   if(!music.oneShot)music.timer=setInterval(()=>scheduleChristmasLoop(music),100);
  }).catch(e=>{if(generation===musicGeneration){desiredMusicKey='';console.warn('Christmas soundtrack unavailable',e)}});
