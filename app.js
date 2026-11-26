@@ -33,7 +33,7 @@ async function api(b){const r=await fetch(endpointPrefix+'/api',{method:'POST',h
 async function host(op,extra={}){try{await api({op,hostKey,...extra})}catch(e){alert(e.message);if(e.message==='Incorrect host key'){sessionStorage.removeItem('qm_host');hostKey='';render()}}}
 
 let audioContext=null,soundEnabled=false,lastTickKey='',victoryPlayedFor=null;
-const christmasTracks=["Background_Christmas_Starter_Track1.wav","Suspence_Christmas_Track2.wav","Suspence_Christmas_Track3.wav","Joy_Christmas_Track4.wav"];
+const christmasTracks=["Background_Christmas_Starter_Track1.wav","Suspence_Christmas_Track2.wav","Suspence_Christmas_Track3.wav","Joy_Christmas_Track4.wav","Congratulatory_Track.wav"];
 const trackLoads=new Map();
 let activeMusic=null,musicGeneration=0,desiredMusicKey='',victorySource=null;
 function audioAllowed(){return view==='screen'||reviewMode}
@@ -56,6 +56,8 @@ function enableSound(){if(!audioAllowed())return;if(!unlockAudio()){alert('Sound
 function desiredMusic(){
  if(!state||!soundEnabled||!audioAllowed())return null;
  if(state.phase==='lobby'||(state.phase==='section'&&state.index===0))return {key:'lobby:'+state.pin,file:christmasTracks[0],starter:true};
+ if(state.phase==='section')return {key:'category:'+state.pin+':'+state.index,file:christmasTracks[0],starter:true};
+ if(state.phase==='finished')return {key:'finale:'+state.pin,file:christmasTracks[4],finale:true};
  if(state.phase==='question')return {key:'question:'+state.pin+':'+state.index+':'+state.endsAt,file:christmasTracks[[1,3].includes(state.question?.round)?1:2]};
  if(state.phase==='results')return {key:'result:'+state.pin+':'+state.index,file:christmasTracks[3],oneShot:true};
  return null;
@@ -84,10 +86,10 @@ function scheduleChristmasLoop(music){
   src.onended=()=>{music.sources.delete(src);try{src.disconnect();g.disconnect()}catch(e){}};
   return;
  }
- const overlap=Math.min(music.starter?1.5:.30,b.duration/8);
+ const overlap=Math.min(music.starter||music.finale?1.5:.30,b.duration/8);
  if(music.next<ctx.currentTime)music.next=ctx.currentTime+.03;
  while(music.next<ctx.currentTime+.8){
-  const offset=music.starter&&music.started?Math.min(2,b.duration/4):0,duration=b.duration-offset;
+  const offset=music.finale&&music.started?Math.min(21.11,Math.max(0,b.duration-2*overlap)):music.starter&&music.started?Math.min(2,b.duration/4):0,duration=b.duration-offset;
   if(duration<=overlap)return;
   const start=music.next,src=ctx.createBufferSource(),g=ctx.createGain();
   src.buffer=b;src.connect(g).connect(music.master);
@@ -102,15 +104,15 @@ function scheduleChristmasLoop(music){
 function syncMusic(){
  if(!soundEnabled||!audioAllowed()||!audioContext)return;
  const wanted=desiredMusic(),key=wanted?.key||'';
- if(key===desiredMusicKey){if(state?.phase==='finished')playVictoryOnce();return}
+ if(key===desiredMusicKey)return;
  desiredMusicKey=key;const generation=++musicGeneration;fadeStopMusic();
- if(!wanted){if(state?.phase==='finished')playVictoryOnce();return}
+ if(!wanted)return;
  if(victorySource){try{victorySource.stop()}catch(e){}victorySource=null}victoryPlayedFor=null;
  loadChristmasTrack(wanted.file).then(buffer=>{
   if(generation!==musicGeneration||!soundEnabled||desiredMusic()?.key!==key)return;
   const ctx=audioContext,master=ctx.createGain(),t=ctx.currentTime;
   master.connect(ctx.destination);master.gain.setValueAtTime(0,t);master.gain.linearRampToValueAtTime(musicLevel(),t+.3);
-  const music={buffer,master,next:t+.03,sources:new Set(),timer:null,starter:!!wanted.starter,oneShot:!!wanted.oneShot,started:false};activeMusic=music;scheduleChristmasLoop(music);
+  const music={buffer,master,next:t+.03,sources:new Set(),timer:null,starter:!!wanted.starter,finale:!!wanted.finale,oneShot:!!wanted.oneShot,started:false};activeMusic=music;scheduleChristmasLoop(music);
   if(!music.oneShot)music.timer=setInterval(()=>scheduleChristmasLoop(music),100);
  }).catch(e=>{if(generation===musicGeneration){desiredMusicKey='';console.warn('Christmas soundtrack unavailable',e)}});
 }
@@ -119,17 +121,7 @@ function note(freq,t,dur,gain=.035,type='sine'){
  const c=audioContext,o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(freq,t);
  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(gain,t+.015);g.gain.setValueAtTime(gain,t+Math.max(.03,dur-.06));g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g).connect(c.destination);o.start(t);o.stop(t+dur+.01);
 }
-async function playVictoryOnce(){
- if(!audioAllowed()||!soundEnabled||!state||state.phase!=='finished'||!audioContext)return;
- const key=state.pin+':'+state.total;if(victoryPlayedFor===key)return;victoryPlayedFor=key;
- const generation=musicGeneration;
- try{
-  const r=await fetch('/final-victory.b64');if(!r.ok)throw Error('Victory audio unavailable');
-  const raw=atob((await r.text()).trim()),bytes=Uint8Array.from(raw,c=>c.charCodeAt(0)),buffer=await audioContext.decodeAudioData(bytes.buffer);
-  if(generation!==musicGeneration||!soundEnabled||state?.phase!=='finished')return;
-  const src=audioContext.createBufferSource(),g=audioContext.createGain();src.buffer=buffer;g.gain.value=.75;src.connect(g).connect(audioContext.destination);victorySource=src;src.start();
- }catch(e){if(generation!==musicGeneration||!soundEnabled||state?.phase!=='finished')return;const t=audioContext.currentTime+.03;[523,659,784,1047,784,1047,1319].forEach((f,i)=>note(f,t+i*.17,i===6?.72:.28,.09,'triangle'))}
-}
+function playVictoryOnce(){syncMusic()}
 function playCorrectAnswer(){syncMusic()}
 function startSuspense(){syncMusic()}
 function stopSuspense(){desiredMusicKey='';++musicGeneration;fadeStopMusic()}
