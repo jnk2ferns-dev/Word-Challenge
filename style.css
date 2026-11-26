@@ -1473,3 +1473,10 @@ body.player-mode .player-game .participant-preview.category-2>.ppt-answer.partic
 body.player-mode .player-game .participant-preview.participant-revealed.category-1:has(.participant-options),body.player-mode .player-game .participant-preview.participant-revealed.category-2:has(.participant-options){grid-template-rows:minmax(0,.9fr) var(--stable-question-row) minmax(0,.9fr) minmax(0,.6fr) minmax(0,.7fr) minmax(0,.7fr)!important;}
 .ppt-stage.results-stage.category-1 .ppt-outcome,.ppt-stage.results-stage.category-2 .ppt-outcome{top:68%!important;}
 .ppt-stage.results-stage.category-1 .ppt-fast,.ppt-stage.results-stage.category-2 .ppt-fast{top:76%!important;}
+
+/* Host-only category and correct-answer palette, matching the quiz orange. */
+.host-glow-shape.host-category-slide::before{background:#E97132!important;}
+.host-glow-shape.host-category-slide>span{color:#15231f!important;}
+.host-console .host-answer,.host-console .host-word-row .host-correct-choice{background:#E97132!important;color:#15231f!important;}
+/* Host question cue occupies the existing third line, below the question number. */
+.host-console .host-category-cue{color:#ff7777!important;font-size:clamp(13px,1.5vw,19px)!important;font-weight:800;letter-spacing:0!important;line-height:1.2;text-align:center;flex-shrink:0;}
