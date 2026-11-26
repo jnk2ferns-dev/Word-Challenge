@@ -1459,3 +1459,17 @@ body.player-mode .player-question .participant-entry .submit-button{min-height:4
 body.player-mode .player-game .participant-preview.category-2 .ppt-hex{font-size:calc(clamp(10px,min(3.3vw,2.5dvh),19px) - 2pt)!important;}
 body.player-mode .player-game .participant-preview.category-2>.ppt-answer.participant-answer{font-size:calc(clamp(11px,min(3.5vw,2.5dvh),22px) - 1pt)!important;}
 @media(max-height:550px) and (orientation:landscape){body.player-mode .player-game .participant-preview.category-2 .ppt-hex{font-size:calc(clamp(9px,2.8dvh,12px) - 2pt)!important;}}
+
+/* Match the category 1 intro fill across all devices. */
+.host-glow-shape.trivia-one-section::before{background:#E97132!important;}
+.host-glow-shape.trivia-one-section>span{color:#15231f!important;}
+/* Uniform white 2px outline, matching the rounded banner. */
+.ppt-hex{position:relative;}
+.white-shape-outline{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:4!important;pointer-events:none!important;overflow:visible!important;}
+.ppt-hex .white-shape-outline{inset:1px!important;width:calc(100% - 2px)!important;height:calc(100% - 2px)!important;}
+.ppt-answer,.host-word-row span,.host-answer{border:2px solid white!important;box-sizing:border-box;}
+.host-answer{border-radius:9px;padding:4px 10px;}
+.host-word-row .host-correct-choice{background:#016D5B!important;color:white!important;}
+body.player-mode .player-game .participant-preview.participant-revealed.category-1:has(.participant-options),body.player-mode .player-game .participant-preview.participant-revealed.category-2:has(.participant-options){grid-template-rows:minmax(0,.9fr) var(--stable-question-row) minmax(0,.9fr) minmax(0,.6fr) minmax(0,.7fr) minmax(0,.7fr)!important;}
+.ppt-stage.results-stage.category-1 .ppt-outcome,.ppt-stage.results-stage.category-2 .ppt-outcome{top:68%!important;}
+.ppt-stage.results-stage.category-1 .ppt-fast,.ppt-stage.results-stage.category-2 .ppt-fast{top:76%!important;}
