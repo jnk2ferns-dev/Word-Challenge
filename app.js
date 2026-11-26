@@ -55,13 +55,13 @@ function unlockAudio(){
 function enableSound(){if(!audioAllowed())return;if(!unlockAudio()){alert('Sound unavailable on this device');return}syncMusic();render()}
 function desiredMusic(){
  if(!state||!soundEnabled||!audioAllowed())return null;
- if(state.phase==='lobby')return {key:'lobby:'+state.pin,file:christmasTracks[0]};
+ if(state.phase==='lobby'||(state.phase==='section'&&state.index===0))return {key:'lobby:'+state.pin,file:christmasTracks[0],starter:true};
  if(state.phase==='question')return {key:'question:'+state.pin+':'+state.index+':'+state.endsAt,file:christmasTracks[[1,3].includes(state.question?.round)?1:2]};
- if(state.phase==='results')return {key:'result:'+state.pin+':'+state.index,file:christmasTracks[3]};
+ if(state.phase==='results')return {key:'result:'+state.pin+':'+state.index,file:christmasTracks[3],oneShot:true};
  return null;
 }
 function remainingSeconds(){return state?.phase==='question'&&state.endsAt?Math.max(0,Math.ceil((state.endsAt-Date.now())/1000)):Infinity}
-function musicLevel(){return state?.phase==='question'&&remainingSeconds()<=10?.18:1}
+function musicLevel(){return state?.phase==='question'&&remainingSeconds()<=10?.35:1}
 function fadeStopMusic(seconds=.45){
  const music=activeMusic;activeMusic=null;
  if(!music)return;
@@ -73,17 +73,30 @@ function fadeStopMusic(seconds=.45){
 }
 function scheduleChristmasLoop(music){
  if(activeMusic!==music||!soundEnabled)return;
- const ctx=audioContext,b=music.buffer,overlap=Math.min(.30,b.duration/8),step=b.duration-overlap;
- if(step<=0)return;
+ const ctx=audioContext,b=music.buffer;
+ if(music.oneShot){
+  if(music.started)return;music.started=true;
+  const offset=Math.min(5.5,Math.max(0,b.duration-.1)),duration=b.duration-offset,start=ctx.currentTime+.03;
+  const src=ctx.createBufferSource(),g=ctx.createGain();src.buffer=b;src.connect(g).connect(music.master);
+  g.gain.setValueAtTime(0,start);g.gain.linearRampToValueAtTime(.36,start+Math.min(.06,duration/4));
+  g.gain.setValueAtTime(.36,start+Math.max(duration-.25,duration/2));g.gain.linearRampToValueAtTime(0,start+duration);
+  src.start(start,offset,duration);music.sources.add(src);
+  src.onended=()=>{music.sources.delete(src);try{src.disconnect();g.disconnect()}catch(e){}};
+  return;
+ }
+ const overlap=Math.min(music.starter?1.5:.30,b.duration/8);
  if(music.next<ctx.currentTime)music.next=ctx.currentTime+.03;
  while(music.next<ctx.currentTime+.8){
+  const offset=music.starter&&music.started?Math.min(2,b.duration/4):0,duration=b.duration-offset;
+  if(duration<=overlap)return;
   const start=music.next,src=ctx.createBufferSource(),g=ctx.createGain();
   src.buffer=b;src.connect(g).connect(music.master);
-  g.gain.setValueAtTime(0,start);g.gain.linearRampToValueAtTime(.36,start+overlap);
-  g.gain.setValueAtTime(.36,start+b.duration-overlap);g.gain.linearRampToValueAtTime(0,start+b.duration);
-  src.start(start);src.stop(start+b.duration);music.sources.add(src);
+  const attack=music.started?overlap:Math.min(.08,overlap);
+  g.gain.setValueAtTime(0,start);g.gain.linearRampToValueAtTime(.36,start+attack);
+  g.gain.setValueAtTime(.36,start+duration-overlap);g.gain.linearRampToValueAtTime(0,start+duration);
+  src.start(start,offset,duration);music.sources.add(src);
   src.onended=()=>{music.sources.delete(src);try{src.disconnect();g.disconnect()}catch(e){}};
-  music.next+=step;
+  music.next+=duration-overlap;music.started=true;
  }
 }
 function syncMusic(){
@@ -97,8 +110,8 @@ function syncMusic(){
   if(generation!==musicGeneration||!soundEnabled||desiredMusic()?.key!==key)return;
   const ctx=audioContext,master=ctx.createGain(),t=ctx.currentTime;
   master.connect(ctx.destination);master.gain.setValueAtTime(0,t);master.gain.linearRampToValueAtTime(musicLevel(),t+.3);
-  const music={buffer,master,next:t+.03,sources:new Set(),timer:null};activeMusic=music;scheduleChristmasLoop(music);
-  music.timer=setInterval(()=>scheduleChristmasLoop(music),100);
+  const music={buffer,master,next:t+.03,sources:new Set(),timer:null,starter:!!wanted.starter,oneShot:!!wanted.oneShot,started:false};activeMusic=music;scheduleChristmasLoop(music);
+  if(!music.oneShot)music.timer=setInterval(()=>scheduleChristmasLoop(music),100);
  }).catch(e=>{if(generation===musicGeneration){desiredMusicKey='';console.warn('Christmas soundtrack unavailable',e)}});
 }
 function note(freq,t,dur,gain=.035,type='sine'){
@@ -124,8 +137,8 @@ function stopAllQuizAudio(){soundEnabled=false;stopSuspense();if(victorySource){
 function playTick(sec){
  if(!audioAllowed()||!soundEnabled||!audioContext||sec<1||sec>10)return;
  const t=audioContext.currentTime;
- if(activeMusic){const g=activeMusic.master.gain;g.cancelScheduledValues(t);g.setTargetAtTime(.18,t,.045)}
- note(sec<=3?1100:880,t+.01,sec===1?.26:.15,sec<=3?.23:.17,'triangle');
+ if(activeMusic){const g=activeMusic.master.gain;g.cancelScheduledValues(t);g.setTargetAtTime(.35,t,.045)}
+ note(sec<=3?1100:880,t+.01,sec===1?.26:.15,sec<=3?.18:.13,'triangle');
 }
 function soundControl(){return ''}
 let glowId=0;
