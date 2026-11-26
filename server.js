@@ -101,8 +101,8 @@ const mainGame=createGame(allQuestions,Math.max(100,Math.min(500,Number(process.
 const testGame=createGame([allQuestions.find(q=>q.id===30&&q.round===4)],2,true);
 if(!testGame.questions[0])throw Error('Test question 30 missing');
 function send(res,status,data){res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(data))}
-const christmasAudioFiles=new Set(["Background_Christmas_Starter_Track1.wav","Suspence_Christmas_Track2.wav","Suspence_Christmas_Track3.wav","Joy_Christmas_Track4.wav"]);
-for(const name of christmasAudioFiles){const p=path.join(__dirname,name);const fd=fs.openSync(p,'r');const head=Buffer.alloc(12);const size=fs.statSync(p).size;try{fs.readSync(fd,head,0,12,0)}finally{fs.closeSync(fd)}if(size<44||head.toString('ascii',0,4)!=='RIFF'||head.toString('ascii',8,12)!=='WAVE')throw Error('Invalid Christmas WAV: '+name);console.log('Verified Christmas audio '+name+' ('+size+' bytes)')}
+const christmasAudioFiles=new Set(["Background_Christmas_Starter_Track1.wav","Suspence_Christmas_Track2.wav","Suspence_Christmas_Track3.wav","Joy_Christmas_Track4.wav","Congratulatory_Track.wav"]);
+for(const name of christmasAudioFiles){const p=path.join(__dirname,name);if(name==='Congratulatory_Track.wav'&&!fs.existsSync(p)){console.warn('New finale WAV awaiting upload');continue}const fd=fs.openSync(p,'r');const head=Buffer.alloc(12);const size=fs.statSync(p).size;try{fs.readSync(fd,head,0,12,0)}finally{fs.closeSync(fd)}if(size<44||head.toString('ascii',0,4)!=='RIFF'||head.toString('ascii',8,12)!=='WAVE')throw Error('Invalid Christmas WAV: '+name);console.log('Verified Christmas audio '+name+' ('+size+' bytes)')}
 const allowed=new Set(['index.html','app.js','style.css','word-challenge-1.svg','correct-answer.b64','suspense-audio.mp3','final-victory.b64']);
 http.createServer((req,res)=>{
  const pathname=new URL(req.url,'http://localhost').pathname;
@@ -111,7 +111,7 @@ http.createServer((req,res)=>{
  const test=pathname.startsWith('/test/');
  const game=test?testGame:mainGame;
  const resource=test?pathname.slice(5):pathname;
- if(req.method==='GET'&&christmasAudioFiles.has(resource.slice(1))){const file=path.join(__dirname,resource.slice(1));res.writeHead(200,{'Content-Type':'audio/wav','Content-Length':fs.statSync(file).size,'Cache-Control':'public, max-age=3600'});const stream=fs.createReadStream(file);stream.on('error',()=>res.destroy());return stream.pipe(res)}
+ if(req.method==='GET'&&christmasAudioFiles.has(resource.slice(1))){const file=path.join(__dirname,resource.slice(1));if(!fs.existsSync(file))return send(res,404,{error:'Audio unavailable'});res.writeHead(200,{'Content-Type':'audio/wav','Content-Length':fs.statSync(file).size,'Cache-Control':'public, max-age=3600'});const stream=fs.createReadStream(file);stream.on('error',()=>res.destroy());return stream.pipe(res)}
  if(req.method==='GET'&&resource==='/health')return send(res,200,{ok:true});
  if(req.method==='GET'&&resource==='/christmas-bg.webp'){if(!christmasBackground)return send(res,404,{error:'Background unavailable'});res.writeHead(200,{'Content-Type':'image/webp','Content-Length':christmasBackground.length,'Cache-Control':'public, max-age=3600'});return res.end(christmasBackground)}
  if(req.method==='GET'&&resource==='/events'){
