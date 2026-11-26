@@ -1488,3 +1488,6 @@ body.player-mode .player-game .participant-preview.category-4 .question-copy{fon
 
 /* Big Screen only: lower the final congratulations heading; keep member and score positions. */
 body.screen-mode:not(.review-mode) .view-screen .finale-stage .ppt-final{top:30%!important;}
+
+body.player-mode .player-game .participant-preview.category-2 .question-copy{font-size:calc(clamp(11px,min(4.5vw,2.8dvh),21px) + 0pt)!important;}
+@media(max-height:550px) and (orientation:landscape){body.player-mode .player-game .participant-preview.category-2 .question-copy{font-size:calc(clamp(10px,2.9dvh,13px) + 0pt)!important;}}
