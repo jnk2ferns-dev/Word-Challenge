@@ -1436,3 +1436,26 @@ body.player-mode .player-game .participant-preview.category-2 .ppt-hex{font-size
 
 /* Slide 3 PPTM Horizontal Scroll: full-width body, rolled ends. */
 .ppt-stage .ribbon-caption,.ppt-stage .ppt-banner-label,body.player-mode .participant-preview .ribbon-caption{left:5%!important;width:90%!important;top:7%!important;height:80%!important;}
+
+/* Rounded rectangle banner: inset six typographic points on each end. */
+.ppt-ribbon .ribbon-rounded{position:absolute;inset:0 6pt;border:2px solid #fff;border-radius:12px;background:#E97132;box-sizing:border-box;pointer-events:none;}
+.ppt-stage .ribbon-caption,.ppt-stage .ppt-banner-label,body.player-mode .participant-preview .ribbon-caption{left:calc(6pt + 8px)!important;width:calc(100% - 12pt - 16px)!important;top:0!important;height:100%!important;}
+/* Participant layout is always stacked, including iPad and phone landscape. Allow vertical scrolling rather than clipping the answer entry. */
+body.player-mode:has(.player-game){height:auto!important;min-height:100dvh!important;max-height:none!important;overflow-y:auto!important;}
+body.player-mode:has(.player-game)>main{height:auto!important;overflow:visible!important;flex:1 0 auto!important;}
+body.player-mode .view-player:has(.player-game),body.player-mode .player-game{height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;}
+body.player-mode .player-game .participant-game-layout{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto!important;grid-auto-rows:auto!important;height:auto!important;min-height:0!important;overflow:visible!important;align-items:start!important;width:min(100%,860px)!important;margin-inline:auto!important;}
+body.player-mode .player-game .participant-display{height:auto!important;min-height:0!important;overflow:visible!important;grid-column:1!important;grid-row:1!important;}
+body.player-mode .player-game .participant-preview{height:auto!important;max-height:none!important;min-height:clamp(250px,48dvh,440px)!important;overflow:visible!important;flex:none!important;}
+body.player-mode .player-game .participant-preview.participant-revealed{min-height:clamp(350px,70dvh,620px)!important;}
+body.player-mode .player-question .participant-entry{grid-column:1!important;grid-row:2!important;position:relative!important;top:auto!important;max-height:none!important;height:auto!important;overflow:visible!important;width:100%!important;box-sizing:border-box;}
+body.player-mode .player-question .participant-entry input{min-height:40px!important;}
+body.player-mode .player-question .participant-entry .submit-button{min-height:40px!important;}
+/* Trivia 2 only: reduce existing option typography a further point; reduce revealed correct answer by one point. */
+.ppt-stage.choice-slide .ppt-hex{font-size:calc(clamp(13px,2.3vw,28px) - 2pt)!important;}
+.ppt-stage.choice-slide.results-stage .ppt-answer.answer-mcq{font-size:calc(clamp(16px,2vw,24px) - 1pt)!important;}
+.host-word-row.trivia-two-options span{font-size:calc(clamp(16px,1.9vw,24px) - 2pt)!important;}
+.host-answer.trivia-two-answer{font-size:calc(clamp(30px,4.2vw,55px) - 1pt)!important;}
+body.player-mode .player-game .participant-preview.category-2 .ppt-hex{font-size:calc(clamp(10px,min(3.3vw,2.5dvh),19px) - 2pt)!important;}
+body.player-mode .player-game .participant-preview.category-2>.ppt-answer.participant-answer{font-size:calc(clamp(11px,min(3.5vw,2.5dvh),22px) - 1pt)!important;}
+@media(max-height:550px) and (orientation:landscape){body.player-mode .player-game .participant-preview.category-2 .ppt-hex{font-size:calc(clamp(9px,2.8dvh,12px) - 2pt)!important;}}
