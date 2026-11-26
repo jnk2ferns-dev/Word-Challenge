@@ -1433,3 +1433,6 @@ body.player-mode .player-game .participant-preview.category-2 .ppt-hex.participa
 .host-word-row.trivia-two-options span{font-size:calc(clamp(16px,1.9vw,24px) - 1pt)!important;}
 body.player-mode .player-game .participant-preview.category-2 .ppt-hex{font-size:calc(clamp(10px,min(3.3vw,2.5dvh),19px) - 1pt)!important;}
 @media(max-height:550px) and (orientation:landscape){body.player-mode .player-game .participant-preview.category-2 .ppt-hex{font-size:calc(clamp(9px,2.8dvh,12px) - 1pt)!important;}}
+
+/* Slide 3 PPTM Horizontal Scroll: full-width body, rolled ends. */
+.ppt-stage .ribbon-caption,.ppt-stage .ppt-banner-label,body.player-mode .participant-preview .ribbon-caption{left:5%!important;width:90%!important;top:7%!important;height:80%!important;}
