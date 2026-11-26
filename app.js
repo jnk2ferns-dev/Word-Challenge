@@ -111,7 +111,7 @@ function syncMusic(){
  loadChristmasTrack(wanted.file).then(buffer=>{
   if(generation!==musicGeneration||!soundEnabled||desiredMusic()?.key!==key)return;
   const ctx=audioContext,master=ctx.createGain(),t=ctx.currentTime;
-  master.connect(ctx.destination);master.gain.setValueAtTime(0,t);master.gain.linearRampToValueAtTime(wanted.starter?musicLevel()*Math.pow(10,-2/20):musicLevel(),t+.3);
+  master.connect(ctx.destination);master.gain.setValueAtTime(0,t);master.gain.linearRampToValueAtTime(wanted.starter?musicLevel()*Math.pow(10,-6/20):musicLevel(),t+.3);
   const music={buffer,master,next:t+.03,sources:new Set(),timer:null,starter:!!wanted.starter,finale:!!wanted.finale,oneShot:!!wanted.oneShot,started:false};activeMusic=music;scheduleChristmasLoop(music);
   if(!music.oneShot)music.timer=setInterval(()=>scheduleChristmasLoop(music),100);
  }).catch(e=>{if(generation===musicGeneration){desiredMusicKey='';console.warn('Christmas soundtrack unavailable',e)}});
@@ -130,7 +130,7 @@ function playTick(sec){
  if(!audioAllowed()||!soundEnabled||!audioContext||sec<1||sec>10)return;
  const t=audioContext.currentTime;
  if(activeMusic){const g=activeMusic.master.gain;g.cancelScheduledValues(t);g.setTargetAtTime(.35,t,.045)}
- note(sec<=3?1100:880,t+.01,sec===1?.26:.15,sec<=3?.18:.13,'triangle');
+ note(880,t+.01,.15,.13,'triangle');
 }
 function soundControl(){return ''}
 let glowId=0;
@@ -494,11 +494,23 @@ const presentationControls=view==='screen'&&!document.fullscreenElement
 const otherSound=view==='screen'&&!soundEnabled?'<button class="screen-enable-audio" onclick="enableSound()">🔊 Enable quiz sound</button>':view==='player'||view==='screen'?'':soundControl();
 document.querySelectorAll('.quiz-full-bleed-guide').forEach(n=>n.remove());el.innerHTML='<div class="view-'+view+'">'+(hostPreviewMode?'':presentationControls+otherSound)+(hostPreviewMode?hostFontPreview():view==='host'?hostView():view==='screen'?screen():playerView())+'</div>';
 document.querySelectorAll('.ppt-prompt,.title-hex,.host-glow-shape,.ppt-hex').forEach(n=>{if(!n.querySelector('.white-shape-outline'))n.insertAdjacentHTML('beforeend',shapeOutline(n.classList.contains('ppt-hex')))});document.querySelectorAll('.ppt-prompt,.title-hex,.host-glow-shape').forEach(node=>{if(!node.querySelector('.travel-outline'))node.insertAdjacentHTML('beforeend',animatedBorder())});fitQuestionText();fitRibbonCaptions();fitHostQuestion();startGlow();tick();if(view==='player')requestAnimationFrame(()=>{fitParticipantText();syncParticipantGuides()})}
+// Display and sound share the same second and deadline. Wait for a painted frame
+// before starting the sound; cancel stale cues if the slide or second changes.
 function tick(){
  if(!state?.endsAt||state.phase!=='question')return;
- const secs=remainingSeconds(),n=document.getElementById('clock');if(n)n.textContent=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0');
+ const secs=remainingSeconds(),n=document.getElementById('clock');
+ if(!n)return;
+ const display=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0');
+ if(n.textContent!==display)n.textContent=display;
  const key=state.pin+':'+state.index+':'+state.endsAt+':'+secs;
- if(secs>=1&&secs<=10&&key!==lastTickKey&&soundEnabled&&audioAllowed()){lastTickKey=key;playTick(secs)}
+ if(secs>=1&&secs<=10&&key!==lastTickKey&&soundEnabled&&audioAllowed()&&audioContext?.state==='running'){
+  lastTickKey=key;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   if(!state?.endsAt||state.phase!=='question'||!soundEnabled||!audioAllowed()||audioContext?.state!=='running')return;
+   const current=state.pin+':'+state.index+':'+state.endsAt+':'+remainingSeconds();
+   if(current===key&&document.getElementById('clock')?.textContent===display)playTick(secs);
+  }));
+ }
 }
 function applyQuizState(incoming){
  const old=state;
@@ -530,7 +542,11 @@ if(!reviewMode){
  refreshQuizState();
  setInterval(()=>{if(connection.readyState!==EventSource.OPEN)refreshQuizState()},4000);
 }
-setInterval(tick,250);
+// Use a frame-aligned visual clock on the presentation screen, with the
+// existing periodic clock for host and participant devices.
+setInterval(()=>{if(!audioAllowed())tick()},250);
+function presentationClock(){if(audioAllowed())tick();requestAnimationFrame(presentationClock)}
+requestAnimationFrame(presentationClock);
 if(hostPreviewMode)render();
 if(reviewMode){if(hostKey)loadReviewQuestions();else renderReview()}
 window.addEventListener('resize',()=>{fitRibbonCaptions();fitQuestionText()});
